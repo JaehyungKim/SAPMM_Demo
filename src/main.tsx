@@ -10,7 +10,7 @@ import ReactDOM from 'react-dom/client';
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from '@ui5/webcomponents-react';
 import './icons';
-import { DemoLayout } from './harness/DemoLayout';
+import { ScenarioRoute } from './harness/DemoLayout';
 import { Setup } from './harness/Setup';
 import { useDemo } from './store';
 import './styles/harness/index.css';
@@ -28,7 +28,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route path="/" element={<Root />} />
           <Route path="/setup" element={<Setup />} />
-          <Route path="/step/:id" element={<DemoLayout />} />
+          <Route path="/step/:id" element={<ScenarioRoute scn="j45" />} />
+          <Route path="/:scn/step/:id" element={<ScenarioRoute />} />
           <Route path="*" element={<Root />} />
         </Routes>
       </HashRouter>

@@ -1,15 +1,16 @@
 /**
- * Presenter harness around the simulated system:
- *   DemoBar (top) · ProcessBar · Sidebar (left) · stage with SAP screen(s) · GuidePanel (right)
+ * Presenter harness around the simulated system, for any scenario (J45 / BMD / BNX):
+ *   DemoBar (top: ☰ step panel, scenario name → picker) · ProcessBar · Sidebar (left) · stage with SAP screen(s) · GuidePanel (right)
  *   + RoleBanner, StepGuard and the ScenarioIntro briefing.
- * The SAP screens themselves live in src/steps and know nothing about the harness.
+ * The SAP screens live in src/steps (J45) and src/scenarios/* and know nothing about the harness.
  */
 import { Suspense, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '@ui5/webcomponents-react';
 import { useDemo, ViewMode } from '../store';
-import { stepById } from '../steps';
-import { SCREENS } from '../steps/index';
+import { ScenarioProvider, stepPath, type ScenarioId } from '../scenarioContext';
+import { scenarioById } from '../scenarios/index';
+import { optKey, type ScenarioDef } from '../scenarios/types';
 import { DemoBar } from './DemoBar';
 import { ProcessBar } from './ProcessBar';
 import { Sidebar } from './Sidebar';
@@ -19,24 +20,37 @@ import { GuidePanel } from './GuidePanel';
 import { ScenarioIntro } from './ScenarioIntro';
 import { useEnabledSteps } from './progress';
 
-export function DemoLayout() {
+/** Route entry: picks the scenario and remounts the harness when it changes (hooks differ per scenario). */
+export function ScenarioRoute({ scn }: { scn?: ScenarioId }) {
+  const params = useParams();
+  const id = (scn ?? params.scn ?? 'j45') as ScenarioId;
+  const def = scenarioById(id);
+  return (
+    <ScenarioProvider value={{ id: def.id, tcodes: def.tcodes }}>
+      <DemoLayout key={def.id} def={def} />
+    </ScenarioProvider>
+  );
+}
+
+function DemoLayout({ def }: { def: ScenarioDef }) {
   const { id = 'launchpad' } = useParams();
   const nav = useNavigate();
   const s = useDemo();
-  const st = stepById(id);
-  const steps = useEnabledSteps();
+  const rt = def.useRuntime();
+  const st = def.steps.find((x) => x.id === id) ?? def.steps[0];
+  const steps = useEnabledSteps(def);
   const idx = steps.findIndex((x) => x.id === st.id);
   const prevStep = idx > 0 ? steps[idx - 1] : undefined;
   const nextStep = idx >= 0 && idx < steps.length - 1 ? steps[idx + 1] : undefined;
-  const ok = s.meets(st.requires);
-  const screen = SCREENS[st.id];
+  const ok = rt.meets(st.requires);
+  const screen = def.screens[st.id];
   const [scenario, setScenario] = useState(false);
 
   // Like SAP GUI, the status bar message belongs to the screen that produced it.
-  useEffect(() => { s.markVisited(st.id); s.setGuiMessage(null); }, [st.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { rt.markVisited(st.id); s.setGuiMessage(null); }, [st.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const render = (mode: ViewMode) => {
-    if (!ok) return <StepGuard requires={st.requires} />;
+    if (!ok) return <StepGuard def={def} rt={rt} requires={st.requires} />;
     const C = mode === 'fiori' ? screen.fiori : screen.gui;
     return (
       <Suspense fallback={<div className="stage-loading">화면 불러오는 중…</div>}>
@@ -47,13 +61,13 @@ export function DemoLayout() {
 
   return (
     <div className={`demo ${s.sidebarOpen ? '' : 'no-side'} ${s.guideOpen ? 'with-guide' : ''}`}>
-      <DemoBar stepId={st.id} onScenario={() => setScenario(true)} />
-      <ProcessBar current={st.id} />
+      <DemoBar def={def} rt={rt} st={st} onScenario={() => setScenario(true)} />
+      <ProcessBar def={def} rt={rt} current={st.id} />
       <div className="demo-main">
-        <Sidebar current={st.id} />
+        <Sidebar def={def} rt={rt} current={st.id} />
         <div className="demo-stage">
-          <RoleBanner stepId={st.id} />
-          {st.optional && !s.optionalEnabled[st.id] && (
+          <RoleBanner stepId={st.id} role={st.role} />
+          {st.optional && s.optionalEnabled[optKey(def.id, st.id)] === false && (
             <div className="opt-note">이 선택 단계는 현재 데모 흐름에서 제외되어 있습니다 (사이드바 스위치로 포함 가능).</div>
           )}
           <div className={`stage-screens ${s.compare ? 'compare' : ''}`}>
@@ -67,18 +81,18 @@ export function DemoLayout() {
             )}
           </div>
           <div className="stage-footer">
-            <button className="nav-btn" disabled={!prevStep} onClick={() => prevStep && nav(`/step/${prevStep.id}`)}>
+            <button className="nav-btn" disabled={!prevStep} onClick={() => prevStep && nav(stepPath(def.id, prevStep.id))}>
               <Icon name="navigation-left-arrow" /> {prevStep ? `${prevStep.no}. ${prevStep.title}` : '이전'}
             </button>
-            <span className="stage-footer-info">BPD {st.bpd} · {st.titleEn}</span>
-            <button className="nav-btn nav-next" disabled={!nextStep} onClick={() => nextStep && nav(`/step/${nextStep.id}`)}>
+            <span className="stage-footer-info">{def.code} · BPD {st.bpd} · {st.titleEn}</span>
+            <button className="nav-btn nav-next" disabled={!nextStep} onClick={() => nextStep && nav(stepPath(def.id, nextStep.id))}>
               {nextStep ? `${nextStep.no}. ${nextStep.title}` : '데모 완료'} <Icon name="navigation-right-arrow" />
             </button>
           </div>
         </div>
-        <GuidePanel stepId={st.id} />
+        <GuidePanel def={def} rt={rt} st={st} />
       </div>
-      {(scenario || !s.briefed) && <ScenarioIntro onClose={() => { s.setBriefed(true); setScenario(false); }} />}
+      {(scenario || !rt.briefed) && <ScenarioIntro def={def} onClose={() => { rt.setBriefed(true); setScenario(false); }} />}
     </div>
   );
 }

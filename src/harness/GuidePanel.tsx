@@ -3,32 +3,29 @@
  * its meaning (the next one is outlined on the SAP screen), and the value to emphasise.
  */
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Icon } from '@ui5/webcomponents-react';
 import { useDemo } from '../store';
-import { stepById, ROLE_KO, ROLE_USER } from '../steps';
-import { useSharedMap } from '../sharedState';
-import { buildGuide } from './guide';
+import { ROLE_KO, ROLE_USER, type StepDef } from '../steps';
+import type { Runtime, ScenarioDef } from '../scenarios/types';
 import { findTarget, useGuideCursor, useHighlight } from './highlight';
-import { stepDone, useEnabledSteps } from './progress';
+import { useEnabledSteps } from './progress';
 
-export function GuidePanel({ stepId }: { stepId: string }) {
+export function GuidePanel({ def, rt, st }: { def: ScenarioDef; rt: Runtime; st: StepDef }) {
   const s = useDemo();
-  const shared = useSharedMap();
-  const nav = useNavigate();
-  const st = stepById(stepId);
-  const steps = useEnabledSteps();
-  const pos = steps.findIndex((x) => x.id === stepId);
+  const steps = useEnabledSteps(def);
+  const pos = steps.findIndex((x) => x.id === st.id);
   const next = pos >= 0 ? steps[pos + 1] : undefined;
   const mode = s.viewMode;
-  const g = buildGuide(stepId, s, shared);
+  const g = def.useGuide(st.id);
   const actions = mode === 'fiori' ? g.fiori : g.gui;
   const [hover, setHover] = useState<string | undefined>();
 
-  const cur = useGuideCursor(mode, actions, s.guideOpen);
+  // The cursor can briefly point past the end while switching steps – clamp it.
+  const rawCur = useGuideCursor(mode, actions, s.guideOpen);
+  const cur = rawCur < actions.length ? rawCur : -1;
   const tracked = actions.some((a) => a.done !== undefined);
-  const allDone = tracked ? actions.every((a) => a.done !== false) : stepDone(stepId, s);
-  useHighlight(mode, s.guideOpen && cur >= 0 ? actions[cur].target : undefined, 'current');
+  const allDone = tracked ? actions.every((a) => a.done !== false) : rt.done(st.id);
+  useHighlight(mode, s.guideOpen && cur >= 0 ? actions[cur]?.target : undefined, 'current');
   useHighlight(mode, s.guideOpen ? hover : undefined, 'hover');
 
   if (!s.guideOpen) return null;
@@ -39,13 +36,13 @@ export function GuidePanel({ stepId }: { stepId: string }) {
       <div className="guide-head">
         <Icon name="lightbulb" />
         <b>진행 가이드</b>
-        <span className="guide-pos">{pos >= 0 ? `${pos + 1} / ${steps.length}` : ''}</span>
+        <span className="guide-pos">{def.code} · {pos >= 0 ? `${pos + 1} / ${steps.length}` : ''}</span>
         <button className="guide-x" onClick={s.toggleGuide} title="가이드 닫기"><Icon name="decline" /></button>
       </div>
       <div className="guide-body">
         <div className="guide-who">
           <span className="guide-avatar">{u.initials}</span>
-          <div><b>{u.name}</b><small>{ROLE_KO[st.role]} · {st.appId !== 'Shell' ? (mode === 'fiori' ? `${st.appName}` : st.tcode) : 'Home'}</small></div>
+          <div><b>{u.name}</b><small>{ROLE_KO[st.role]} · {st.appId !== 'Shell' ? (mode === 'fiori' ? st.appName : st.tcode) : 'Home'}</small></div>
         </div>
 
         <h4><Icon name="flag" /> 상황</h4>
@@ -75,10 +72,9 @@ export function GuidePanel({ stepId }: { stepId: string }) {
         <p className="guide-value">{g.value}</p>
       </div>
       <div className={`guide-foot ${allDone ? 'ready' : ''}`}>
-        {allDone && <span><Icon name="message-success" /> 이 단계 완료</span>}
-        {next
-          ? <button className="nav-btn nav-next" onClick={() => nav(`/step/${next.id}`)}>다음: {next.title} <Icon name="navigation-right-arrow" /></button>
-          : <span className="guide-end">마지막 단계입니다 – 데모 완료 🎉</span>}
+        {allDone
+          ? <span><Icon name="message-success" /> {next ? '이 단계 완료 – 화면 아래 버튼으로 다음 단계로 진행' : '마지막 단계 완료 – 데모 완료 🎉'}</span>
+          : <span className="guide-end">위 순서대로 클릭하면 이 단계가 완료됩니다</span>}
       </div>
     </aside>
   );

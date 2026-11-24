@@ -1,9 +1,8 @@
 /** "⚡ 역할 전환 중" banner shown when the next step belongs to another business role. */
 import { useEffect, useRef, useState } from 'react';
-import { stepById, ROLE_KO, ROLE_USER } from '../steps';
+import { ROLE_KO, ROLE_USER, type Role } from '../steps';
 
-export function RoleBanner({ stepId }: { stepId: string }) {
-  const role = stepById(stepId).role;
+export function RoleBanner({ role }: { stepId: string; role: Role }) {
   const prev = useRef(role);
   const [show, setShow] = useState(false);
   useEffect(() => {

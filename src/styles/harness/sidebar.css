@@ -1,6 +1,6 @@
 /* Left step sidebar */
 .side { background: #fff; border-right: 1px solid var(--demo-line); overflow-y: auto; display: flex; flex-direction: column; }
-.side-head { padding: 12px 16px 8px; font-size: 12px; font-weight: 700; color: #556b81; text-transform: uppercase; letter-spacing: .04em; }
+.side-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 8px 8px 16px; font-size: 12px; font-weight: 700; color: #556b81; text-transform: uppercase; letter-spacing: .04em; }
 .side-step { display: flex; align-items: center; border-left: 3px solid transparent; }
 .side-step.cur { background: #ebf5fe; border-left-color: var(--demo-accent); }
 .side-step.disabled .side-step-main { opacity: .45; }
@@ -22,3 +22,7 @@
 .side-summary { margin: auto 12px 12px; padding: 10px 12px; background: #f5f6f7; border-radius: 8px; font-size: 12px; display: grid; gap: 4px; }
 .side-summary div { display: flex; justify-content: space-between; gap: 8px; }
 .side-summary span { color: var(--demo-muted); }
+
+.side-x { border: 0; background: none; cursor: pointer; padding: 4px; border-radius: 4px; display: grid; }
+.side-x:hover { background: #e5e9ed; }
+.side-x ui5-icon { color: var(--demo-muted); width: 12px; height: 12px; }

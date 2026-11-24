@@ -6,7 +6,8 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDemo } from '../../store';
-import { TCODE_MAP, ROLE_USER, Role } from '../../steps';
+import { ROLE_USER, Role } from '../../steps';
+import { useScenarioNav } from '../../scenarioContext';
 import { Help } from '../Help';
 
 const MENUS = ['메뉴', '편집', '이동', '추가 기능', '환경', '시스템', '도움말'];
@@ -36,6 +37,7 @@ export function GuiWindow({
   title, tcode, appToolbar, children, role, webgui,
 }: { title: string; tcode: string; appToolbar?: ReactNode; children: ReactNode; role: Role; webgui?: boolean }) {
   const nav = useNavigate();
+  const { tcodes, go } = useScenarioNav();
   const msg = useDemo((s) => s.guiMessage);
   const setMsg = useDemo((s) => s.setGuiMessage);
   const [cmd, setCmd] = useState('');
@@ -44,8 +46,8 @@ export function GuiWindow({
   const run = () => {
     const t = cmd.trim().toUpperCase().replace(/^\/[NO]/, '');
     if (!t) return;
-    const id = TCODE_MAP[t];
-    if (id) { setMsg(null); nav(`/step/${id}`); }
+    const id = tcodes[t];
+    if (id) { setMsg(null); go(id); }
     else setMsg({ type: 'E', text: `트랜잭션 ${t}이(가) 존재하지 않습니다` });
   };
 
@@ -79,7 +81,7 @@ export function GuiWindow({
         <span className="g-sep" />
         <ToolBtn g={G.save} title="저장 (Ctrl+S)" />
         <ToolBtn g={G.back} title="뒤로 (F3)" onClick={() => nav(-1)} />
-        <ToolBtn g={G.exit} title="종료 (Shift+F3)" onClick={() => nav('/step/launchpad')} />
+        <ToolBtn g={G.exit} title="종료 (Shift+F3)" onClick={() => go('launchpad')} />
         <ToolBtn g={G.cancel} title="취소 (F12)" onClick={() => nav(-1)} />
         <span className="g-sep" />
         <ToolBtn g={G.print} title="인쇄 (Ctrl+P)" />

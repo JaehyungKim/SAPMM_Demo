@@ -42,7 +42,8 @@ function useStageWatch(fn: () => void, deps: unknown[]) {
 /**
  * Index of the action to do next:
  *  1. an open dialog is modal → the pending action whose target is inside it;
- *  2. otherwise the first pending action whose target is on screen;
+ *  2. otherwise the first pending action whose target is on screen (a click often replaces
+ *     its own button, e.g. 편집 → 저장);
  *  3. if that target is not on screen yet (e.g. a result list before "실행"), the nearest
  *     earlier action whose target is visible – that is the click that reveals it.
  */
@@ -55,14 +56,20 @@ export function useGuideCursor(mode: ViewMode, actions: GuideAction[], enabled: 
     if (!pending.length) { setCur(-1); return; }
     const pane = paneOf(mode);
     const dlg = pane && openDialog(pane);
+    // A disabled button is not the next click – the click that enables it is.
+    const usable = (t: string, within?: Element | null) => {
+      const el = findTarget(mode, t, within);
+      return !!el && !(el as HTMLButtonElement).disabled;
+    };
     if (dlg) {
-      const inDlg = pending.find((i) => actions[i].target && findTarget(mode, actions[i].target!, dlg));
+      const inDlg = pending.find((i) => actions[i].target && usable(actions[i].target!, dlg));
       if (inDlg !== undefined) { setCur(inDlg); return; }
     }
     const first = pending[0];
-    if (!actions[first].target || findTarget(mode, actions[first].target)) { setCur(first); return; }
+    const visible = pending.find((i) => !actions[i].target || usable(actions[i].target!));
+    if (visible !== undefined) { setCur(visible); return; }
     for (let i = first - 1; i >= 0; i--) {
-      if (actions[i].target && findTarget(mode, actions[i].target!)) { setCur(i); return; }
+      if (actions[i].target && usable(actions[i].target!)) { setCur(i); return; }
     }
     setCur(first);
   }, [mode, sig, enabled]);

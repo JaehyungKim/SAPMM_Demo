@@ -3,7 +3,8 @@
  * To add a step: add an entry here and register its Fiori/GUI components in `steps/index.tsx`.
  */
 
-export type Role = 'Purchaser' | 'Purchasing Manager' | 'Warehouse Clerk' | 'Inventory Manager' | 'Accounts Payable Accountant';
+export type Role = 'Purchaser' | 'Purchasing Manager' | 'Warehouse Clerk' | 'Inventory Manager' | 'Accounts Payable Accountant'
+  | 'Shipping Specialist' | 'Receiving Specialist' | 'Production Planner' | 'Employee' | 'Manager';
 
 /** Document that must exist before a step makes sense. */
 export type Requirement = 'none' | 'pr-assigned' | 'po' | 'po-released' | 'gr' | 'invoice';
@@ -20,7 +21,8 @@ export interface StepDef {
   guiTitle: string; // GUI screen title
   role: Role;
   optional: boolean;
-  requires: Requirement;
+  /** Prerequisite key understood by the owning scenario's runtime (J45: a `Requirement`). */
+  requires: string;
 }
 
 export const ROLE_KO: Record<Role, string> = {
@@ -29,6 +31,11 @@ export const ROLE_KO: Record<Role, string> = {
   'Warehouse Clerk': '창고 담당자',
   'Inventory Manager': '재고 관리자',
   'Accounts Payable Accountant': '매입채무 회계 담당자',
+  'Shipping Specialist': '출하 담당자',
+  'Receiving Specialist': '입하 담당자',
+  'Production Planner': '생산·자재 계획자',
+  Employee: '현업 직원(요청자)',
+  Manager: '부서 관리자',
 };
 
 export const ROLE_USER: Record<Role, { name: string; initials: string; userId: string; roleId: string }> = {
@@ -37,6 +44,11 @@ export const ROLE_USER: Record<Role, { name: string; initials: string; userId: s
   'Warehouse Clerk': { name: 'Park Ji-ho', initials: 'PJ', userId: 'WAREHOUSE_CLERK', roleId: 'SAP_BR_WAREHOUSE_CLERK' },
   'Inventory Manager': { name: 'Choi Yu-na', initials: 'CY', userId: 'INVENTORY_MANAGER', roleId: 'SAP_BR_INVENTORY_MANAGER' },
   'Accounts Payable Accountant': { name: 'Jung Hae-won', initials: 'JH', userId: 'AP_ACCOUNTANT', roleId: 'SAP_BR_AP_ACCOUNTANT' },
+  'Shipping Specialist': { name: 'Han Do-yun', initials: 'HD', userId: 'SHIPPING_SPECIALIST', roleId: 'SAP_BR_SHIPPING_SPECIALIST' },
+  'Receiving Specialist': { name: 'Oh Ji-min', initials: 'OJ', userId: 'RECEIVING_SPECIALIST', roleId: 'SAP_BR_RECEIVING_SPECIALIST' },
+  'Production Planner': { name: 'Yoon Seo-jun', initials: 'YS', userId: 'PRODUCTION_PLANNER', roleId: 'SAP_BR_PRODN_PLNR' },
+  Employee: { name: 'Kang Min-seo', initials: 'KS', userId: 'EMPLOYEE_PROCURE', roleId: 'SAP_BR_EMPLOYEE_PROCUREMENT' },
+  Manager: { name: 'Shin Hyun-woo', initials: 'SH', userId: 'MANAGER_PROCURE', roleId: 'SAP_BR_MANAGER_PROCUREMENT' },
 };
 
 export const STEPS: StepDef[] = [

@@ -1,8 +1,9 @@
-/** Step progress rules shared by the process bar, sidebar, guide and prerequisite guard. */
+/** Step progress rules: J45 completion rules, J45 prerequisite texts and the enabled-step filter. */
 import { DemoState, useDemo } from '../store';
-import { STEPS, Requirement } from '../steps';
+import { Requirement } from '../steps';
+import { optKey, type ScenarioDef } from '../scenarios/types';
 
-/** Whether a step counts as done for the stepper. */
+/** Whether a J45 step counts as done for the stepper. */
 export function stepDone(id: string, s: DemoState) {
   switch (id) {
     case 'launchpad': return s.visited.includes('launchpad');
@@ -17,13 +18,13 @@ export function stepDone(id: string, s: DemoState) {
   }
 }
 
-/** Steps in the current demo flow (mandatory + switched-on optional steps). */
-export function useEnabledSteps() {
+/** Steps in the current demo flow (mandatory + optional steps that are switched on). */
+export function useEnabledSteps(def: ScenarioDef) {
   const opt = useDemo((s) => s.optionalEnabled);
-  return STEPS.filter((st) => !st.optional || opt[st.id]);
+  return def.steps.filter((st) => !st.optional || opt[optKey(def.id, st.id)] !== false);
 }
 
-/** Guard text for a missing prerequisite and the step that produces it. */
+/** J45 guard text for a missing prerequisite and the step that produces it. */
 export const REQ_TEXT: Record<Requirement, { text: string; goto: string }> = {
   none: { text: '', goto: 'launchpad' },
   'pr-assigned': { text: '구매 요청에 소스가 지정되어야 합니다.', goto: 'process-pr' },

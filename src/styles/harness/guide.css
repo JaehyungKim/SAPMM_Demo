@@ -34,9 +34,7 @@
 .guide-foot { flex: none; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 16px; border-top: 1px solid var(--demo-line); }
 .guide-foot > span { display: inline-flex; align-items: center; gap: 5px; color: var(--demo-green); font-weight: 600; }
 .guide-foot > span ui5-icon { color: var(--demo-green); width: 14px; height: 14px; }
-.guide-foot .nav-btn { margin-left: auto; }
-.guide-foot.ready .nav-btn { animation: pulse 1.6s infinite; }
-.guide-end { color: var(--demo-muted); }
+.guide-foot > .guide-end { color: var(--demo-muted); font-weight: 400; font-size: 12px; }
 
 /* Highlights placed on SAP screen elements by the guide */
 .guide-target { outline: 3px solid var(--demo-accent) !important; outline-offset: 2px; border-radius: 4px; animation: guide-glow 1.6s ease-in-out infinite; position: relative; z-index: 2; }

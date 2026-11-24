@@ -7,6 +7,26 @@ import { useDemo } from '../store';
 export interface HelpEntry { en: string; tech: string; desc: string }
 
 export const HELP: Record<string, HelpEntry> = {
+  returnsItem: { en: 'Returns Item', tech: 'EKPO-RETPO', desc: '반품 품목 표시. 입고 대신 공급업체로 출고(이동 유형 161/122)되고 송장은 대변 메모가 됩니다.' },
+  shippingPoint: { en: 'Shipping Point', tech: 'LIKP-VSTEL', desc: '아웃바운드 납품을 처리하는 출하 지점. 반품·외주 출고 납품이 여기서 생성됩니다.' },
+  pickedQty: { en: 'Picked Quantity', tech: 'LIPS-PIKMG', desc: '피킹 완료 수량. 납품 수량과 같아야 출고(PGI)를 전기할 수 있습니다.' },
+  creditMemo: { en: 'Credit Memo', tech: 'RBKP-XRECH', desc: '대변 메모. 공급업체에 대한 채무를 줄이며 반품 PO를 참조하면 수량·금액이 자동 제안됩니다.' },
+  itemCatL: { en: 'Item Category L', tech: 'EKPO-PSTYP', desc: 'L = 외주가공(Subcontracting). 공급업체에 구성품을 제공하고 가공비만 발주합니다.' },
+  subconStock: { en: 'Stock Provided to Vendor', tech: 'MSLB', desc: '외주처에 제공된 재고(이동 유형 541). 자산은 회사 소유로 남고 입고 시 543으로 소비됩니다.' },
+  limitItem: { en: 'Limit Item', tech: 'EKPO-PSTYP B', desc: '정확한 수량을 모르는 서비스·소모품을 금액 한도(예상 금액/전체 한도)로 발주합니다.' },
+  expectedValue: { en: 'Expected Value', tech: 'EKPO-COMMITMENT', desc: '한도 품목의 예상 금액. 약정(commitment)과 승인 조건 계산에 사용됩니다.' },
+  overallLimit: { en: 'Overall Limit', tech: 'EKPO-SUMLIMIT', desc: '한도 품목의 최대 금액. 이를 넘는 SES·송장은 경고 또는 오류가 됩니다.' },
+  ses: { en: 'Service Entry Sheet', tech: 'MMPUR_SES', desc: '서비스 수행 확인서. 승인되면 서비스 입고(비용 전기)가 이뤄지고 송장의 기준이 됩니다.' },
+  invoicingPlan: { en: 'Invoicing Plan', tech: 'FPLA', desc: '정기 청구 일정(예: 월 임대료). 일정일에 MRIS로 송장을 자동 정산합니다.' },
+  invReduction: { en: 'Invoice Reduction', tech: 'RBKP-IVTYP', desc: '청구 금액이 PO·입고보다 많을 때 차액만큼 줄여 전기하고 공급업체용 대변 메모를 자동 생성합니다.' },
+  catalog: { en: 'Catalog Item', tech: 'MMPUR_CATALOG', desc: '현업 직원이 검색해 바로 담을 수 있는 카탈로그 품목(가격·공급업체 포함).' },
+  reservation: { en: 'Reservation', tech: 'RESB', desc: '창고 재고에서 출고하도록 예약. 재고가 있으면 구매 대신 자동 예약이 생성됩니다(이동 유형 201).' },
+  schedAgreement: { en: 'Scheduling Agreement', tech: 'EKKO-BSTYP L', desc: '장기 공급 계약에 납품 일정(일자·수량)을 붙여 여러 PO 대신 하나의 문서로 운영합니다.' },
+  scheduleLine: { en: 'Schedule Line', tech: 'EKET', desc: '납품 일정 라인. 일자·수량 단위로 공급업체에 납품을 요구합니다.' },
+  quota: { en: 'Quota Arrangement', tech: 'EQUP', desc: '같은 자재를 여러 공급업체에 비율(예: 40/60)로 나눠 MRP가 자동 배분합니다.' },
+  releaseType: { en: 'Release Type', tech: 'EKEH-ABART', desc: 'FRC = 예측(중장기) 일정, JIT = 확정 단기 일정. 릴리스 문서로 공급업체에 전송됩니다.' },
+  template: { en: 'Contract Template', tech: 'EKKO (Template)', desc: '반복 사용하는 계약 조건을 템플릿으로 저장해 새 계약을 참조 생성합니다.' },
+  reversal: { en: 'Reversal Movement 102', tech: 'MSEG-BWART', desc: '입고 취소 이동 유형 102. 일부 수량만 역분개하면 PO의 입고 수량과 GR/IR이 함께 줄어듭니다.' },
   supplier: { en: 'Supplier', tech: 'EKKO-LIFNR', desc: '물품을 공급하는 비즈니스 파트너. 가격·지급조건·인도조건이 공급업체/구매정보레코드에서 기본값으로 제안됩니다.' },
   purchOrg: { en: 'Purchasing Organization', tech: 'EKKO-EKORG', desc: '공급업체와 조건을 협상하고 구매 책임을 지는 조직 단위입니다.' },
   purchGroup: { en: 'Purchasing Group', tech: 'EKKO-EKGRP', desc: '구매 담당자(그룹). 유연한 워크플로 시작 조건(예: 그룹 003 & 500 EUR 초과)에 사용됩니다.' },
@@ -32,6 +52,23 @@ export const HELP: Record<string, HelpEntry> = {
   grir: { en: 'GR/IR Clearing Account', tech: 'WRX', desc: '입고(GR)와 송장(IR) 사이의 임시 계정. 금액 차이가 남으면 MR11로 청산합니다.' },
   prNumber: { en: 'Purchase Requisition', tech: 'EBAN-BANFN', desc: 'MRP 또는 요청자가 생성한 내부 구매 요청. 소스 지정 후 구매 오더로 전환됩니다.' },
   source: { en: 'Source of Supply', tech: 'EBAN-FLIEF / INFNR', desc: '구매정보레코드·소스 리스트·계약에서 결정된 공급원.' },
+  // Purchase contracts (BMD)
+  contractType: { en: 'Contract Type', tech: 'EKKO-BSART', desc: 'MK = 수량 계약, WK = 금액 계약. 수량 계약은 품목별 목표 수량까지 릴리스 오더(콜오프)를 발행합니다.' },
+  targetQty: { en: 'Target Quantity', tech: 'EKPO-KTMNG', desc: '계약 기간 동안 구매하기로 약정한 총 수량. 릴리스 오더가 생성될 때마다 소진량이 자동 갱신됩니다.' },
+  targetValue: { en: 'Target Value', tech: 'EKKO-KTWRT', desc: '계약 목표 금액. 유연한 워크플로 시작 조건(예: 2,000 EUR 초과 시 승인)과 버전 관리 대상 필드로 사용됩니다.' },
+  validity: { en: 'Validity Period', tech: 'EKKO-KDATB / KDATE', desc: '계약 유효 기간. 이 기간 안에서만 계약이 소스로 결정되고 릴리스 오더를 만들 수 있습니다.' },
+  outlineReq: { en: 'Outline Agreement Requisition', tech: 'EBAN-BSART = RV', desc: '구매 오더가 아니라 장기 계약(아웃라인 계약)을 만들기 위한 구매 요청 유형입니다.' },
+  trackingNo: { en: 'Requirement Tracking Number', tech: 'EBAN-BEDNR / EKPO-BEDNR', desc: '요청부터 계약·PO까지 같은 값을 넘겨받아 관련 구매 문서를 한 번에 찾게 해 주는 추적 번호입니다.' },
+  sourceList: { en: 'Source List', tech: 'EORD', desc: '자재·플랜트별 허용/고정 공급원 목록. 고정(fixed) 공급원은 MRP와 자동 소스 결정에서 우선 사용됩니다.' },
+  releaseOrder: { en: 'Release Order (Call-off)', tech: 'EKPO-KONNR / KTPNR', desc: '계약을 참조해 만든 구매 오더. 계약 가격이 적용되고 계약의 릴리스 수량이 갱신됩니다.' },
+  versionReason: { en: 'Reason for New Version', tech: 'Version mgmt (reason code)', desc: '버전 관련 필드를 변경할 때 남기는 사유. 버전 이력에서 이전 버전과 비교할 수 있습니다.' },
+  // Consumable purchasing (BNX)
+  acctAssign: { en: 'Account Assignment Category', tech: 'EKPO-KNTTP', desc: 'K = 코스트 센터. 재고가 아니라 비용으로 바로 처리되는 소모품 구매를 뜻합니다.' },
+  costCenter: { en: 'Cost Center', tech: 'EKKN-KOSTL', desc: '비용이 귀속되는 조직 단위. 입고·송장 시 비용이 이 코스트 센터로 전기됩니다.' },
+  glAccount: { en: 'G/L Account', tech: 'EKKN-SAKTO', desc: '비용 계정. 자재 번호가 있으면 평가 클래스에서, 없으면 자재 그룹에서 자동 결정됩니다.' },
+  distribution: { en: 'Distribution (%)', tech: 'EKKN-VPROZ', desc: '다중 계정 지정 시 각 코스트 센터에 배분되는 비율. 합계는 100%여야 합니다.' },
+  matGroup: { en: 'Material Group', tech: 'EKPO-MATKL', desc: '자재 번호가 없는 텍스트 품목은 자재 그룹으로 G/L 계정과 구매 담당을 결정합니다.' },
+  paymentBlock: { en: 'Payment Block', tech: 'RBKP-ZLSPR / RSEG-SPGRx', desc: '송장 품목을 수동으로 보류하면 지급이 막히고, 책임자가 릴리스해야 지급 대상이 됩니다.' },
 };
 
 export function Help({ k }: { k: string }) {

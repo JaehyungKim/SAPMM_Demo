@@ -10,6 +10,7 @@ import { Icon, ObjectStatus } from '@ui5/webcomponents-react';
 import { useDemo } from '../../store';
 import { ROLE_USER, Role } from '../../steps';
 import { Help } from '../Help';
+import { useScenarioNav } from '../../scenarioContext';
 
 /* ---------------------------------------------------------------- toast */
 const TOAST_MS = 3000;
@@ -51,6 +52,7 @@ export function SapLogo({ h = 22 }: { h?: number }) {
 
 export function FioriShell({ title, role, children, home }: { title: string; role: Role; children: ReactNode; home?: boolean }) {
   const nav = useNavigate();
+  const { go } = useScenarioNav();
   const u = ROLE_USER[role];
   return (
     <div className="f-app">
@@ -60,7 +62,7 @@ export function FioriShell({ title, role, children, home }: { title: string; rol
             <Icon name="nav-back" />
           </button>
         )}
-        <button className="f-shell-brand" onClick={() => nav('/step/launchpad')} title="홈">
+        <button className="f-shell-brand" onClick={() => go('launchpad')} title="홈">
           <SapLogo />
         </button>
         <span className="f-shell-title">{title}<Icon name="slim-arrow-down" className="f-shell-caret" /></span>

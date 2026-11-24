@@ -2,3 +2,6 @@ node_modules
 dist
 .DS_Store
 *.tsbuildinfo
+
+# OneDrive sync conflict copies of build output
+dist */
