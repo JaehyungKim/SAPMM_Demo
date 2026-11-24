@@ -6,6 +6,7 @@ import { addDays, fmtAmt, fmtDate, fmtNum, fmtQty, todayIso } from '../format';
 import { FBtn, FioriShell, FooterBar, FormGroup, FTable, showToast, AnchorBar } from '../components/fiori/Fiori';
 import { GBtn, GTable, GuiWindow } from '../components/gui/Gui';
 import type { StepProps } from './types';
+import { ROLE_USER } from '../steps';
 
 function DecisionDialog({ kind, onClose }: { kind: 'approve' | 'reject' | null; onClose: () => void }) {
   const s = useDemo();
@@ -150,7 +151,7 @@ export function ApprovePOGui({ step }: StepProps) {
       </>}>
       <div className="g-split">
         <div className="g-tree g-tree-narrow">
-          <div className="g-tree-row">▾ 워크플레이스: Lee Seo-yeon</div>
+          <div className="g-tree-row">▾ 워크플레이스: {ROLE_USER['Purchasing Manager'].name}</div>
           <div className="g-tree-row" style={{ paddingLeft: 22 }}>▾ 받은 편지함</div>
           <div className="g-tree-row" style={{ paddingLeft: 40 }}>  미결 메시지 0</div>
           <div className="g-tree-row is-selected" style={{ paddingLeft: 40 }}>  워크플로 {rows.length}</div>

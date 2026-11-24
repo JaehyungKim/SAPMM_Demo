@@ -3,6 +3,7 @@
  * To add a step: add an entry here and register its Fiori/GUI components in `steps/index.tsx`.
  */
 
+import { useDemo } from './store';
 export type Role = 'Purchaser' | 'Purchasing Manager' | 'Warehouse Clerk' | 'Inventory Manager' | 'Accounts Payable Accountant'
   | 'Shipping Specialist' | 'Receiving Specialist' | 'Production Planner' | 'Employee' | 'Manager';
 
@@ -38,7 +39,9 @@ export const ROLE_KO: Record<Role, string> = {
   Manager: '부서 관리자',
 };
 
-export const ROLE_USER: Record<Role, { name: string; initials: string; userId: string; roleId: string }> = {
+export interface RoleUser { name: string; initials: string; userId: string; roleId: string }
+/** Default persons per role (BPD test users); names can be overridden on the setup page. */
+export const ROLE_USER_DEFAULT: Record<Role, RoleUser> = {
   Purchaser: { name: 'Kim Min-jun', initials: 'KM', userId: 'PURCHASER', roleId: 'SAP_BR_PURCHASER' },
   'Purchasing Manager': { name: 'Lee Seo-yeon', initials: 'LS', userId: 'PURCHASING_MANAGER', roleId: 'SAP_BR_PURCHASING_MANAGER' },
   'Warehouse Clerk': { name: 'Park Ji-ho', initials: 'PJ', userId: 'WAREHOUSE_CLERK', roleId: 'SAP_BR_WAREHOUSE_CLERK' },
@@ -91,3 +94,25 @@ export const TCODE_MAP: Record<string, string> = {
   MIR4: 'display-invoice',
   MR11: 'clear-grir',
 };
+
+/** Avatar initials: first letters of the first two words ("Kim Min-jun" → KM), else the first two characters. */
+export const initialsOf = (name: string) => {
+  const w = name.trim().split(/\s+/).filter(Boolean);
+  if (w.length >= 2) return (w[0][0] + w[1][0]).toUpperCase();
+  // Korean full name without spaces (홍길동): show the given name, as Korean apps do (길동).
+  if (/^[가-힣]{3,4}$/.test(w[0] ?? '')) return w[0].slice(-2);
+  return (w[0] ?? '?').slice(0, 2).toUpperCase();
+};
+
+/**
+ * Person per role as shown on all screens: the default user with the presenter's name override
+ * from the setup page (DemoConfig.userNames) applied.
+ */
+export const ROLE_USER = new Proxy(ROLE_USER_DEFAULT, {
+  get(target, role: string) {
+    const base = target[role as Role];
+    if (!base) return base;
+    const custom = useDemo.getState().config.userNames?.[role]?.trim();
+    return custom ? { ...base, name: custom, initials: initialsOf(custom) } : base;
+  },
+}) as Record<Role, RoleUser>;

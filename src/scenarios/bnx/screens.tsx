@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Dialog, MessageStrip } from '@ui5/webcomponents-react';
 import type { StepProps } from '../../steps/types';
+import { ROLE_USER } from '../../steps';
 import { useScenarioNav } from '../../scenarioContext';
 import { fmtAmt, fmtDate, fmtNum } from '../../format';
 import {
@@ -453,12 +454,11 @@ export function ReleaseF({ step }: StepProps) {
       kpiLabel: '총 금액', kpi: fmtAmt(inv.amount, c.currency),
       fields: [
         { label: '보류 사유', value: '수동 보류 (Manual)', help: 'paymentBlock' },
-        { label: '구매 오더', value: s.numbers.po }, { label: '코스트 센터 책임자', value: `${CCRESP} (PURCHASING_MANAGER)` },
+        { label: '구매 오더', value: s.numbers.po }, { label: '코스트 센터 책임자', value: `${ROLE_USER['Purchasing Manager'].name} (PURCHASING_MANAGER)` },
       ],
       body: <JournalTable lines={journalStatic(inv.amount, c.glGrir, c.glPayables)} />,
     } : null} />;
 }
-const CCRESP = 'Lee Seo-yeon';
 const journalStatic = (amt: number, grir: string, ap: string): JournalLine[] => [
   { acc: grir, text: 'GR/IR 청산', dc: '차변', amt }, { acc: ap, text: `공급업체 ${SUPPLIER.no} (지급 보류 해제 대상)`, dc: '대변', amt },
 ];

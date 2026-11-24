@@ -21,3 +21,9 @@
 .setup-total b { font-size: 20px; color: var(--demo-accent); margin: 0 6px; }
 .setup-total span { color: var(--demo-muted); font-size: 13px; }
 .setup-warn { color: #8a5a00; font-size: 12px; }
+.setup-note { margin: -4px 0 12px; font-size: 12px; color: #8396a8; }
+.setup-person > span:first-child { min-width: 0; }
+.setup-person > span:first-child small { display: block; font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.setup-person-row { display: flex; align-items: center; gap: 8px; }
+.setup-person-row input { flex: 1; min-width: 0; }
+.setup-person-row .dbar-avatar { flex: none; color: #fff; }

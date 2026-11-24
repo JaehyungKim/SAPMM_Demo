@@ -7,6 +7,7 @@
 import { Fragment, ReactNode, useState } from 'react';
 import { Dialog, Icon, MessageStrip } from '@ui5/webcomponents-react';
 import type { StepProps } from '../../steps/types';
+import { ROLE_USER } from '../../steps';
 import { useScenarioNav } from '../../scenarioContext';
 import { useSharedState } from '../../sharedState';
 import { fmtAmt, fmtDate, fmtNum, fmtQty, todayIso, fiscalYear } from '../../format';
@@ -207,7 +208,7 @@ export function InboxGui({ step, task, preview, done, approveLabel = '릴리스(
       </>}>
       <div className="g-split">
         <div className="g-tree g-tree-narrow">
-          <div className="g-tree-row">▾ 워크플레이스: Lee Seo-yeon</div>
+          <div className="g-tree-row">▾ 워크플레이스: {ROLE_USER['Purchasing Manager'].name}</div>
           <div className="g-tree-row" style={{ paddingLeft: 22 }}>▾ 받은 편지함</div>
           <div className="g-tree-row is-selected" style={{ paddingLeft: 40 }}>  워크플로 {rows.length}</div>
         </div>
@@ -326,7 +327,7 @@ export function GrGui({ step, po, supplier, items, posted, consumption, onPost }
   const f = useGrForm(`gr:${po}`, items, 'DN-' + po.slice(-4));
   const [tab, setTab] = useState(consumption ? '계정 지정' : '위치');
   return (
-    <GuiWindow title={`입고 구매 오더 ${po} - Park Ji-ho`} tcode={step.tcode} role={step.role}
+    <GuiWindow title={`입고 구매 오더 ${po} - ${ROLE_USER['Warehouse Clerk'].name}`} tcode={step.tcode} role={step.role}
       appToolbar={<><GBtn>개요 켜기</GBtn><GBtn>점검</GBtn><GBtn icon="💾" disabled={!!posted || !f.ok} onClick={() => onPost(f.dn, f.qty)}>전기</GBtn></>}>
       <div className="g-pad">
         <div className="g-row"><b>A01 입고</b> · <b>R01 구매 오더</b> · <GField label="구매 오더" value={po} w={100} lw={70} /> <GField label="이동 유형" value="101" w={40} lw={70} help="movementType" /></div>

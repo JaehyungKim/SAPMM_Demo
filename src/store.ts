@@ -40,6 +40,8 @@ export interface DemoConfig {
   glGrir: string;
   glPayables: string;
   dateFormat: DateFormat;
+  /** Presenter-chosen person names per role (role → name); empty = default name. */
+  userNames: Record<string, string>;
 }
 
 export type PrStatus = 'Open' | 'Assigned' | 'Closed';
@@ -145,6 +147,7 @@ export const defaultConfig = (): DemoConfig => ({
   glGrir: '21300000',
   glPayables: '21100000',
   dateFormat: 'KR',
+  userNames: {},
 });
 
 const rnd = (min: number, max: number) => Math.floor(min + Math.random() * (max - min));

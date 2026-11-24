@@ -5,7 +5,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@ui5/webcomponents-react';
 import { defaultConfig, useDemo, netValue, DemoConfig } from '../store';
-import { STEPS } from '../steps';
+import { ROLE_KO, ROLE_USER_DEFAULT, STEPS, initialsOf, type Role } from '../steps';
 import { addDays, daysBetween, fmtAmt, fmtDate, todayIso } from '../format';
 import { SapLogo } from '../components/fiori/Fiori';
 
@@ -62,7 +62,7 @@ export function Setup() {
         <SapLogo h={30} />
         <div>
           <h1>데모 환경 설정</h1>
-          <p>SAP S/4HANA Cloud · 회사·조직·날짜 형식은 모든 시나리오(J45 · BMD · BNX · 18J · 22Z · BMR · BMY · BMK) 공통, 자재·오더 값은 J45 기준입니다. 시나리오는 데모 화면 상단 바의 시나리오 이름을 눌러 전환합니다.</p>
+          <p>SAP S/4HANA Cloud · 회사·조직·날짜 형식·담당자 이름은 모든 시나리오(J45 · BMD · BNX · 18J · 22Z · BMR · BMY · BMK) 공통, 자재·오더 값은 J45 기준입니다. 시나리오는 데모 화면 상단 바의 시나리오 이름을 눌러 전환합니다.</p>
         </div>
       </header>
       <div className="setup-body">
@@ -86,6 +86,24 @@ export function Setup() {
               ))}
             </section>
           ))}
+          <section className="setup-card">
+            <h2><Icon name="employee" /> 담당자 이름</h2>
+            <p className="setup-note">화면·가이드·브리핑에 나오는 역할별 담당자 이름입니다. 비워 두면 기본 이름을 씁니다.</p>
+            {(Object.keys(ROLE_USER_DEFAULT) as Role[]).map((r) => {
+              const d = ROLE_USER_DEFAULT[r];
+              const v = c.userNames?.[r] ?? '';
+              return (
+                <label key={r} className="setup-field setup-person">
+                  <span>{ROLE_KO[r]} <small>{d.roleId}</small></span>
+                  <span className="setup-person-row">
+                    <span className="dbar-avatar">{initialsOf(v.trim() || d.name)}</span>
+                    <input type="text" value={v} placeholder={d.name}
+                      onChange={(e) => s.setConfig({ userNames: { ...(c.userNames ?? {}), [r]: e.target.value } })} />
+                  </span>
+                </label>
+              );
+            })}
+          </section>
           <section className="setup-card">
             <h2><Icon name="action-settings" /> 데모 옵션</h2>
             <label className="setup-field">
