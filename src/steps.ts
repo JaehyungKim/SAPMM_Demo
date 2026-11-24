@@ -42,16 +42,16 @@ export const ROLE_KO: Record<Role, string> = {
 export interface RoleUser { name: string; initials: string; userId: string; roleId: string }
 /** Default persons per role (BPD test users); names can be overridden on the setup page. */
 export const ROLE_USER_DEFAULT: Record<Role, RoleUser> = {
-  Purchaser: { name: 'Kim Min-jun', initials: 'KM', userId: 'PURCHASER', roleId: 'SAP_BR_PURCHASER' },
-  'Purchasing Manager': { name: 'Lee Seo-yeon', initials: 'LS', userId: 'PURCHASING_MANAGER', roleId: 'SAP_BR_PURCHASING_MANAGER' },
-  'Warehouse Clerk': { name: 'Park Ji-ho', initials: 'PJ', userId: 'WAREHOUSE_CLERK', roleId: 'SAP_BR_WAREHOUSE_CLERK' },
-  'Inventory Manager': { name: 'Choi Yu-na', initials: 'CY', userId: 'INVENTORY_MANAGER', roleId: 'SAP_BR_INVENTORY_MANAGER' },
-  'Accounts Payable Accountant': { name: 'Jung Hae-won', initials: 'JH', userId: 'AP_ACCOUNTANT', roleId: 'SAP_BR_AP_ACCOUNTANT' },
-  'Shipping Specialist': { name: 'Han Do-yun', initials: 'HD', userId: 'SHIPPING_SPECIALIST', roleId: 'SAP_BR_SHIPPING_SPECIALIST' },
-  'Receiving Specialist': { name: 'Oh Ji-min', initials: 'OJ', userId: 'RECEIVING_SPECIALIST', roleId: 'SAP_BR_RECEIVING_SPECIALIST' },
-  'Production Planner': { name: 'Yoon Seo-jun', initials: 'YS', userId: 'PRODUCTION_PLANNER', roleId: 'SAP_BR_PRODN_PLNR' },
-  Employee: { name: 'Kang Min-seo', initials: 'KS', userId: 'EMPLOYEE_PROCURE', roleId: 'SAP_BR_EMPLOYEE_PROCUREMENT' },
-  Manager: { name: 'Shin Hyun-woo', initials: 'SH', userId: 'MANAGER_PROCURE', roleId: 'SAP_BR_MANAGER_PROCUREMENT' },
+  Purchaser: { name: '박재형', initials: '재형', userId: 'PURCHASER', roleId: 'SAP_BR_PURCHASER' },
+  'Purchasing Manager': { name: '고아름', initials: '아름', userId: 'PURCHASING_MANAGER', roleId: 'SAP_BR_PURCHASING_MANAGER' },
+  'Warehouse Clerk': { name: '정희영', initials: '희영', userId: 'WAREHOUSE_CLERK', roleId: 'SAP_BR_WAREHOUSE_CLERK' },
+  'Inventory Manager': { name: '강진범', initials: '진범', userId: 'INVENTORY_MANAGER', roleId: 'SAP_BR_INVENTORY_MANAGER' },
+  'Accounts Payable Accountant': { name: '구지현', initials: '지현', userId: 'AP_ACCOUNTANT', roleId: 'SAP_BR_AP_ACCOUNTANT' },
+  'Shipping Specialist': { name: '한진완', initials: '진완', userId: 'SHIPPING_SPECIALIST', roleId: 'SAP_BR_SHIPPING_SPECIALIST' },
+  'Receiving Specialist': { name: '안지현', initials: '지현', userId: 'RECEIVING_SPECIALIST', roleId: 'SAP_BR_RECEIVING_SPECIALIST' },
+  'Production Planner': { name: '이규호', initials: '규호', userId: 'PRODUCTION_PLANNER', roleId: 'SAP_BR_PRODN_PLNR' },
+  Employee: { name: '김정원', initials: '정원', userId: 'EMPLOYEE_PROCURE', roleId: 'SAP_BR_EMPLOYEE_PROCUREMENT' },
+  Manager: { name: '양경남', initials: '경남', userId: 'MANAGER_PROCURE', roleId: 'SAP_BR_MANAGER_PROCUREMENT' },
 };
 
 export const STEPS: StepDef[] = [
