@@ -1,0 +1,120 @@
+/* ===== Classic SAP GUI for Windows ===== */
+.g-window { display: flex; flex-direction: column; flex: 1; min-height: 0; background: #f0f0f0; font-family: Tahoma, 'Segoe UI', 'Malgun Gothic', Arial, sans-serif; font-size: 12px; color: #000; border: 1px solid #7a8a99; }
+.g-titlebar { flex: none; height: 26px; display: flex; align-items: center; gap: 6px; padding: 0 0 0 8px; background: linear-gradient(#e3e9f1, #c9d4e1); border-bottom: 1px solid #8b9bab; }
+.g-titlebar-icon { color: #1f5fa8; font-size: 12px; }
+.g-titlebar-text { flex: 1; font-size: 12px; color: #1a2a3a; }
+.g-win-btns { display: flex; }
+.g-win-btns span { width: 34px; text-align: center; line-height: 26px; color: #333; }
+.g-win-btns span:last-child:hover { background: #d9302c; color: #fff; }
+.g-menubar { flex: none; display: flex; align-items: center; gap: 2px; height: 22px; padding: 0 4px; background: #f0f0f0; border-bottom: 1px solid #d0d0d0; }
+.g-menubar span { padding: 2px 8px; cursor: default; }
+.g-menubar span:hover { background: #cce4f7; }
+.g-spacer { flex: 1; }
+.g-webgui-tag { font-size: 11px; color: #5b6b7b; }
+.g-systoolbar { flex: none; display: flex; align-items: center; gap: 2px; height: 30px; padding: 0 6px; background: linear-gradient(#fbfbfb, #e6e6e6); border-bottom: 1px solid #b9b9b9; }
+.g-tbtn { width: 24px; height: 22px; border: 1px solid transparent; background: none; padding: 2px; cursor: pointer; display: grid; place-items: center; }
+.g-tbtn svg { width: 16px; height: 16px; }
+.g-tbtn:hover { border-color: #7da2ce; background: #e5f0fb; }
+.g-sep { width: 1px; height: 20px; background: #c0c0c0; margin: 0 4px; }
+.g-cmd { display: flex; align-items: center; height: 20px; border: 1px solid #7f9db9; background: #fff; margin: 0 4px; }
+.g-cmd input { width: 150px; border: 0; outline: 0; font: inherit; padding: 0 4px; text-transform: uppercase; }
+.g-cmd input::placeholder { color: #6b7b8b; }
+.g-cmd-arrow { width: 16px; text-align: center; border-left: 1px solid #c0c0c0; color: #444; font-size: 10px; }
+.g-screen-title { flex: none; height: 28px; line-height: 28px; padding: 0 10px; font-size: 14px; font-weight: 700; color: #1c3e64; background: #dfe6ee; border-bottom: 1px solid #b6c2cf; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.g-apptoolbar { flex: none; display: flex; align-items: center; gap: 4px; padding: 3px 6px; background: #eef1f4; border-bottom: 1px solid #c8d0d8; min-height: 30px; flex-wrap: wrap; }
+.g-at-item { padding: 2px 6px; color: #1c3e64; }
+.g-body { flex: 1; min-height: 0; overflow: auto; background: #f0f0f0; }
+.g-statusbar { flex: none; height: 24px; display: flex; align-items: center; border-top: 1px solid #a0a0a0; background: #e4e4e4; }
+.g-status-msg { flex: 1; display: flex; align-items: center; gap: 6px; padding: 0 8px; height: 100%; overflow: hidden; white-space: nowrap; }
+.g-msg-icon { width: 14px; height: 14px; border-radius: 3px; flex: none; }
+.g-msg-S .g-msg-icon { background: #2e8b2e; } .g-msg-W .g-msg-icon { background: #e0a800; } .g-msg-E .g-msg-icon { background: #c9302c; } .g-msg-I .g-msg-icon { background: #3b6fb6; }
+.g-msg-E { color: #9b1c1c; }
+.g-status-sys { display: flex; height: 100%; }
+.g-status-sys span { border-left: 1px solid #b0b0b0; padding: 0 8px; display: flex; align-items: center; color: #333; white-space: nowrap; }
+
+/* dynpro elements */
+.g-pad { padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
+.g-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.g-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 4px 24px; }
+.g-field { display: flex; align-items: center; gap: 6px; margin: 2px 0; }
+.g-field label { display: inline-flex; align-items: center; color: #000; flex: none; }
+.g-input { height: 19px; border: 1px solid #7f9db9; background: #fff; font: inherit; padding: 0 3px; color: #000; }
+.g-input.g-ro { background: #ececec; border-color: #b4b4b4; color: #222; }
+.g-input.g-req { background: #fffbd0; }
+.g-input:focus { outline: 1px dotted #000; background: #fff8b0; }
+.g-suffix { color: #222; display: inline-flex; align-items: center; }
+.g-select { height: 20px; font: inherit; border: 1px solid #7f9db9; background: #fff; }
+.g-lbl-inline { padding: 0 4px; color: #1c3e64; font-weight: 700; }
+.g-btn { height: 22px; padding: 0 8px; font: inherit; color: #000; border: 1px solid #8b8b8b; border-radius: 2px; background: linear-gradient(#fdfdfd, #dcdcdc); box-shadow: inset 1px 1px 0 #fff; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.g-btn:hover:not(:disabled) { border-color: #3c7fb1; background: linear-gradient(#f2f9ff, #cfe6fa); }
+.g-btn:active:not(:disabled) { box-shadow: inset 1px 1px 2px #888; }
+.g-btn:disabled { color: #9a9a9a; cursor: default; }
+.g-btn-icon { font-size: 11px; }
+.g-check { display: inline-flex; align-items: center; gap: 4px; }
+.g-check input { margin: 0; }
+.g-group { border: 1px solid #a9b4bf; padding: 4px 10px 8px; margin: 0; }
+.g-group legend { color: #1c3e64; font-weight: 700; padding: 0 4px; }
+.g-dim { color: #6a6a6a; padding: 6px; }
+
+.g-tabs { border: 1px solid #a9b4bf; background: #f0f0f0; }
+.g-tabstrip { display: flex; gap: 1px; padding: 3px 3px 0; background: #e2e6ea; border-bottom: 1px solid #a9b4bf; flex-wrap: wrap; }
+.g-tabstrip button { font: inherit; border: 1px solid #a9b4bf; border-bottom: 0; background: linear-gradient(#f6f6f6, #dedede); padding: 3px 10px; cursor: pointer; margin-bottom: -1px; }
+.g-tabstrip button.active { background: #f0f0f0; font-weight: 700; border-bottom: 1px solid #f0f0f0; }
+.g-tabbody { padding: 6px 10px; min-height: 52px; }
+
+/* ALV grid */
+.g-grid-wrap { border: 1px solid #8ea3b8; background: #fff; overflow: auto; }
+.g-grid-title { background: #dfe6ee; padding: 3px 6px; font-weight: 700; color: #1c3e64; border-bottom: 1px solid #b6c2cf; }
+.g-grid { border-collapse: collapse; width: max-content; min-width: 100%; table-layout: fixed; }
+.g-grid th { background: linear-gradient(#e8eef5, #cfdae6); border: 1px solid #a8b8c8; padding: 2px 4px; font-weight: 400; text-align: left; white-space: nowrap; color: #102a43; height: 20px; }
+.g-grid td { border: 1px solid #d6dde4; padding: 1px 4px; height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.g-grid tbody tr:nth-child(even) td { background: #f3f6f9; }
+.g-grid tbody tr:hover td { background: #e5f0fb; cursor: default; }
+.g-grid tr.is-selected td { background: #ffe9a6 !important; }
+.g-rowsel { width: 16px; background: #dde4eb !important; text-align: center; font-size: 9px; color: #1c3e64; }
+.g-empty-row td { background: #fff !important; }
+.g-cell-input { width: 100%; height: 17px; border: 1px solid #7f9db9; font: inherit; padding: 0 2px; background: #fffbd0; }
+.g-cell-input.r { text-align: right; }
+.g-led { display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 1px solid #555; }
+.g-light { display: inline-flex; gap: 2px; padding: 2px 3px; background: #333; border-radius: 3px; vertical-align: middle; }
+.g-light i { width: 8px; height: 8px; border-radius: 50%; background: #555; }
+.g-light i.on-red { background: #ff3030; } .g-light i.on-yellow { background: #ffcc00; } .g-light i.on-green { background: #3ad13a; }
+
+/* Easy Access */
+.g-easy { display: grid; grid-template-columns: 1fr 340px; height: 100%; background: #fff; }
+.g-tree { padding: 6px 0; background: #fff; overflow: auto; user-select: none; }
+.g-tree-narrow { width: 240px; border-right: 1px solid #b6c2cf; flex: none; }
+.g-tree-row { display: flex; align-items: center; gap: 4px; height: 20px; cursor: default; white-space: nowrap; padding-right: 10px; }
+.g-tree-row:hover { background: #e5f0fb; }
+.g-tree-row.is-selected { background: #3b6fb6; color: #fff; }
+.g-tree-exp { width: 12px; font-size: 10px; color: #1c3e64; }
+.g-tree-folder { width: 14px; height: 11px; background: #e9c46a; border: 1px solid #b58b2a; border-radius: 1px; }
+.g-tree-tx { width: 12px; height: 12px; background: #fff; border: 1px solid #5a7b9c; position: relative; }
+.g-tree-tx::after { content: ''; position: absolute; inset: 3px 2px; border-top: 1px solid #5a7b9c; border-bottom: 1px solid #5a7b9c; }
+.g-tree-code { color: inherit; font-weight: 700; }
+.g-tree-dim { color: #888; }
+.g-easy-side { border-left: 1px solid #d5dde5; padding: 20px; background: linear-gradient(160deg, #f3f6f9, #dfe7ef); color: #33475b; line-height: 1.5; }
+.g-easy-logo { font-size: 22px; font-weight: 700; color: #1c3e64; margin-bottom: 12px; }
+
+/* misc layouts */
+.g-split { display: flex; height: 100%; background: #fff; }
+.g-split > div:last-child { padding: 8px; display: flex; flex-direction: column; gap: 8px; }
+.g-preview { border: 1px solid #b6c2cf; background: #fffef3; padding: 8px; line-height: 1.6; }
+.g-po-head { padding: 2px 0 4px; }
+.g-item-detail-head { background: #dfe6ee; border: 1px solid #b6c2cf; padding: 3px 8px; font-weight: 700; color: #1c3e64; }
+.g-status-tab { display: grid; gap: 4px; padding: 4px; }
+.g-migo-top { background: #e8edf2; padding: 4px 6px; border: 1px solid #c8d0d8; }
+.g-miro { display: grid; grid-template-columns: 1fr 260px; gap: 8px; }
+.g-vendor-box { border: 1px solid #a9b4bf; background: #fff; padding: 8px 10px; line-height: 1.6; align-self: start; }
+.g-group-tabs { border: 1px solid #a9b4bf; padding: 6px; display: flex; flex-direction: column; gap: 6px; }
+.g-tabstrip-mini { font-weight: 700; border: 1px solid #a9b4bf; padding: 2px 10px; background: #f0f0f0; }
+.g-sel-screen { max-width: 620px; }
+.g-sel-title { font-weight: 700; color: #1c3e64; border-bottom: 1px solid #b6c2cf; margin: 8px 0 4px; padding-bottom: 2px; }
+.g-ok-box { background: #e6f4e6; border: 1px solid #8fc28f; padding: 6px 8px; color: #1b5e20; }
+
+/* SAP GUI for HTML (WebGUI) inside the Fiori shell */
+.g-window.g-webgui { border-radius: 8px; overflow: hidden; border-color: #c8d0d8; box-shadow: 0 0 2px rgba(34,53,72,.15), 0 2px 4px rgba(34,53,72,.08); font-family: '72', Arial, sans-serif; }
+.g-webgui .g-menubar { background: #fff; height: 30px; }
+.g-webgui .g-systoolbar { background: #fff; }
+.g-webgui .g-screen-title { background: #fff; color: #1d2d3e; font-size: 16px; height: 36px; line-height: 36px; }
+.g-webgui .g-body { background: #f7f8f9; }
