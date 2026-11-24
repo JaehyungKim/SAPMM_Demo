@@ -107,7 +107,7 @@ npm run dev        # http://localhost:5173 자동 오픈
 BPD 중 데모에서 단순화·생략한 부분: BMY 일련번호(Serial Number) 처리 파트, 22Z MPS·품목 계층(Hierarchy)·서비스 수행자 셀프서비스, BMR EDI 전송·LP 승인, BNX 클레임 레터 출력.
 
 ### 발표자 기능
-- **시나리오 메뉴**(상단 바의 시나리오 이름): 8개 시나리오 전환, 시나리오별 진행률 표시, 데모 환경 설정 바로가기.
+- **시나리오 메뉴**(상단 바의 시나리오 이름): SAP 조달 Scope Item 맵(Sourcing and Contract Mgmt. · Operational Procurement and Invoice Mgmt. · Central Procurement · Procurement Analytics · Supplier Mgmt.) 기준으로 구현된 시나리오만 분류해 보여 줍니다. 시나리오별 진행률, 데모 환경 설정 바로가기. 맵에 없는 코드는 '기타'에 표시됩니다 (BMK는 운영 구매에 추가 매핑).
 - **오늘의 시나리오**: 시나리오 시작 시(및 `초기화` 후) 업무 상황·등장인물·4단계 흐름·진행 방법을 브리핑합니다. 상단 `시나리오` 버튼으로 다시 열 수 있습니다.
 - **진행 가이드(오른쪽 패널)**: 단계마다 *상황* → *클릭 순서와 의미* → *업무 효과*를 보여 줍니다.
   - 다음에 클릭할 곳을 SAP 화면에 **파란 테두리**로 표시합니다. 열린 대화 상자를 우선하고, 비활성 버튼이나 아직 보이지 않는 버튼은 그 버튼을 나타나게/활성화하는 앞 클릭부터 안내합니다.
@@ -145,7 +145,7 @@ BPD 중 데모에서 단순화·생략한 부분: BMY 일련번호(Serial Number
 1. `store.ts` – 문서 체인 상태와 액션, `meets()`/`autoComplete()` (zustand persist + `anchoredMerge` 로 날짜 재기준).
 2. `screens.tsx` – 단계별 `XxxF` / `XxxG` 화면. 공통 화면은 `scenarios/shared/ui.tsx` (Launchpad, 내 받은 편지함, 입고, 송장, 자재 전표, PDF).
 3. `index.tsx` – `ScenarioDef`: 단계 목록, 화면 등록(지연 로딩), T-Code 맵, 런타임(완료 규칙·선행 조건·요약), 가이드 문구(`target` = 버튼에 보이는 글자, `done` = 완료 조건), 브리핑.
-4. `src/scenarios/index.ts` 의 `SCENARIOS` 에 추가하면 시나리오 메뉴에 나타납니다.
+4. `src/scenarios/index.ts` 의 `SCENARIOS` 에 추가하면 시나리오 메뉴에 나타납니다. 메뉴의 분류·순서는 `src/scenarios/catalog.ts`(Scope Item 맵)가 `code` 로 자동 결정합니다.
 5. 새 아이콘(`<Icon name="...">`)을 쓰면 `src/icons.ts` 에 import 한 줄 추가.
 
 J45에 단계를 추가할 때는 `src/steps.ts`, `src/steps/<이름>.tsx`, `src/steps/index.tsx`, `src/harness/guide.ts` 를 함께 수정합니다.

@@ -5,7 +5,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@ui5/webcomponents-react';
 import { defaultConfig, useDemo, netValue, DemoConfig } from '../store';
-import { ROLE_KO, ROLE_USER_DEFAULT, STEPS, initialsOf, type Role } from '../steps';
+import { ROLE_KO, ROLE_USER_DEFAULT, initialsOf, type Role } from '../steps';
 import { addDays, daysBetween, fmtAmt, fmtDate, todayIso } from '../format';
 import { SapLogo } from '../components/fiori/Fiori';
 
@@ -120,13 +120,6 @@ export function Setup() {
                 <option value="sapgui">SAP GUI</option>
               </select>
             </label>
-            <div className="setup-opt-title">선택 단계 포함</div>
-            {STEPS.filter((x) => x.optional).map((x) => (
-              <label key={x.id} className="setup-check">
-                <input type="checkbox" checked={s.optionalEnabled[x.id]} onChange={(e) => s.setOptional(x.id, e.target.checked)} />
-                {x.no}. {x.title} {x.id === 'approve-po' && <small>(유연한 워크플로 승인)</small>}
-              </label>
-            ))}
           </section>
         </div>
       </div>

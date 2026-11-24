@@ -13,9 +13,6 @@
 .setup-field input, .setup-field select { height: 32px; border: 1px solid #bcc3ca; border-bottom-color: #556b81; border-radius: 6px; padding: 0 9px; font: inherit; color: #1d2d3e; background: #fff; }
 .setup-field input:focus, .setup-field select:focus { outline: 2px solid var(--demo-accent); outline-offset: -1px; }
 .setup-field small { grid-column: 2; color: #8396a8; font-size: 11px; }
-.setup-opt-title { margin: 12px 0 6px; font-weight: 700; font-size: 13px; }
-.setup-check { display: flex; gap: 8px; align-items: center; font-size: 13px; margin: 4px 0; }
-.setup-check small { color: #8396a8; }
 .setup-foot { display: flex; align-items: center; gap: 12px; padding: 14px 32px; background: #fff; border-top: 1px solid var(--demo-line); }
 .setup-total { font-size: 15px; }
 .setup-total b { font-size: 20px; color: var(--demo-accent); margin: 0 6px; }
