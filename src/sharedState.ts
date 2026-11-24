@@ -11,6 +11,9 @@ const useShared = create<{ m: Record<string, unknown>; put: (k: string, v: unkno
   put: (k, v) => set((s) => ({ m: { ...s.m, [k]: v } })),
 }));
 
+/** Subscribe to all in-progress entries (used by the presenter guide to tick off actions). */
+export const useSharedMap = () => useShared((s) => s.m);
+
 export function useSharedState<T>(key: string, init: T): [T, (v: T) => void] {
   const has = useShared((s) => key in s.m);
   const value = useShared((s) => s.m[key]) as T | undefined;

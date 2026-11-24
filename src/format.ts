@@ -12,7 +12,16 @@ export const addDays = (iso: string, days: number) => {
   return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
 };
 
-/** KR → 2026.12.08, SAP → 08.12.2026 */
+/** Whole days from ISO date `a` to ISO date `b` (b − a). */
+export const daysBetween = (a: string, b: string) => {
+  const t = (iso: string) => { const [y, m, d] = iso.slice(0, 10).split('-').map(Number); return Date.UTC(y, m - 1, d); };
+  return Math.round((t(b) - t(a)) / 86_400_000);
+};
+
+/** Moves an ISO date or ISO timestamp by `days`, keeping the time part. */
+export const shiftIso = (iso: string, days: number) => (days ? addDays(iso.slice(0, 10), days) + iso.slice(10) : iso);
+
+/** KR → yyyy.mm.dd, SAP → dd.mm.yyyy (always the viewer's real calendar). */
 export const fmtDate = (iso: string | null | undefined, f: DateFormat) => {
   if (!iso) return '';
   const [y, m, d] = iso.slice(0, 10).split('-');

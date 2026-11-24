@@ -1,0 +1,7 @@
+/* "?" field help bubble (used inside both Fiori and SAP GUI screens) */
+.help-tip { position: relative; display: inline-grid; place-items: center; width: 15px; height: 15px; margin-left: 4px; border-radius: 50%; background: #e1effd; color: #0064d9; font-size: 10px; font-weight: 700; cursor: help; vertical-align: middle; font-family: Arial, sans-serif; flex: none; }
+.help-pop { display: none; position: absolute; z-index: 1000; left: 50%; top: 20px; transform: translateX(-50%); width: 280px; background: #1d2d3e; color: #fff; padding: 10px 12px; border-radius: 8px; font-size: 12px; font-weight: 400; line-height: 1.45; text-align: left; box-shadow: 0 6px 18px rgba(0,0,0,.25); white-space: normal; }
+.help-pop b { display: block; font-size: 13px; }
+.help-pop code { display: inline-block; background: #34495e; padding: 1px 6px; border-radius: 4px; margin: 3px 0 5px; font-size: 11px; color: #9fd6ff; }
+.help-pop span { display: block; }
+.help-tip:hover .help-pop, .help-tip:focus .help-pop { display: block; }

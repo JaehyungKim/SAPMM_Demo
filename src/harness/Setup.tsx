@@ -6,10 +6,11 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from '@ui5/webcomponents-react';
 import { defaultConfig, useDemo, netValue, DemoConfig } from '../store';
 import { STEPS } from '../steps';
-import { fmtAmt } from '../format';
+import { addDays, daysBetween, fmtAmt, fmtDate, todayIso } from '../format';
 import { SapLogo } from '../components/fiori/Fiori';
 
-type Field = { k: keyof DemoConfig; label: string; type?: 'number' | 'date' | 'text'; hint?: string };
+/** 'lead' = date entered as days from today, so the demo always runs relative to the presentation day. */
+type Field = { k: keyof DemoConfig; label: string; type?: 'number' | 'lead' | 'text'; hint?: string };
 
 const GROUPS: { title: string; icon: string; fields: Field[] }[] = [
   { title: '회사 및 조직', icon: 'building', fields: [
@@ -34,7 +35,7 @@ const GROUPS: { title: string; icon: string; fields: Field[] }[] = [
     { k: 'unit', label: '단위' },
     { k: 'netPrice', label: '순 단가', type: 'number' },
     { k: 'currency', label: '통화' },
-    { k: 'deliveryDate', label: '납기일', type: 'date' },
+    { k: 'deliveryDate', label: '납기 (오늘 +일)', type: 'lead' },
   ] },
   { title: '조건 및 회계', icon: 'accounting-document-verification', fields: [
     { k: 'paymentTerms', label: '지급 조건', hint: '0001 / 0002 / 0003' },
@@ -50,7 +51,8 @@ export function Setup() {
   const s = useDemo();
   const nav = useNavigate();
   const c = s.config;
-  const set = (k: keyof DemoConfig, v: string, type?: string) => s.setConfig({ [k]: type === 'number' ? Number(v) || 0 : v } as Partial<DemoConfig>);
+  const today = todayIso();
+  const set =(k: keyof DemoConfig, v: string, type?: string) => s.setConfig({ [k]: type === 'number' ? Number(v) || 0 : v } as Partial<DemoConfig>);
   const start = () => { s.finishSetup(); nav('/step/launchpad'); };
   const docsExist = s.poStatus !== 'None';
 
@@ -68,7 +70,14 @@ export function Setup() {
           {GROUPS.map((g) => (
             <section key={g.title} className="setup-card">
               <h2><Icon name={g.icon} /> {g.title}</h2>
-              {g.fields.map((f) => (
+              {g.fields.map((f) => f.type === 'lead' ? (
+                <label key={f.k} className="setup-field">
+                  <span>{f.label}</span>
+                  <input type="number" min={0} value={daysBetween(today, c.deliveryDate)}
+                    onChange={(e) => s.setConfig({ deliveryDate: addDays(today, Math.max(0, Number(e.target.value) || 0)) })} />
+                  <small>= {fmtDate(c.deliveryDate, c.dateFormat)} · 데모를 여는 날 기준으로 자동 계산</small>
+                </label>
+              ) : (
                 <label key={f.k} className="setup-field">
                   <span>{f.label}</span>
                   <input type={f.type ?? 'text'} value={String(c[f.k])} onChange={(e) => set(f.k, e.target.value, f.type)} />

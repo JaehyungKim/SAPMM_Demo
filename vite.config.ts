@@ -6,5 +6,16 @@ export default defineConfig({
   base: './',
   plugins: [react()],
   server: { port: 5173, open: true },
-  build: { chunkSizeWarningLimit: 4000 },
+  build: {
+    rollupOptions: {
+      output: {
+        // Stable vendor chunks (cached across demo updates) separate from app code.
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return;
+          if (id.includes('@ui5')) return 'vendor-ui5';
+          if (/node_modules\/(react|react-dom|react-router|react-router-dom|scheduler|zustand)\//.test(id)) return 'vendor-react';
+        },
+      },
+    },
+  },
 });

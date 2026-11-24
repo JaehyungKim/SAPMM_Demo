@@ -1,0 +1,23 @@
+/* Harness base: design tokens, page reset and the overall demo grid.
+   Harness styles are deliberately distinct from the simulated SAP UI (styles/sap/*). */
+:root {
+  --demo-dark: #1b2733;
+  --demo-dark-2: #243442;
+  --demo-accent: #0070f2;
+  --demo-green: #30914c;
+  --demo-line: #d9dee3;
+  --demo-muted: #6a7d90;
+  --font: '72', '72full', 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body { font-family: var(--font); font-size: 14px; color: #1d2d3e; background: #edeff0; min-width: 1280px; }
+button { font-family: inherit; }
+
+/* top bar · process bar · main row */
+.demo { display: grid; grid-template-rows: 44px 66px minmax(0, 1fr); height: 100vh; }
+/* main row: sidebar | stage | guide */
+.demo-main { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 0; }
+.demo.with-guide .demo-main { grid-template-columns: 280px minmax(0, 1fr) 330px; }
+.demo.no-side .demo-main { grid-template-columns: minmax(0, 1fr); }
+.demo.no-side.with-guide .demo-main { grid-template-columns: minmax(0, 1fr) 330px; }

@@ -1,0 +1,26 @@
+/* Stage: SAP screen panes, compare split, footer navigation, role banner, prerequisite guard */
+.demo-stage { display: flex; flex-direction: column; min-height: 0; min-width: 0; position: relative; }
+.stage-screens { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr; overflow: hidden; }
+.stage-screens.compare { grid-template-columns: 1fr 1fr; gap: 6px; background: #c5ccd3; }
+.stage-pane { min-height: 0; min-width: 0; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+.stage-loading { margin: auto; color: var(--demo-muted); }
+.pane-label { position: absolute; z-index: 5; top: 6px; right: 10px; background: var(--demo-dark); color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 10px; opacity: .85; pointer-events: none; }
+.stage-footer { flex: none; height: 46px; display: flex; align-items: center; gap: 12px; padding: 0 14px; background: #fff; border-top: 1px solid var(--demo-line); }
+.stage-footer-info { flex: 1; text-align: center; color: var(--demo-muted); font-size: 12px; }
+.nav-btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #bcc3ca; background: #fff; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px; color: #1d2d3e; }
+.nav-btn ui5-icon { width: 14px; height: 14px; color: inherit; }
+.nav-btn:disabled { opacity: .4; cursor: default; }
+.nav-next { background: var(--demo-accent); color: #fff; border-color: var(--demo-accent); font-weight: 600; }
+.opt-note { background: #fff8d6; color: #6b5400; padding: 6px 14px; font-size: 12px; border-bottom: 1px solid #f0dc8a; }
+
+.role-banner { position: absolute; z-index: 50; top: 14px; left: 50%; transform: translateX(-50%); background: var(--demo-dark); color: #fff; padding: 10px 20px; border-radius: 24px; box-shadow: 0 6px 24px rgba(0,0,0,.3); font-size: 15px; animation: drop .35s ease-out; white-space: nowrap; }
+.role-banner b { color: #ffd34d; }
+.role-banner span { color: #9fb3c8; font-size: 12px; margin-left: 6px; }
+@keyframes drop { from { opacity: 0; transform: translate(-50%, -14px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+.guard { margin: auto; text-align: center; max-width: 460px; padding: 40px; }
+.guard-icon { width: 48px; height: 48px; color: var(--demo-muted); }
+.guard h2 { margin: 12px 0 6px; font-size: 20px; }
+.guard p { color: #556b81; }
+.guard-btns { display: flex; gap: 8px; justify-content: center; margin-top: 18px; }
+.stage-pane > .guard { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #f5f6f7; max-width: none; }

@@ -8,7 +8,7 @@
  */
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { addDays, todayIso } from './format';
+import { addDays, daysBetween, shiftIso, todayIso } from './format';
 import type { Requirement } from './steps';
 
 export type ViewMode = 'fiori' | 'sapgui';
@@ -63,11 +63,17 @@ export interface Numbers {
 
 export interface DemoState {
   configured: boolean;
+  /** Day the stored dates refer to. On load every date is moved so this becomes "today". */
+  anchorDate: string;
+  /** Scenario briefing already shown for the current document chain. */
+  briefed: boolean;
   config: DemoConfig;
   viewMode: ViewMode;
   compare: boolean;
   showHelp: boolean;
   sidebarOpen: boolean;
+  /** Presenter guide panel (situation + what each click means) on the right. */
+  guideOpen: boolean;
   /** Optional process steps switched on/off by the presenter. */
   optionalEnabled: Record<string, boolean>;
 
@@ -86,6 +92,7 @@ export interface DemoState {
   guiMessage: GuiMessage | null;
   visited: string[];
 
+  setBriefed: (b: boolean) => void;
   markVisited: (id: string) => void;
   setConfig: (c: Partial<DemoConfig>) => void;
   finishSetup: () => void;
@@ -94,6 +101,7 @@ export interface DemoState {
   toggleCompare: () => void;
   toggleHelp: () => void;
   toggleSidebar: () => void;
+  toggleGuide: () => void;
   setOptional: (id: string, on: boolean) => void;
   setGuiMessage: (m: GuiMessage | null) => void;
 
@@ -129,7 +137,7 @@ export const defaultConfig = (): DemoConfig => ({
   unit: 'PC',
   netPrice: 25,
   currency: 'EUR',
-  deliveryDate: addDays(todayIso(), 14),
+  deliveryDate: addDays(todayIso(), DEFAULT_LEAD_DAYS),
   paymentTerms: '0003',
   incoterms: 'EXW',
   taxCode: 'V0',
@@ -168,7 +176,36 @@ const freshDocs = () => ({
   cleared: false,
   guiMessage: null,
   visited: [] as string[],
+  briefed: false,
 });
+
+/** Days between today and the stored delivery date, used by the setup page. */
+export const DEFAULT_LEAD_DAYS = 14;
+
+/**
+ * Re-anchors every stored date to the day the demo is opened. A chain created yesterday
+ * (PO today, delivery +14) opens today with the same intervals, never with stale dates.
+ */
+function rebaseDates(s: DemoState): DemoState {
+  const today = todayIso();
+  const anchor = s.anchorDate ?? s.poCreatedAt ?? today;
+  const d = daysBetween(anchor, today);
+  if (!d) return { ...s, anchorDate: today };
+  const sh = (iso: string) => shiftIso(iso, d);
+  return {
+    ...s,
+    anchorDate: today,
+    config: { ...s.config, deliveryDate: sh(s.config.deliveryDate) },
+    poCreatedAt: s.poCreatedAt && sh(s.poCreatedAt),
+    grDocs: s.grDocs.map((g) => ({ ...g, postingDate: sh(g.postingDate) })),
+    invoice: s.invoice && { ...s.invoice, invoiceDate: sh(s.invoice.invoiceDate), postingDate: sh(s.invoice.postingDate) },
+    changeLog: s.changeLog.map((e) => ({
+      ...e,
+      at: sh(e.at),
+      ...(e.field.startsWith('납품일') ? { oldValue: sh(e.oldValue), newValue: sh(e.newValue) } : {}),
+    })),
+  };
+}
 
 export const OPTIONAL_DEFAULTS: Record<string, boolean> = {
   'approve-po': true,
@@ -194,14 +231,17 @@ export const useDemo = create<DemoState>()(
   persist(
     (set, get) => ({
       configured: false,
+      anchorDate: todayIso(),
       config: defaultConfig(),
       viewMode: 'fiori',
       compare: false,
       showHelp: true,
       sidebarOpen: true,
+      guideOpen: true,
       optionalEnabled: { ...OPTIONAL_DEFAULTS },
       ...freshDocs(),
 
+      setBriefed: (briefed) => set({ briefed }),
       markVisited: (id) => set((s) => (s.visited.includes(id) ? s : { visited: [...s.visited, id] })),
       setConfig: (c) => set((s) => ({ config: { ...s.config, ...c } })),
       finishSetup: () => set({ configured: true }),
@@ -210,6 +250,7 @@ export const useDemo = create<DemoState>()(
       toggleCompare: () => set((s) => ({ compare: !s.compare })),
       toggleHelp: () => set((s) => ({ showHelp: !s.showHelp })),
       toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
+      toggleGuide: () => set((s) => ({ guideOpen: !s.guideOpen })),
       setOptional: (id, on) => set((s) => ({ optionalEnabled: { ...s.optionalEnabled, [id]: on } })),
       setGuiMessage: (guiMessage) => set({ guiMessage }),
 
@@ -313,6 +354,10 @@ export const useDemo = create<DemoState>()(
         }
       },
     }),
-    { name: 'j45-demo-state', version: 1 },
+    {
+      name: 'j45-demo-state',
+      version: 1,
+      merge: (persisted, current) => rebaseDates({ ...current, ...(persisted as Partial<DemoState>) }),
+    },
   ),
 );

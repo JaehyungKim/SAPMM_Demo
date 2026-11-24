@@ -1,0 +1,55 @@
+/**
+ * Only the SAP icons this demo actually uses.
+ * (Importing AllIcons.js pulled in ~1,500 icons in two design versions.)
+ * When you use a new <Icon name="..."> anywhere, add its import here.
+ */
+import '@ui5/webcomponents-icons/dist/accept.js';
+import '@ui5/webcomponents-icons/dist/accounting-document-verification.js';
+import '@ui5/webcomponents-icons/dist/action-settings.js';
+import '@ui5/webcomponents-icons/dist/activity-items.js';
+import '@ui5/webcomponents-icons/dist/ai.js';
+import '@ui5/webcomponents-icons/dist/appointment.js';
+import '@ui5/webcomponents-icons/dist/bell.js';
+import '@ui5/webcomponents-icons/dist/building.js';
+import '@ui5/webcomponents-icons/dist/checklist-item.js';
+import '@ui5/webcomponents-icons/dist/copy.js';
+import '@ui5/webcomponents-icons/dist/cursor-arrow.js';
+import '@ui5/webcomponents-icons/dist/customer-financial-fact-sheet.js';
+import '@ui5/webcomponents-icons/dist/database.js';
+import '@ui5/webcomponents-icons/dist/decline.js';
+import '@ui5/webcomponents-icons/dist/document.js';
+import '@ui5/webcomponents-icons/dist/documents.js';
+import '@ui5/webcomponents-icons/dist/edit.js';
+import '@ui5/webcomponents-icons/dist/employee.js';
+import '@ui5/webcomponents-icons/dist/excel-attachment.js';
+import '@ui5/webcomponents-icons/dist/factory.js';
+import '@ui5/webcomponents-icons/dist/filter.js';
+import '@ui5/webcomponents-icons/dist/flag.js';
+import '@ui5/webcomponents-icons/dist/hint.js';
+import '@ui5/webcomponents-icons/dist/inbox.js';
+import '@ui5/webcomponents-icons/dist/inventory.js';
+import '@ui5/webcomponents-icons/dist/lead.js';
+import '@ui5/webcomponents-icons/dist/lightbulb.js';
+import '@ui5/webcomponents-icons/dist/list.js';
+import '@ui5/webcomponents-icons/dist/menu2.js';
+import '@ui5/webcomponents-icons/dist/message-success.js';
+import '@ui5/webcomponents-icons/dist/monitor-payments.js';
+import '@ui5/webcomponents-icons/dist/multi-select.js';
+import '@ui5/webcomponents-icons/dist/nav-back.js';
+import '@ui5/webcomponents-icons/dist/navigation-left-arrow.js';
+import '@ui5/webcomponents-icons/dist/navigation-right-arrow.js';
+import '@ui5/webcomponents-icons/dist/play.js';
+import '@ui5/webcomponents-icons/dist/process.js';
+import '@ui5/webcomponents-icons/dist/product.js';
+import '@ui5/webcomponents-icons/dist/request.js';
+import '@ui5/webcomponents-icons/dist/reset.js';
+import '@ui5/webcomponents-icons/dist/sales-document.js';
+import '@ui5/webcomponents-icons/dist/search.js';
+import '@ui5/webcomponents-icons/dist/shipping-status.js';
+import '@ui5/webcomponents-icons/dist/slim-arrow-down.js';
+import '@ui5/webcomponents-icons/dist/slim-arrow-right.js';
+import '@ui5/webcomponents-icons/dist/sort.js';
+import '@ui5/webcomponents-icons/dist/status-negative.js';
+import '@ui5/webcomponents-icons/dist/status-positive.js';
+import '@ui5/webcomponents-icons/dist/supplier.js';
+import '@ui5/webcomponents-icons/dist/sys-help.js';

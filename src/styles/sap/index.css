@@ -1,0 +1,4 @@
+/* Simulated SAP UI styles: Fiori Horizon floorplans, classic SAP GUI, print/PDF previews. */
+@import "./fiori.css";
+@import "./gui.css";
+@import "./print.css";

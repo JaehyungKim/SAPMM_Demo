@@ -1,0 +1,15 @@
+/* Top presenter control bar */
+.dbar { display: flex; align-items: center; gap: 6px; background: var(--demo-dark); color: #fff; padding: 0 12px; font-size: 13px; min-width: 0; }
+.dbar-brand { font-weight: 700; white-space: nowrap; }
+.dbar-brand small, .dbar-step small { font-weight: 400; color: #9fb3c8; margin-left: 6px; }
+.dbar-step { margin-left: 14px; padding-left: 14px; border-left: 1px solid #3c5163; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.dbar-spacer { flex: 1; }
+.dbar-icon, .dbar-btn { background: transparent; border: 1px solid transparent; color: #dbe5ef; border-radius: 6px; padding: 5px 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; font-size: 13px; white-space: nowrap; }
+.dbar-icon ui5-icon, .dbar-btn ui5-icon { color: inherit; width: 15px; height: 15px; }
+.dbar-btn:hover, .dbar-icon:hover { background: var(--demo-dark-2); border-color: #3c5163; }
+.dbar-btn.on { color: #8ccbff; }
+.seg { display: inline-flex; background: #0f1922; border-radius: 8px; padding: 3px; gap: 2px; border: 1px solid #3c5163; }
+.seg button { background: transparent; border: 0; color: #c7d4e0; padding: 5px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
+.seg button.on { background: var(--demo-accent); color: #fff; }
+.dbar-role { display: inline-flex; align-items: center; gap: 7px; padding: 3px 10px 3px 3px; background: var(--demo-dark-2); border-radius: 20px; white-space: nowrap; }
+.dbar-avatar { width: 24px; height: 24px; border-radius: 50%; background: #5d36ff; display: grid; place-items: center; font-size: 11px; font-weight: 700; }

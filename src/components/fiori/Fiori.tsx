@@ -1,7 +1,7 @@
 /**
  * SAP Fiori (Horizon) building blocks: shell bar, dynamic page header, filter bar,
  * responsive table, form groups, footer toolbar and message toast.
- * Primitive controls come from UI5 Web Components; floorplan layout is plain CSS (styles/fiori.css).
+ * Primitive controls come from UI5 Web Components; floorplan layout is plain CSS (styles/sap/fiori.css).
  */
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';

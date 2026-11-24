@@ -1,0 +1,24 @@
+/* Left step sidebar */
+.side { background: #fff; border-right: 1px solid var(--demo-line); overflow-y: auto; display: flex; flex-direction: column; }
+.side-head { padding: 12px 16px 8px; font-size: 12px; font-weight: 700; color: #556b81; text-transform: uppercase; letter-spacing: .04em; }
+.side-step { display: flex; align-items: center; border-left: 3px solid transparent; }
+.side-step.cur { background: #ebf5fe; border-left-color: var(--demo-accent); }
+.side-step.disabled .side-step-main { opacity: .45; }
+.side-step-main { flex: 1; display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 7px 8px 7px 13px; cursor: pointer; text-align: left; min-width: 0; }
+.side-dot { flex: none; width: 24px; height: 24px; border-radius: 50%; border: 2px solid #b8c2cc; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: var(--demo-muted); background: #fff; }
+.side-step.done .side-dot { background: var(--demo-green); border-color: var(--demo-green); }
+.side-step.done .side-dot ui5-icon { color: #fff; width: 12px; height: 12px; }
+.side-step.cur .side-dot { border-color: var(--demo-accent); color: var(--demo-accent); }
+.side-txt { display: flex; flex-direction: column; min-width: 0; }
+.side-title { font-size: 13px; color: #1d2d3e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.side-step.cur .side-title { font-weight: 700; color: var(--demo-accent); }
+.side-meta { font-size: 11px; color: var(--demo-muted); }
+.side-switch { position: relative; width: 30px; height: 17px; margin-right: 10px; flex: none; }
+.side-switch input { opacity: 0; width: 0; height: 0; }
+.side-switch span { position: absolute; inset: 0; background: #b8c2cc; border-radius: 10px; cursor: pointer; transition: .2s; }
+.side-switch span::after { content: ''; position: absolute; width: 13px; height: 13px; left: 2px; top: 2px; background: #fff; border-radius: 50%; transition: .2s; }
+.side-switch input:checked + span { background: var(--demo-accent); }
+.side-switch input:checked + span::after { transform: translateX(13px); }
+.side-summary { margin: auto 12px 12px; padding: 10px 12px; background: #f5f6f7; border-radius: 8px; font-size: 12px; display: grid; gap: 4px; }
+.side-summary div { display: flex; justify-content: space-between; gap: 8px; }
+.side-summary span { color: var(--demo-muted); }

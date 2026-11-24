@@ -1,28 +1,40 @@
-/** Maps each step id (see ../steps.ts) to its Fiori and SAP GUI renderings. */
-import type { ComponentType } from 'react';
+/**
+ * Maps each step id (see ../steps.ts) to its Fiori and SAP GUI renderings.
+ * Screens are lazy-loaded: each step file becomes its own small chunk that is fetched
+ * the first time the presenter opens that step.
+ */
+import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
 import type { StepProps } from './types';
-import { LaunchpadFiori, LaunchpadGui } from './Launchpad';
-import { ProcessPRFiori, ProcessPRGui } from './ProcessPR';
-import { ChangePOFiori, ChangePOGui, CreatePOFiori, CreatePOGui, PreviewPOFiori, PreviewPOGui } from './PurchaseOrder';
-import { ApprovePOFiori, ApprovePOGui } from './ApprovePO';
-import { MonitorPOFiori, MonitorPOGui } from './MonitorPO';
-import { PostGRFiori, PostGRGui } from './PostGR';
-import { GrDetailFiori, GrDetailGui, GrSlipFiori, GrSlipGui } from './MaterialDocs';
-import { CreateInvoiceFiori, CreateInvoiceGui } from './CreateInvoice';
-import { ClearGRIRFiori, ClearGRIRGui, DisplayInvoiceFiori, DisplayInvoiceGui } from './InvoiceAndClearing';
 
-export const SCREENS: Record<string, { fiori: ComponentType<StepProps>; gui: ComponentType<StepProps> }> = {
-  launchpad: { fiori: LaunchpadFiori, gui: LaunchpadGui },
-  'process-pr': { fiori: ProcessPRFiori, gui: ProcessPRGui },
-  'create-po': { fiori: CreatePOFiori, gui: CreatePOGui },
-  'approve-po': { fiori: ApprovePOFiori, gui: ApprovePOGui },
-  'preview-po': { fiori: PreviewPOFiori, gui: PreviewPOGui },
-  'change-po': { fiori: ChangePOFiori, gui: ChangePOGui },
-  'monitor-po': { fiori: MonitorPOFiori, gui: MonitorPOGui },
-  'post-gr': { fiori: PostGRFiori, gui: PostGRGui },
-  'gr-slip': { fiori: GrSlipFiori, gui: GrSlipGui },
-  'gr-detail': { fiori: GrDetailFiori, gui: GrDetailGui },
-  'create-invoice': { fiori: CreateInvoiceFiori, gui: CreateInvoiceGui },
-  'display-invoice': { fiori: DisplayInvoiceFiori, gui: DisplayInvoiceGui },
-  'clear-grir': { fiori: ClearGRIRFiori, gui: ClearGRIRGui },
+type Screen = LazyExoticComponent<ComponentType<StepProps>>;
+type Mod = Record<string, ComponentType<StepProps>>;
+
+/** Lazily loads named export `name` from a step module. */
+const pick = (load: () => Promise<unknown>, name: string): Screen =>
+  lazy(() => load().then((m) => ({ default: (m as Mod)[name] })));
+
+const launchpad = () => import('./Launchpad');
+const processPr = () => import('./ProcessPR');
+const po = () => import('./PurchaseOrder');
+const approve = () => import('./ApprovePO');
+const monitor = () => import('./MonitorPO');
+const gr = () => import('./PostGR');
+const matDocs = () => import('./MaterialDocs');
+const invoice = () => import('./CreateInvoice');
+const invList = () => import('./InvoiceAndClearing');
+
+export const SCREENS: Record<string, { fiori: Screen; gui: Screen }> = {
+  launchpad: { fiori: pick(launchpad, 'LaunchpadFiori'), gui: pick(launchpad, 'LaunchpadGui') },
+  'process-pr': { fiori: pick(processPr, 'ProcessPRFiori'), gui: pick(processPr, 'ProcessPRGui') },
+  'create-po': { fiori: pick(po, 'CreatePOFiori'), gui: pick(po, 'CreatePOGui') },
+  'approve-po': { fiori: pick(approve, 'ApprovePOFiori'), gui: pick(approve, 'ApprovePOGui') },
+  'preview-po': { fiori: pick(po, 'PreviewPOFiori'), gui: pick(po, 'PreviewPOGui') },
+  'change-po': { fiori: pick(po, 'ChangePOFiori'), gui: pick(po, 'ChangePOGui') },
+  'monitor-po': { fiori: pick(monitor, 'MonitorPOFiori'), gui: pick(monitor, 'MonitorPOGui') },
+  'post-gr': { fiori: pick(gr, 'PostGRFiori'), gui: pick(gr, 'PostGRGui') },
+  'gr-slip': { fiori: pick(matDocs, 'GrSlipFiori'), gui: pick(matDocs, 'GrSlipGui') },
+  'gr-detail': { fiori: pick(matDocs, 'GrDetailFiori'), gui: pick(matDocs, 'GrDetailGui') },
+  'create-invoice': { fiori: pick(invoice, 'CreateInvoiceFiori'), gui: pick(invoice, 'CreateInvoiceGui') },
+  'display-invoice': { fiori: pick(invList, 'DisplayInvoiceFiori'), gui: pick(invList, 'DisplayInvoiceGui') },
+  'clear-grir': { fiori: pick(invList, 'ClearGRIRFiori'), gui: pick(invList, 'ClearGRIRGui') },
 };

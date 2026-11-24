@@ -1,16 +1,20 @@
+/**
+ * Entry point.
+ *   src/harness/  presenter harness (setup page, top bar, stepper, sidebar, guide, scenario)
+ *   src/steps/    simulated SAP screens per process step (Fiori + SAP GUI), lazy-loaded
+ *   src/components/fiori|gui  SAP UI building blocks used by the steps
+ *   src/styles/harness | sap  matching stylesheets
+ */
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from '@ui5/webcomponents-react';
-import '@ui5/webcomponents-react/dist/Assets.js';
-import '@ui5/webcomponents-icons/dist/AllIcons.js';
-import { DemoLayout } from './components/DemoLayout';
-import { Setup } from './pages/Setup';
+import './icons';
+import { DemoLayout } from './harness/DemoLayout';
+import { Setup } from './harness/Setup';
 import { useDemo } from './store';
-import './styles/app.css';
-import './styles/fiori.css';
-import './styles/gui.css';
-import './styles/print.css';
+import './styles/harness/index.css';
+import './styles/sap/index.css';
 
 function Root() {
   const configured = useDemo((s) => s.configured);

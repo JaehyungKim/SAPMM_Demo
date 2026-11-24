@@ -1,0 +1,28 @@
+/* Opening scenario briefing */
+.scn-backdrop { position: fixed; inset: 0; z-index: 200; background: rgba(15, 25, 34, .62); display: grid; place-items: center; padding: 24px; animation: scn-fade .25s ease-out; }
+@keyframes scn-fade { from { opacity: 0; } to { opacity: 1; } }
+.scn { width: min(880px, 100%); max-height: calc(100vh - 48px); overflow-y: auto; background: #fff; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+.scn-head { padding: 26px 32px 18px; background: linear-gradient(120deg, #1b2733, #0a4b8f); color: #fff; border-radius: 16px 16px 0 0; }
+.scn-tag { display: inline-block; font-size: 12px; background: rgba(255,255,255,.15); padding: 3px 10px; border-radius: 12px; }
+.scn-head h1 { margin: 10px 0 4px; font-size: 24px; }
+.scn-sub { margin: 0; color: #b9cde0; font-size: 13px; }
+.scn-story { display: flex; gap: 16px; padding: 20px 32px 6px; }
+.scn-story-icon { flex: none; width: 36px; height: 36px; color: #c87b00; margin-top: 4px; }
+.scn-story p { margin: 0; line-height: 1.7; font-size: 14.5px; }
+.scn-story b { color: #0a4b8f; }
+.scn-phases { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 14px 32px 4px; }
+.scn-phase { display: flex; flex-direction: column; gap: 3px; padding: 12px; border-radius: 10px; background: #f5f6f7; position: relative; }
+.scn-phase ui5-icon { color: var(--demo-accent); width: 20px; height: 20px; margin-bottom: 4px; }
+.scn-phase span { color: #556b81; font-size: 12px; }
+.scn-phase:not(:last-child)::after { content: '›'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: #9aa9b7; font-size: 20px; }
+.scn h3 { margin: 18px 32px 8px; font-size: 13px; color: #556b81; text-transform: uppercase; letter-spacing: .04em; }
+.scn-cast { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 32px; }
+.scn-person { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid #e5e9ed; border-radius: 10px; }
+.scn-person div { flex: 1; min-width: 0; }
+.scn-person small { color: var(--demo-muted); margin-left: 4px; }
+.scn-person span:not(.guide-avatar) { display: block; color: #556b81; font-size: 12px; }
+.scn-person em { font-style: normal; font-size: 11px; color: var(--demo-accent); background: #ebf5fe; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+.scn-how { margin: 0 32px; padding-left: 18px; line-height: 1.7; color: #33475b; }
+.scn-outline { outline: 2px solid var(--demo-accent); outline-offset: 1px; border-radius: 3px; padding: 0 3px; }
+.scn-foot { display: flex; align-items: center; padding: 18px 32px 24px; }
+.scn-foot ui5-icon { color: inherit; width: 14px; height: 14px; }
