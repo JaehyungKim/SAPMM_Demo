@@ -129,7 +129,6 @@ export function Setup() {
         <div className="setup-total">순 오더 금액 <b>{fmtAmt(netValue(c), c.currency)}</b> <span>({c.quantity} {c.unit} × {c.netPrice} {c.currency})</span></div>
         {docsExist && <span className="setup-warn">진행 중인 문서 체인이 있습니다 – 변경 사항은 모든 화면에 즉시 반영됩니다.</span>}
         <span className="dbar-spacer" />
-        {!customer && <button className="f-btn" onClick={() => nav('/admin')}><Icon name="action-settings" /> 관리자</button>}
         <button className="f-btn" onClick={() => s.setConfig(defaultConfig())}>기본값 복원</button>
         <button className="f-btn f-btn-emph f-btn-lg" onClick={start}>{s.configured ? '데모로 돌아가기' : '데모 시작'} <Icon name="navigation-right-arrow" /></button>
       </footer>

@@ -4,7 +4,7 @@
  *  2. pick the customer's scope items on the full scope-item map
  *  3. customer name + greeting → customer link (everything encoded in the link) · preview · copy
  *  4. saved customer links
- * Not access-protected (static site); its entry points are hidden in customer mode.
+ * Reached only by typing #/admin (no button anywhere). Not access-protected – static site.
  */
 import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';

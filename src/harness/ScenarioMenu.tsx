@@ -1,7 +1,7 @@
 /**
  * Scenario picker (opened from the scenario name in the top bar). Implemented scenarios are
  * grouped by the SAP procurement scope-item map (`scenarios/catalog.ts`); in customer mode only
- * the scope items chosen for the customer are listed and the admin entry is hidden.
+ * the scope items chosen for the customer are listed. The admin page has no button – open #/admin.
  */
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -34,7 +34,6 @@ export function ScenarioMenu({ current, onClose }: { current: string; onClose: (
         <div className="smenu-foot">
           {profile && <button className="dbar-btn smenu-setup" onClick={() => go('/portal')}><Icon name="home" /> 고객 홈</button>}
           <button className="dbar-btn smenu-setup" onClick={() => go('/setup')}><Icon name="edit" /> 데모 환경 설정 (회사·플랜트·담당자 이름 – 전 시나리오 공통)</button>
-          {!profile && <button className="dbar-btn smenu-setup" onClick={() => go('/admin')}><Icon name="action-settings" /> 관리자 (고객 링크 · 인터뷰 분석)</button>}
         </div>
       </div>
     </div>
