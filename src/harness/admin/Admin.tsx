@@ -15,7 +15,7 @@ import { SapLogo } from '../../components/fiori/Fiori';
 import { useDemo } from '../../store';
 import { demoStorage, isPreview } from '../../persistStorage';
 import { SCENARIOS } from '../../scenarios/index';
-import { CATALOG, itemByCode } from '../../scenarios/catalog';
+import { CATALOG, CATALOG_SIZE, itemByCode } from '../../scenarios/catalog';
 import { configDiff, customerLink, leaveCustomerMode, useProfile, type CustomerProfile } from '../../profile';
 import { analyze, fileToText, highlight, level, type Match } from './analyze';
 
@@ -229,7 +229,7 @@ export function Admin() {
         </div>
       </div>
       <footer className="setup-foot">
-        <span className="adm-muted">전체 Scope Item {CATALOG.reduce((a, g) => a + g.items.length, 0)}개 중 시연 가능 {SCENARIOS.length}개</span>
+        <span className="adm-muted">전체 Scope Item {CATALOG_SIZE}개 중 시연 가능 {SCENARIOS.length}개</span>
         <span className="dbar-spacer" />
         <button className="f-btn" onClick={() => nav('/setup')}>데모 환경 설정</button>
         <button className="f-btn f-btn-emph f-btn-lg" onClick={() => nav('/')}>데모로 돌아가기 <Icon name="navigation-right-arrow" /></button>

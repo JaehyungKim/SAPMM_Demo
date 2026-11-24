@@ -53,7 +53,7 @@ export function ScenarioIntro({ def, onClose }: { def: ScenarioDef; onClose: () 
         <ul className="scn-how">
           <li><b>오른쪽 '진행 가이드'</b>가 단계별 상황과 각 클릭의 의미를 알려 줍니다. <span className="scn-outline">파란 테두리</span>가 다음에 클릭할 곳입니다.</li>
           <li>상단 <b>Fiori | SAP GUI | 비교</b>로 같은 업무를 두 UI에서 보여 줄 수 있습니다. 입력하던 값은 유지됩니다.</li>
-          <li>상단 바 왼쪽의 <b>시나리오 이름 ⌄</b>을 눌러 다른 시나리오(J45 · BMD · BNX · 18J · 22Z · BMR · BMY · BMK)로 언제든 전환할 수 있습니다. 시나리오마다 진행 상태가 따로 저장됩니다. 맨 왼쪽 <b>☰</b>은 프로세스 단계 패널을 열고 닫습니다.</li>
+          <li>상단 바 왼쪽의 <b>시나리오 이름 ⌄</b>을 눌러 다른 시나리오로 언제든 전환할 수 있습니다. 시나리오마다 진행 상태가 따로 저장됩니다. 맨 왼쪽 <b>☰</b>은 프로세스 단계 패널을 열고 닫습니다.</li>
           <li>모든 날짜는 <b>오늘({fmtDate(todayIso(), df)})</b>을 기준으로 자동 계산됩니다.</li>
         </ul>
 

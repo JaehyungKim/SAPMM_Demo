@@ -64,7 +64,7 @@ export function Setup() {
         <SapLogo h={30} />
         <div>
           <h1>데모 환경 설정</h1>
-          <p>SAP S/4HANA Cloud · 회사·조직·날짜 형식·담당자 이름은 모든 시나리오(J45 · BMD · BNX · 18J · 22Z · BMR · BMY · BMK) 공통, 자재·오더 값은 J45 기준입니다. 시나리오는 데모 화면 상단 바의 시나리오 이름을 눌러 전환합니다.</p>
+          <p>SAP S/4HANA Cloud · 회사·조직·날짜 형식·담당자 이름은 모든 시나리오 공통, 자재·오더 값은 J45 기준입니다. 시나리오는 데모 화면 상단 바의 시나리오 이름을 눌러 전환합니다.</p>
         </div>
       </header>
       <div className="setup-body">

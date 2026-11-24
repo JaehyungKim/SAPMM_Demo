@@ -69,6 +69,16 @@ export const HELP: Record<string, HelpEntry> = {
   distribution: { en: 'Distribution (%)', tech: 'EKKN-VPROZ', desc: '다중 계정 지정 시 각 코스트 센터에 배분되는 비율. 합계는 100%여야 합니다.' },
   matGroup: { en: 'Material Group', tech: 'EKPO-MATKL', desc: '자재 번호가 없는 텍스트 품목은 자재 그룹으로 G/L 계정과 구매 담당을 결정합니다.' },
   paymentBlock: { en: 'Payment Block', tech: 'RBKP-ZLSPR / RSEG-SPGRx', desc: '송장 품목을 수동으로 보류하면 지급이 막히고, 책임자가 릴리스해야 지급 대상이 됩니다.' },
+  pipeline: { en: 'Pipeline Material', tech: 'EINA-PIPELINE / MSEG-BWART 201P', desc: '파이프라인(가스·용수·전기 등)에서 언제든 꺼내 쓰는 자재. 재고 없이 출고(201P) 시점에 공급업체 채무가 생기고 정기 정산합니다.' },
+  infoRecord: { en: 'Purchasing Info Record', tech: 'EINA / EINE', desc: '공급업체·자재별 구매 조건(가격·납기·세금 코드). 파이프라인 정보 레코드는 정산 가격의 기준입니다.' },
+  pipelineSettle: { en: 'Pipeline Settlement', tech: 'MRKO', desc: '기간 동안의 파이프라인 출고를 모아 송장 문서와 회계 전표를 자동 생성합니다 (공급업체 송장 없이 정산).' },
+  rfq: { en: 'Request for Quotation', tech: 'EKKO-BSTYP = R', desc: '여러 공급업체에 같은 품목의 가격을 요청하는 문서. 게시하면 견적을 받을 수 있습니다.' },
+  quotation: { en: 'Supplier Quotation', tech: 'EKKO-BSTYP = Q', desc: '공급업체가 회신한 가격·조건. RFQ별로 비교해 낙찰합니다.' },
+  award: { en: 'Award', tech: 'Quotation Status = Awarded', desc: '가장 좋은 견적을 선정하는 것. 낙찰된 견적에서 구매 계약·PO 같은 후속 문서를 만듭니다.' },
+  weighting: { en: 'Weighting and Scoring', tech: 'F2551', desc: '수량·가격·시간·품질·설문 등 평가 기준별 가중치(합계 100%)와 편차별 점수 규칙.' },
+  questionnaire: { en: 'Evaluation Questionnaire', tech: 'F2194', desc: '공급업체 평가용 설문지. 섹션·질문·가중치·최소 점수를 정의하고 릴리스해서 사용합니다.' },
+  scorecard: { en: 'Scorecard', tech: 'F2191', desc: '설문 응답을 점수화한 공급업체 평가 결과. 운영 점수와 합쳐 종합 점수가 됩니다.' },
+  kpiCard: { en: 'Overview Page Card', tech: 'F1990', desc: '구매 개요 페이지의 카드. 카드 머리글이나 항목을 누르면 해당 앱·KPI 드릴다운으로 이동합니다.' },
 };
 
 export function Help({ k }: { k: string }) {

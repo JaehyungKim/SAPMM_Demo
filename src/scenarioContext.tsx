@@ -7,7 +7,7 @@ import { createContext, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TCODE_MAP } from './steps';
 
-export type ScenarioId = 'j45' | 'bmd' | 'bnx' | 'bmk' | 'bmy' | '22z' | '18j' | 'bmr';
+export type ScenarioId = 'j45' | 'bmd' | 'bnx' | 'bmk' | 'bmy' | '22z' | '18j' | 'bmr' | '41f' | '1ji' | 'sl4' | '1xf';
 
 export const stepPath = (scn: ScenarioId, stepId: string) => (scn === 'j45' ? `/step/${stepId}` : `/${scn}/step/${stepId}`);
 

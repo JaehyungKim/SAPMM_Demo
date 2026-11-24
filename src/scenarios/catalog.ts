@@ -64,6 +64,20 @@ export const CATALOG: CatalogGroup[] = [
     I('4R2', 'Procurement of Services with Ariba and Fieldglass', 'Ariba·Fieldglass 서비스 조달', ['Ariba Fieldglass']),
     I('5I2', 'Subcontracting with Ariba Network', 'Ariba Network 외주 가공', ['Ariba Network 외주']),
   ] },
+  { id: 'inventory', title: 'Inventory', titleKo: '재고 관리', items: [
+    I('BMC', 'Core Inventory Management', '핵심 재고 관리(입출고·이전·재고 조회)', ['재고 관리', '재고 조회', '재고 현황', '입출고', '자재 이동', '재고 이전', '저장 위치 이전', 'goods movement', 'MIGO', 'MMBE']),
+    I('1P7', 'Cross-Plant Transfer Posting', '플랜트 간 이전 전기', ['플랜트 간 이전', '공장 간 이전', 'cross-plant', '이전 전기']),
+    I('BME', 'Stock Transfer with Delivery', '납품 기반 재고 이전', ['납품 기반 재고 이전', '재고 이전 오더', '출하 이전', 'stock transport order']),
+    I('BMH', 'Stock Transfer without Delivery', '납품 없는 재고 이전', ['납품 없는 재고 이전', '단순 재고 이전']),
+    I('5WI', 'Intra-Company Returns Stock Transfers', '사내 반품 재고 이전', ['사내 반품', '공장 간 반품', 'intra-company return']),
+    I('5HP', 'Advanced Intercompany Stock Transfer', '고급 회사 간 재고 이전', ['고급 회사 간 재고 이전', 'advanced intercompany']),
+    I('20N', 'Predictive Analytics Model Training: Stock in Transit', '이동 중 재고 예측 모델', ['이동 중 재고', '운송 중 재고', 'stock in transit', '도착 예측']),
+    I('BMY', 'Subcontracting', '외주 가공(임가공·사급)', ['외주 가공', '임가공', '사급', 'subcontracting']),
+    I('BML', 'Inventory Count & Adjustment', '재고 실사·조정', ['재고 실사', '실사', '재고 조사', '재고 차이', '재고 조정', 'physical inventory', '연말 실사']),
+    I('4LU', 'Physical Inventory - Cycle Counting', '순환 실사', ['순환 실사', 'cycle count', '사이클 카운트', 'ABC 실사']),
+    I('4O0', 'Electronic Movement Control System', '전자 이동 통제(EMCS)', ['EMCS', '주세', '물품세', 'excise', '전자 이동 통제']),
+    I('7HO', 'SAP Returnable Packaging Management', '회수 용기 관리', ['회수 용기 관리', '팔레트 관리', '공용기 관리', 'returnable packaging management', 'RPM']),
+  ] },
   { id: 'central', title: 'Central Procurement', titleKo: '중앙 구매', items: [
     I('1XI', 'Central Requisitioning', '중앙 구매 요청', ['중앙 구매 요청', '여러 법인 구매 요청', 'central requisitioning']),
     I('2XT', 'Central Purchasing', '중앙 구매(그룹 구매)', ['중앙 구매', '본사 구매', '그룹 구매', '통합 구매', 'central purchasing', '여러 ERP', '여러 시스템']),
@@ -88,7 +102,9 @@ export const CATALOG: CatalogGroup[] = [
 
 export const OTHER_GROUP: Omit<CatalogGroup, 'items'> = { id: 'other', title: 'Other Scope Items', titleKo: '기타 (맵에 없는 Scope Item)' };
 
-export const ALL_ITEMS: (CatalogItem & { group: CatalogGroup })[] = CATALOG.flatMap((g) => g.items.map((i) => ({ ...i, group: g })));
+/** Every scope item once (some, e.g. BMY, appear in two categories on the map – the first one wins). */
+export const ALL_ITEMS: (CatalogItem & { group: CatalogGroup })[] = CATALOG.flatMap((g) => g.items.map((i) => ({ ...i, group: g })))
+  .filter((x, i, arr) => arr.findIndex((y) => y.code === x.code) === i);
 export const itemByCode = (code: string) => ALL_ITEMS.find((i) => i.code === code);
 
 /** Groups the given scenarios by the catalog (catalog order), dropping empty groups. */

@@ -1,6 +1,6 @@
-# SAP S/4HANA Cloud 조달 – Click-Through Demo (8 Scope Items)
+# SAP S/4HANA Cloud 조달 – Click-Through Demo (12 Scope Items)
 
-SAP S/4HANA Cloud 조달 Scope Item 8개(J45 · BMD · BNX · 18J · 22Z · BMR · BMY · BMK)를 한 페이지에서 시연하는 인터랙티브 도구입니다.
+SAP S/4HANA Cloud 조달 Scope Item 12개(J45 · BMD · BNX · 18J · 22Z · BMR · BMY · BMK · 41F · 1XF · SL4 · 1JI)를 한 페이지에서 시연하는 인터랙티브 도구입니다.
 모든 화면을 **SAP Fiori (Horizon)** 와 **클래식 SAP GUI** 두 가지 UI로 보여 주며, 데이터는 브라우저 안에서만 동작합니다 (백엔드·외부 API 없음).
 
 | 코드 | 시나리오 | 흐름 | 출처 |
@@ -13,6 +13,10 @@ SAP S/4HANA Cloud 조달 Scope Item 8개(J45 · BMD · BNX · 18J · 22Z · BMR 
 | **BMR** | 납품 일정 계약 (Scheduling Agreements) | LPA 계약 → 일괄 변경 → 일정 라인 → 쿼터 → MRP → FRC/JIT 릴리스 → 출력 → 소요 현황 → 입고 → 송장 | BMR_S4CLD2502_BPD |
 | **BMY** | 외주 가공 (Subcontracting) | MRP → 외주 PO(품목 범주 L) → 모니터링 → 승인 → 외주 콕핏 납품 → 출고 541 → 입고 101/543 → 외주 재고 확인 → 가공비 송장 | BMY_S4CLD2502_BPD |
 | **BMK** | 공급업체 반품 (Return to Supplier) | 재고 분석 → 반품 저장 위치 이전 → 반품 PO(NB2) → 납품 → 출고 161 → 모니터링 → 대변 메모 / 대체 자재 수령 → 입고 → 후속 조치 → 반품 개요 | BMK_S4CLD2502_BPD |
+| **41F** | 파이프라인 자재 조달 (Procurement of Pipeline Materials) | 파이프라인 정보 레코드(ME11) → 소비 기록 201P(MIGO) → 정산 작업(F1683) → 결과 확인 | 41F_S4HANA2025-FPS2_BPD |
+| **1XF** | 가격 요청 (Request for Price) | RFQ 생성·게시 → 공급업체 견적 2건 입력 → 견적 확인 → 비교·낙찰 → 구매 계약 생성 → 견적 부족 상황 알림 | 1XF_S4HANA2025-FPS2_BPD |
+| **SL4** | 공급업체 평가 (Supplier Evaluation and Performance Monitoring) | 가중치·점수 규칙 → 운영 평가 → 점수 조정 → 설문지 → 평가 요청 → 평가자 응답 → 스코어카드 → 종합 점수 → 발송 | SL4_S4HANA2025-FPS2_BPD |
+| **1JI** | 실시간 구매 분석 (Real-Time Reporting, Monitoring, and Spend Visibility) | 구매 개요 페이지 → 계약·RFQ·PO·확인·일정 계약 모니터링 → 가격 차이 → 공급업체 분석 → 지연 PO → 송장 자동화율 | 1JI_S4HANA2025-FPS2_BPD |
 
 상단 바의 **시나리오 이름(⌄)** 을 누르면 시나리오를 고를 수 있습니다. 맨 왼쪽 **☰** 버튼은 프로세스 단계 패널을 열고 닫습니다(패널 오른쪽 위 **X** 로도 닫기). 시나리오마다 문서 체인과 진행 상태가 따로 저장됩니다.
 
@@ -104,10 +108,10 @@ npm run dev        # http://localhost:5173 자동 오픈
 - **BMY** (SG23 1,000 PC × 가공비 0.59 EUR, 구성품 RM13·RM14, 외주처 10300007): 10단계
 - **BMK** (TG12 반품 5 PC 대변 메모 + 2 PC 대체 자재, 공급업체 10300006): 12단계
 
-BPD 중 데모에서 단순화·생략한 부분: BMY 일련번호(Serial Number) 처리 파트, 22Z MPS·품목 계층(Hierarchy)·서비스 수행자 셀프서비스, BMR EDI 전송·LP 승인, BNX 클레임 레터 출력.
+BPD 중 데모에서 단순화·생략한 부분: 1XF 사전 설정(워크플로·팀·상황 유형 구성), SL4 사용자 정의 기준·PPM·점수 이력·품질 통지/검사 로트 기반 평가, 1JI 중앙 구매 분석 앱(F3492·F3676), BMY 일련번호(Serial Number) 처리 파트, 22Z MPS·품목 계층(Hierarchy)·서비스 수행자 셀프서비스, BMR EDI 전송·LP 승인, BNX 클레임 레터 출력.
 
 ### 발표자 기능
-- **시나리오 메뉴**(상단 바의 시나리오 이름): SAP 조달 Scope Item 맵(Sourcing and Contract Mgmt. · Operational Procurement and Invoice Mgmt. · Central Procurement · Procurement Analytics · Supplier Mgmt.) 기준으로 구현된 시나리오만 분류해 보여 줍니다. 시나리오별 진행률, 데모 환경 설정 바로가기. 맵에 없는 코드는 '기타'에 표시됩니다 (BMK는 운영 구매에 추가 매핑).
+- **시나리오 메뉴**(상단 바의 시나리오 이름): SAP 조달 Scope Item 맵(Sourcing and Contract Mgmt. · Operational Procurement and Invoice Mgmt. · Inventory · Central Procurement · Procurement Analytics · Supplier Mgmt.) 기준으로 구현된 시나리오만 분류해 보여 줍니다. 시나리오별 진행률, 데모 환경 설정 바로가기. 맵에 없는 코드는 '기타'에 표시됩니다 (BMK는 운영 구매에 추가 매핑).
 - **오늘의 시나리오**: 시나리오 시작 시(및 `초기화` 후) 업무 상황·등장인물·4단계 흐름·진행 방법을 브리핑합니다. 상단 `시나리오` 버튼으로 다시 열 수 있습니다.
 - **진행 가이드(오른쪽 패널)**: 단계마다 *상황* → *클릭 순서와 의미* → *업무 효과*를 보여 줍니다.
   - 다음에 클릭할 곳을 SAP 화면에 **파란 테두리**로 표시합니다. 열린 대화 상자를 우선하고, 비활성 버튼이나 아직 보이지 않는 버튼은 그 버튼을 나타나게/활성화하는 앞 클릭부터 안내합니다.
