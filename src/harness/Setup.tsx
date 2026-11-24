@@ -8,6 +8,7 @@ import { defaultConfig, useDemo, netValue, DemoConfig } from '../store';
 import { ROLE_KO, ROLE_USER_DEFAULT, initialsOf, type Role } from '../steps';
 import { addDays, daysBetween, fmtAmt, fmtDate, todayIso } from '../format';
 import { SapLogo } from '../components/fiori/Fiori';
+import { useProfile } from '../profile';
 
 /** 'lead' = date entered as days from today, so the demo always runs relative to the presentation day. */
 type Field = { k: keyof DemoConfig; label: string; type?: 'number' | 'lead' | 'text'; hint?: string };
@@ -53,8 +54,9 @@ export function Setup() {
   const c = s.config;
   const today = todayIso();
   const set =(k: keyof DemoConfig, v: string, type?: string) => s.setConfig({ [k]: type === 'number' ? Number(v) || 0 : v } as Partial<DemoConfig>);
-  const start = () => { s.finishSetup(); nav('/step/launchpad'); };
+  const start = () => { s.finishSetup(); nav(customer ? '/portal' : '/step/launchpad'); };
   const docsExist = s.poStatus !== 'None';
+  const customer = useProfile((p) => p.active);
 
   return (
     <div className="setup">
@@ -127,6 +129,7 @@ export function Setup() {
         <div className="setup-total">순 오더 금액 <b>{fmtAmt(netValue(c), c.currency)}</b> <span>({c.quantity} {c.unit} × {c.netPrice} {c.currency})</span></div>
         {docsExist && <span className="setup-warn">진행 중인 문서 체인이 있습니다 – 변경 사항은 모든 화면에 즉시 반영됩니다.</span>}
         <span className="dbar-spacer" />
+        {!customer && <button className="f-btn" onClick={() => nav('/admin')}><Icon name="action-settings" /> 관리자</button>}
         <button className="f-btn" onClick={() => s.setConfig(defaultConfig())}>기본값 복원</button>
         <button className="f-btn f-btn-emph f-btn-lg" onClick={start}>{s.configured ? '데모로 돌아가기' : '데모 시작'} <Icon name="navigation-right-arrow" /></button>
       </footer>

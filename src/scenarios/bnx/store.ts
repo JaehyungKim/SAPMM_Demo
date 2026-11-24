@@ -6,6 +6,7 @@
  * Sample data from BNX_DE test script (2025 FPS2).
  */
 import { create } from 'zustand';
+import { demoStorage } from '../../persistStorage';
 import { persist } from 'zustand/middleware';
 import { todayIso } from '../../format';
 import { useDemo } from '../../store';
@@ -195,6 +196,6 @@ export const useBnx = create<BnxState>()(
         useDemo.getState().setGuiMessage({ type: 'I', text: '선행 단계가 자동으로 완료되었습니다' });
       },
     }),
-    { name: 'j45-demo-bnx', version: 1, merge: (p, c) => { const m = anchoredMerge(p, c); return { ...m, numbers: { ...c.numbers, ...m.numbers }, ext: m.ext ?? {} }; } },
+    { name: 'j45-demo-bnx', storage: demoStorage, version: 1, merge: (p, c) => { const m = anchoredMerge(p, c); return { ...m, numbers: { ...c.numbers, ...m.numbers }, ext: m.ext ?? {} }; } },
   ),
 );

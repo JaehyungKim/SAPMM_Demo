@@ -24,7 +24,7 @@
 .smenu-prog i { display: block; height: 100%; background: var(--demo-green); }
 .smenu-cur { flex: none; font-size: 11px; color: #fff; background: var(--demo-accent); padding: 2px 8px; border-radius: 10px; }
 .smenu-card ui5-icon { flex: none; color: var(--demo-muted); width: 14px; height: 14px; }
-.smenu-foot { border-top: 1px solid #e5e9ed; padding-top: 8px; }
+.smenu-foot { border-top: 1px solid #e5e9ed; padding-top: 8px; display: flex; flex-wrap: wrap; gap: 4px; }
 .smenu-setup { color: #33475b !important; }
 .smenu-setup:hover { background: #f5f6f7 !important; border-color: transparent !important; }
 
@@ -40,3 +40,5 @@
 .smenu-list { display: grid; gap: 8px; }
 .smenu-col.wide .smenu-list { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 .smenu-en { font-size: 11px; color: #8396a8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dbar-cust { background: #2b3c4d; border: 0; color: #d1e8ff; font: inherit; font-size: 12px; display: inline-flex; align-items: center; gap: 5px; border-radius: 12px; padding: 3px 10px; cursor: pointer; white-space: nowrap; }
+.dbar-cust ui5-icon { width: 12px; height: 12px; color: #d1e8ff; }

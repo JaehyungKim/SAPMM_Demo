@@ -7,11 +7,13 @@ import { ROLE_KO, ROLE_USER, type StepDef } from '../steps';
 import { stepPath } from '../scenarioContext';
 import type { Runtime, ScenarioDef } from '../scenarios/types';
 import { ScenarioMenu } from './ScenarioMenu';
+import { useProfile } from '../profile';
 
 export function DemoBar({ def, rt, st, onScenario }: { def: ScenarioDef; rt: Runtime; st: StepDef; onScenario: () => void }) {
   const s = useDemo();
   const nav = useNavigate();
   const [menu, setMenu] = useState(false);
+  const customer = useProfile((p) => p.active?.customer);
   const u = ROLE_USER[st.role];
   const mode = (m: 'fiori' | 'sapgui') => { s.setViewMode(m); if (s.compare) s.toggleCompare(); };
   return (
@@ -20,6 +22,7 @@ export function DemoBar({ def, rt, st, onScenario }: { def: ScenarioDef; rt: Run
       <button className="dbar-brand dbar-brand-btn" onClick={() => setMenu(true)} title="시나리오 선택">
         {def.code} · {def.title} <Icon name="slim-arrow-down" />
       </button>
+      {customer && <button className="dbar-cust" onClick={() => nav('/portal')} title="고객 홈"><Icon name="home" /> {customer}</button>}
       <span className="dbar-step">{st.no}. {st.title} <small>{st.appId !== 'Shell' ? `${st.appName} (${st.appId}) · ${st.tcode}` : ''}</small></span>
       <span className="dbar-spacer" />
       <div className="seg" role="group" aria-label="UI 모드">

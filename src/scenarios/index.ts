@@ -1,5 +1,6 @@
 /** All scope-item scenarios available in the scenario menu (order = menu order). */
 import type { ScenarioId } from '../scenarioContext';
+import { useProfile } from '../profile';
 import type { ScenarioDef } from './types';
 import { J45 } from './j45';
 import { BMD } from './bmd/index';
@@ -12,3 +13,11 @@ import { BMR } from './bmr/index';
 
 export const SCENARIOS: ScenarioDef[] = [J45, BMD, BNX, REQ, SRV, BMR, BMY, BMK];
 export const scenarioById = (id: ScenarioId) => SCENARIOS.find((s) => s.id === id) ?? J45;
+
+/** Scenarios offered in the current mode: all of them, or only the customer's scope items. */
+export function useVisibleScenarios(): ScenarioDef[] {
+  const p = useProfile((s) => s.active);
+  if (!p) return SCENARIOS;
+  const list = SCENARIOS.filter((d) => p.codes.includes(d.code));
+  return list.length ? list : SCENARIOS;
+}

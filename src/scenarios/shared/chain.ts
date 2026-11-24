@@ -5,6 +5,7 @@
  * transparently (their own prerequisite is used instead).
  */
 import { create } from 'zustand';
+import { demoStorage } from '../../persistStorage';
 import { persist } from 'zustand/middleware';
 import { todayIso } from '../../format';
 import { useDemo } from '../../store';
@@ -59,7 +60,7 @@ export function makeChain(opts: ChainOpts) {
         setVal: (k, v) => set({ vals: { ...get().vals, [k]: v } }),
       }),
       {
-        name: `j45-demo-${opts.scn}`,
+        name: `j45-demo-${opts.scn}`, storage: demoStorage,
         version: 1,
         merge: (p, c) => {
           const m = anchoredMerge(p, c);

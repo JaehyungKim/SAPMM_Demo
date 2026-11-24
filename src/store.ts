@@ -6,6 +6,7 @@
  * (PR → PO → GR → Invoice → GR/IR clearing) produced while clicking through the demo.
  * State is persisted to localStorage so a browser refresh during a demo is harmless.
  */
+import { demoStorage } from './persistStorage';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { addDays, daysBetween, shiftIso, todayIso } from './format';
@@ -358,7 +359,7 @@ export const useDemo = create<DemoState>()(
       },
     }),
     {
-      name: 'j45-demo-state',
+      name: 'j45-demo-state', storage: demoStorage,
       version: 1,
       merge: (persisted, current) => rebaseDates({ ...current, ...(persisted as Partial<DemoState>) }),
     },
