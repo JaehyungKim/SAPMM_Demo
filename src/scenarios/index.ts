@@ -14,8 +14,9 @@ import { PIP } from './41f/index';
 import { RTR } from './1ji/index';
 import { SEV } from './sl4/index';
 import { RFP } from './1xf/index';
+import { CIM } from './bmc/index';
 
-export const SCENARIOS: ScenarioDef[] = [J45, BMD, BNX, REQ, SRV, BMR, BMY, BMK, PIP, RTR, SEV, RFP];
+export const SCENARIOS: ScenarioDef[] = [J45, BMD, BNX, REQ, SRV, BMR, BMY, BMK, PIP, RTR, SEV, RFP, CIM];
 export const scenarioById = (id: ScenarioId) => SCENARIOS.find((s) => s.id === id) ?? J45;
 
 /** Scenarios offered in the current mode: all of them, or only the customer's scope items. */
