@@ -3,6 +3,12 @@
 SAP S/4HANA Cloud Public Edition Scope Item **J45 – Procurement of Direct Materials (2608)** 의 인터랙티브 시연 도구입니다.
 모든 화면을 **SAP Fiori (Horizon)** 와 **클래식 SAP GUI** 두 가지 UI로 보여 주며, 데이터는 브라우저 안에서만 동작합니다 (백엔드·외부 API 없음).
 
+## 온라인 데모
+
+👉 **https://jaehyungkim.github.io/SAPMM_Demo/** (설치 없이 브라우저에서 바로 실행)
+
+`main` 브랜치에 push하면 GitHub Actions(`.github/workflows/deploy.yml`)가 자동으로 빌드·배포합니다.
+
 ## 실행 방법
 
 ```bash
