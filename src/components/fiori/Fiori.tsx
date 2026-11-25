@@ -3,6 +3,7 @@
  * responsive table, form groups, footer toolbar and message toast.
  * Primitive controls come from UI5 Web Components; floorplan layout is plain CSS (styles/sap/fiori.css).
  */
+import { withBusy } from './Busy';
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { create } from 'zustand';
@@ -253,9 +254,13 @@ export function FooterBar({ children, message }: { children: ReactNode; message?
   );
 }
 
-export function FBtn({ children, emph, trans, onClick, disabled, icon }: { children?: ReactNode; emph?: boolean; trans?: boolean; onClick?: () => void; disabled?: boolean; icon?: string }) {
+/** Primary buttons that commit a document show the busy dialog before their action runs. */
+const AUTO_BUSY = ['저장', '오더', '전기', '제출', '생성', '계약 생성'];
+
+export function FBtn({ children, emph, trans, onClick, disabled, icon, busy }: { children?: ReactNode; emph?: boolean; trans?: boolean; onClick?: () => void; disabled?: boolean; icon?: string; busy?: boolean }) {
+  const busyOn = busy ?? (!!emph && typeof children === 'string' && AUTO_BUSY.includes(children));
   return (
-    <button className={`f-btn ${emph ? 'f-btn-emph' : ''} ${trans ? 'f-btn-trans' : ''}`} onClick={onClick} disabled={disabled}>
+    <button className={`f-btn ${emph ? 'f-btn-emph' : ''} ${trans ? 'f-btn-trans' : ''}`} onClick={busyOn && onClick ? () => withBusy(onClick) : onClick} disabled={disabled}>
       {icon && <Icon name={icon} />}
       {children}
     </button>

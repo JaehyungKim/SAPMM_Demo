@@ -12,6 +12,7 @@ import {
   FBtn, FioriShell, FooterBar, FormGroup, FTable, PageHeader, Section, Status, showToast, type FormField, type StatusState,
 } from '../../components/fiori/Fiori';
 import { GBtn, GField, GTable, GuiWindow } from '../../components/gui/Gui';
+import { isCommit } from '../../components/fiori/Busy';
 import { LaunchpadFiori, LaunchpadGui, PdfDialog, type MenuNode, type Tile } from './ui';
 
 export interface KCol<T> { key: string; label: string; render: (r: T) => ReactNode; align?: 'right'; w?: number }
@@ -57,7 +58,7 @@ function KFiori({ step, s }: { step: StepDef; s: KSpec }) {
   const [pdf, setPdf] = useState(false);
   const run = (a: KAction) => { a.onClick(); if (a.toast) showToast(a.toast); };
   const click = (a: KAction) => (a.confirm ? setPending(a) : run(a));
-  const btns = (s.actions ?? []).map((a, i) => <FBtn key={a.label} emph={a.emph ?? i === 0} disabled={a.disabled} onClick={() => click(a)}>{a.label}</FBtn>);
+  const btns = (s.actions ?? []).map((a, i) => <FBtn key={a.label} emph={a.emph ?? i === 0} disabled={a.disabled} busy={!a.confirm && isCommit(a.label)} onClick={() => click(a)}>{a.label}</FBtn>);
   const pdfBtn = s.pdf && <FBtn key="pdf" onClick={() => { setPdf(true); s.pdf!.onOpen?.(); }}>{s.pdf.label}</FBtn>;
   const inHeader = !s.footer && !s.tables?.length;
   return (
@@ -82,7 +83,7 @@ function KFiori({ step, s }: { step: StepDef; s: KSpec }) {
       {pending && (
         <Dialog open headerText={pending.confirm!.title} onClose={() => setPending(null)} style={{ width: 600 }}
           footer={<div className="f-dialog-footer">
-            <FBtn emph onClick={() => { run(pending); setPending(null); }}>{pending.confirm!.label}</FBtn>
+            <FBtn emph busy onClick={() => { run(pending); setPending(null); }}>{pending.confirm!.label}</FBtn>
             <FBtn onClick={() => setPending(null)}>취소</FBtn>
           </div>}>
           {pending.confirm!.fields && <FormGroup cols={2} fields={pending.confirm!.fields} />}

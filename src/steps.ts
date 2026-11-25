@@ -116,3 +116,7 @@ export const ROLE_USER = new Proxy(ROLE_USER_DEFAULT, {
     return custom ? { ...base, name: custom, initials: initialsOf(custom) } : base;
   },
 }) as Record<Role, RoleUser>;
+
+/** Fiori apps without an SAP GUI transaction (besides the steps whose code is an app ID such as F2551). */
+const FIORI_ONLY_TCODES = new Set(['SITN', 'MECCM', 'ME5W', 'MIGO_GR', 'ME80RN', 'MB5B_R']);
+export const isFioriOnly = (st: StepDef) => st.appId !== 'Shell' && (/^F\d/.test(st.tcode) || FIORI_ONLY_TCODES.has(st.tcode));

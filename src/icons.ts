@@ -73,3 +73,4 @@ import '@ui5/webcomponents-icons/dist/role.js';
 import '@ui5/webcomponents-icons/dist/survey.js';
 import '@ui5/webcomponents-icons/dist/grid.js';
 import '@ui5/webcomponents-icons/dist/alert.js';
+import '@ui5/webcomponents-icons/dist/information.js';

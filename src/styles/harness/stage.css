@@ -24,3 +24,14 @@
 .guard p { color: #556b81; }
 .guard-btns { display: flex; gap: 8px; justify-content: center; margin-top: 18px; }
 .stage-pane > .guard { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #f5f6f7; max-width: none; }
+
+/* SAP GUI pane: notice for apps that exist only in SAP Fiori */
+.fiori-only { flex: none; display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: #eaf3fc; border-bottom: 1px solid #a6cdf2; color: #0a3a6b; font-size: 12.5px; line-height: 1.45; }
+.fiori-only > ui5-icon { flex: none; width: 16px; height: 16px; color: #0a6ed1; }
+.fiori-only > span { flex: 1; min-width: 0; }
+.fiori-only > button { flex: none; border: 1px solid #0a6ed1; background: #fff; color: #0a6ed1; border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer; }
+.fiori-only > button:hover { background: #0a6ed1; color: #fff; }
+
+/* Fiori busy dialog (sap.m.BusyDialog look) */
+.f-busy-dialog::part(content) { padding: 28px 40px; }
+.f-busy-dialog { min-width: 0; border-radius: 12px; }

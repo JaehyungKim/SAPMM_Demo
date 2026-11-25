@@ -19,6 +19,9 @@ import { StepGuard } from './StepGuard';
 import { GuidePanel } from './GuidePanel';
 import { ScenarioIntro } from './ScenarioIntro';
 import { useEnabledSteps } from './progress';
+import { isFioriOnly } from '../steps';
+import { jo } from '../josa';
+import { BusyDialog } from '../components/fiori/Busy';
 
 /** Route entry: picks the scenario and remounts the harness when it changes (hooks differ per scenario). */
 export function ScenarioRoute({ scn }: { scn?: ScenarioId }) {
@@ -49,13 +52,31 @@ function DemoLayout({ def }: { def: ScenarioDef }) {
   // Like SAP GUI, the status bar message belongs to the screen that produced it.
   useEffect(() => { rt.markVisited(st.id); s.setGuiMessage(null); }, [st.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Scope items whose apps all exist only in Fiori (e.g. SL4, 1JI) / single Fiori-only apps.
+  const allFiori = def.steps.filter((x) => x.appId !== 'Shell').every(isFioriOnly);
+  const fioriOnly = allFiori || isFioriOnly(st);
+  const fioriNote = fioriOnly && (
+    <div className="fiori-only">
+      <Icon name="information" />
+      <span>
+        {allFiori
+          ? <><b>{def.code} Scope Item의 앱은 모두 SAP Fiori 전용 앱입니다.</b> SAP GUI 트랜잭션이 없으므로, 아래는 같은 데이터를 GUI 형식으로 옮긴 비교용 참고 화면입니다.</>
+          : <><b>{jo(`${st.appName} (${st.appId})`, '은')} SAP Fiori 전용 앱입니다.</b> SAP GUI 트랜잭션이 없으므로, 아래는 같은 데이터를 GUI 형식으로 옮긴 비교용 참고 화면입니다.</>}
+      </span>
+      {!s.compare && <button onClick={() => s.setViewMode('fiori')}>Fiori 화면으로 보기</button>}
+    </div>
+  );
+
   const render = (mode: ViewMode) => {
     if (!ok) return <StepGuard def={def} rt={rt} requires={st.requires} />;
     const C = mode === 'fiori' ? screen.fiori : screen.gui;
     return (
-      <Suspense fallback={<div className="stage-loading">화면 불러오는 중…</div>}>
-        <C step={st} key={`${st.id}-${mode}`} />
-      </Suspense>
+      <>
+        {mode === 'sapgui' && fioriNote}
+        <Suspense fallback={<div className="stage-loading">화면 불러오는 중…</div>}>
+          <C step={st} key={`${st.id}-${mode}`} />
+        </Suspense>
+      </>
     );
   };
 
@@ -92,6 +113,7 @@ function DemoLayout({ def }: { def: ScenarioDef }) {
         </div>
         <GuidePanel def={def} rt={rt} st={st} />
       </div>
+      <BusyDialog />
       {(scenario || !rt.briefed) && <ScenarioIntro def={def} onClose={() => { rt.setBriefed(true); setScenario(false); }} />}
     </div>
   );
