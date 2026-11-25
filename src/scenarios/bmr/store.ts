@@ -1,4 +1,5 @@
 /** BMR – Scheduling Agreements in Procurement: steps, sample data and document chain. */
+import { jo, pc } from '../../josa';
 import { makeChain, step, type ChainOpts } from '../shared/chain';
 import { rnd } from '../shared/persist';
 
@@ -33,14 +34,14 @@ export const OPTS: ChainOpts = {
     gr: String(5000000000 + rnd(1000, 4999)), inv: String(5105600000 + rnd(100, 900)), invFi: String(5100000000 + rnd(100, 900)),
   }),
   msgs: {
-    create: (n) => `납품 일정 계약 ${n.sa}이(가) 생성되었습니다`,
-    mass: (n) => `일괄 변경 작업 ${n.job}이(가) 완료되었습니다`,
-    schedule: (n) => `납품 일정 계약 ${n.sa}이(가) 변경되었습니다`,
-    quota: (n) => `쿼터 배분 ${n.quota}이(가) 저장되었습니다`,
+    create: (n) => `납품 일정 계약 ${jo(n.sa, '이')} 생성되었습니다`,
+    mass: (n) => `일괄 변경 작업 ${jo(n.job, '이')} 완료되었습니다`,
+    schedule: (n) => `납품 일정 계약 ${jo(n.sa, '이')} 변경되었습니다`,
+    quota: (n) => `쿼터 배분 ${jo(n.quota, '이')} 저장되었습니다`,
     mrp: () => 'MRP 실행 완료 – 납품 일정 라인이 생성되었습니다',
-    release: (n) => `릴리스 ${n.rel}(FRC/JIT)이(가) 생성되었습니다`,
-    gr: (n) => `자재 전표 ${n.gr}이(가) 전기되었습니다`,
-    invoice: (n) => `전표 번호 ${n.inv}이(가) 생성되었습니다`,
+    release: (n) => `릴리스 ${n.rel}(FRC/JIT)${pc(n.rel, '이')} 생성되었습니다`,
+    gr: (n) => `자재 전표 ${jo(n.gr, '이')} 전기되었습니다`,
+    invoice: (n) => `전표 번호 ${jo(n.inv, '이')} 생성되었습니다`,
   },
 };
 

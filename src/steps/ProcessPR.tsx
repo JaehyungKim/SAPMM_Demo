@@ -1,4 +1,5 @@
 /** Phase 1 – Convert Purchase Requisitions to Purchase Orders (F1048A / ME57). BPD 4.1.1 */
+import { jo, pc } from '../josa';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, MessageStrip } from '@ui5/webcomponents-react';
@@ -44,7 +45,7 @@ function SourceDialog({ open, onClose }: { open: boolean; onClose: () => void })
     setConfig({ supplierNumber: src.supplier, supplierName: src.name, netPrice: src.price });
     assignSource();
     onClose();
-    showToast(`공급업체 ${src.name}이(가) 소스로 지정되었습니다`);
+    showToast(`공급업체 ${jo(src.name, '이')} 소스로 지정되었습니다`);
   };
   return (
     <Dialog open={open} headerText="공급원 지정" onClose={onClose} style={{ width: 640 }}
@@ -75,7 +76,7 @@ function PoPreviewDialog({ open, onClose }: { open: boolean; onClose: () => void
   const order = () => {
     s.createPO();
     onClose();
-    showToast(`구매 오더 ${s.numbers.poNumber}이(가) 생성되었습니다`);
+    showToast(`구매 오더 ${jo(s.numbers.poNumber, '이')} 생성되었습니다`);
     setTimeout(() => nav('/step/create-po'), 900);
   };
   return (
@@ -121,7 +122,7 @@ export function ProcessPRFiori({ step }: StepProps) {
       <div className="f-page-body">
         {s.prStatus === 'Closed' && (
           <MessageStrip design="Positive" hideCloseButton className="f-strip">
-            구매 요청 {s.numbers.prNumber}이(가) 구매 오더 <FLink onClick={() => nav('/step/create-po')}>{s.numbers.poNumber}</FLink>(으)로 전환되었습니다.
+            구매 요청 {s.numbers.prNumber}{pc(s.numbers.prNumber, '이')} 구매 오더 <FLink onClick={() => nav('/step/create-po')}>{s.numbers.poNumber}</FLink>{pc(s.numbers.poNumber, '로')} 전환되었습니다.
           </MessageStrip>
         )}
         <FTable

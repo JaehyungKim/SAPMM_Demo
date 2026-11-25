@@ -1,4 +1,5 @@
 /** 22Z – Procurement of Services screens (Fiori + SAP GUI from one spec per step). */
+import { jo, pc } from '../../josa';
 import { addDays, fmtAmt, fmtDate, todayIso } from '../../format';
 import { Help } from '../../components/Help';
 import { useOrg } from '../types';
@@ -39,7 +40,7 @@ export const [contractF, contractG] = pair(() => {
       { key: 'i', label: '품목', w: 40, render: (r) => r.item }, { key: 'm', label: '서비스', w: 70, render: (r) => r.m },
       { key: 't', label: '내역', w: 220, render: (r) => r.t }, { key: 'p', label: '단가 / H', w: 80, align: 'right', render: (r) => fmtAmt(r.p, c.currency) },
     ] }],
-    footer: true, done: d('contract'), doneMsg: `서비스 계약 ${n.contract}이(가) 생성되었습니다 – 구매 요청의 공급원으로 자동 결정됩니다.`,
+    footer: true, done: d('contract'), doneMsg: `서비스 계약 ${jo(n.contract, '이')} 생성되었습니다 – 구매 요청의 공급원으로 자동 결정됩니다.`,
     actions: [{ label: '생성', gui: '💾 저장', disabled: d('contract'), onClick: () => s.mark('contract'), toast: `계약 ${n.contract} 생성` }],
   };
 });
@@ -57,7 +58,7 @@ export const [prF, prG] = pair(() => {
       { label: '서비스 기간', value: `${fmtDate(todayIso(), c.dateFormat)} ~ ${fmtDate(addDays(todayIso(), 30), c.dateFormat)}` },
     ],
     tables: [{ title: '품목', rows: rowsFor(c.currency), rowKey: (r) => r.item, cols: cols(c.currency) }],
-    footer: true, done: d('pr'), doneMsg: `구매 요청 ${n.pr}이(가) 생성되었습니다. 서비스 품목과 Limit 품목이 함께 요청되었습니다.`,
+    footer: true, done: d('pr'), doneMsg: `구매 요청 ${jo(n.pr, '이')} 생성되었습니다. 서비스 품목과 Limit 품목이 함께 요청되었습니다.`,
     actions: [{ label: '생성', gui: '💾 저장', disabled: d('pr'), onClick: () => s.mark('pr'), toast: `구매 요청 ${n.pr}` }],
   };
 });
@@ -72,7 +73,7 @@ export const [autopoF, autopoG] = pair(() => {
       { key: 'j', label: '작업', w: 80, render: () => n.job }, { key: 'pr', label: '구매 요청', w: 90, render: () => n.pr },
       { key: 'po', label: '생성된 PO', w: 100, render: () => n.po }, { key: 's', label: '상태', w: 80, render: () => '완료' },
     ] }],
-    footer: true, done: d('autopo'), doneMsg: `작업 ${n.job}이(가) 완료되었습니다 – 구매 오더 ${n.po}이(가) 자동 생성되었습니다. 다음 단계(PO 생성)는 이미 완료 상태입니다.`,
+    footer: true, done: d('autopo'), doneMsg: `작업 ${jo(n.job, '이')} 완료되었습니다 – 구매 오더 ${jo(n.po, '이')} 자동 생성되었습니다. 다음 단계(PO 생성)는 이미 완료 상태입니다.`,
     actions: [{ label: '예약', gui: '▶ 실행 (F8)', disabled: d('autopo') || d('po'), onClick: () => s.mark(['autopo', 'po']), toast: `작업 ${n.job} 예약` }],
   };
 });
@@ -85,7 +86,7 @@ export const [poF, poG] = pair(() => {
     kpis: [{ label: 'PO 금액', value: fmtAmt(PO_VALUE, c.currency) }],
     fields: [{ label: '공급업체', value: SUPT }, { label: '구매 그룹', value: GROUP }, { label: '승인 규칙', value: '구매 그룹 003 · 1,000 EUR 초과' }],
     tables: [{ title: '품목', rows: rowsFor(c.currency), rowKey: (r) => r.item, cols: cols(c.currency) }],
-    footer: true, done: d('po'), doneMsg: `서비스 구매 오더 ${n.po}이(가) 생성되었습니다. 금액 ${fmtAmt(PO_VALUE, c.currency)}로 승인 워크플로가 시작되었습니다.`,
+    footer: true, done: d('po'), doneMsg: `서비스 구매 오더 ${jo(n.po, '이')} 생성되었습니다. 금액 ${jo(fmtAmt(PO_VALUE, c.currency), '로')} 승인 워크플로가 시작되었습니다.`,
     actions: [{ label: '구매 오더 생성', gui: '📄 구매 오더 생성', disabled: d('po'), onClick: () => s.mark('po'), toast: `PO ${n.po}` }],
   };
 });
@@ -97,7 +98,7 @@ export const [approveF, approveG] = pair(() => {
     status: d('approve') ? ['Positive', '승인됨'] : ['Critical', '승인 대기'],
     fields: [{ label: '작업', value: `구매 오더 ${n.po} 릴리스` }, { label: '공급업체', value: SUPT }, { label: '순 금액', value: fmtAmt(PO_VALUE, c.currency) }],
     tables: [{ title: '품목', rows: rowsFor(c.currency), rowKey: (r) => r.item, cols: cols(c.currency) }],
-    done: d('approve'), doneMsg: `구매 오더 ${n.po}이(가) 승인되어 공급업체에 발송되었습니다.`,
+    done: d('approve'), doneMsg: `구매 오더 ${jo(n.po, '이')} 승인되어 공급업체에 발송되었습니다.`,
     actions: [{ label: '승인', gui: '✔ 릴리스(승인)', disabled: d('approve'), onClick: () => s.mark('approve'), toast: '승인 완료' }],
   };
 });
@@ -110,8 +111,8 @@ export const [sesF, sesG] = pair(() => {
     kpis: [{ label: '실적 금액', value: fmtAmt(SES_VALUE, c.currency) }],
     fields: [{ label: '구매 오더', value: n.po }, { label: '공급업체', value: SUPT }, { label: '서비스 수행 기간', value: `${fmtDate(todayIso(), c.dateFormat)}` }, { label: '내역', value: '1차 유지보수 완료', help: 'ses' }],
     tables: [{ title: '수행된 서비스', rows: rowsFor(c.currency, true), rowKey: (r) => r.item, cols: cols(c.currency) }],
-    info: `Limit 품목 실적 ${fmtAmt(LIMIT.actual, c.currency)}은(는) 전체 한도 ${fmtAmt(LIMIT.overall, c.currency)} 안이라 그대로 입력됩니다.`,
-    footer: true, done: d('ses'), doneMsg: `서비스 입력 시트 ${n.ses}이(가) 승인 요청되었습니다 (1,000 EUR 초과 → ${'구매 관리자'} 승인).`,
+    info: `Limit 품목 실적 ${jo(fmtAmt(LIMIT.actual, c.currency), '은')} 전체 한도 ${fmtAmt(LIMIT.overall, c.currency)} 안이라 그대로 입력됩니다.`,
+    footer: true, done: d('ses'), doneMsg: `서비스 입력 시트 ${jo(n.ses, '이')} 승인 요청되었습니다 (1,000 EUR 초과 → ${'구매 관리자'} 승인).`,
     actions: [{ label: '승인 요청', gui: '💾 저장 · 승인 요청', disabled: d('ses'), onClick: () => s.mark('ses'), toast: `SES ${n.ses}` }],
   };
 });
@@ -154,7 +155,7 @@ export const [invoiceF, invoiceG] = pair(() => {
     kpis: [{ label: '총 금액', value: fmtAmt(SES_VALUE, c.currency) }, { label: '잔액', value: fmtAmt(added ? 0 : SES_VALUE, c.currency) }],
     fields: [{ label: '송장 발행처', value: SUPT }, { label: '참조', value: `SRV-${n.po.slice(-4)}`, help: 'reference' }, { label: '구매 오더 참조', value: n.po }, { label: '지급 보류', value: 'R 수동 보류 (서비스 품질 확인)', help: 'paymentBlock' }],
     tables: [{ title: '송장 품목 (서비스 입력 시트 기준)', rows: added ? rowsFor(c.currency, true) : [], rowKey: (r) => r.item, empty: "구매 오더를 '추가'하면 승인된 서비스 입력 시트가 제안됩니다", cols: cols(c.currency) }],
-    done: d('invoice'), doneMsg: `송장 ${n.inv}(회계 전표 ${n.invFi})이(가) 지급 보류 상태로 전기되었습니다.`,
+    done: d('invoice'), doneMsg: `송장 ${n.inv}(회계 전표 ${n.invFi})${pc(n.inv, '이')} 지급 보류 상태로 전기되었습니다.`,
     actions: [
       { label: '추가', gui: '↵ 적용', disabled: added, onClick: () => s.setVal('invAdded', true) },
       { label: '전기', gui: '💾 전기', disabled: !added || d('invoice'), onClick: () => s.mark('invoice'), toast: `송장 ${n.inv} 전기` },

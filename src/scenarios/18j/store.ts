@@ -1,4 +1,5 @@
 /** 18J – Requisitioning: steps, sample data and document chain. */
+import { jo } from '../../josa';
 import { makeChain, step, type ChainOpts } from '../shared/chain';
 import { rnd } from '../shared/persist';
 
@@ -33,16 +34,16 @@ export const OPTS: ChainOpts = {
   }),
   msgs: {
     catalog: () => '카탈로그 품목이 게시되었습니다',
-    pr: (n) => `구매 요청 ${n.pr}이(가) 생성되었습니다`,
-    masschange: (n) => `일괄 변경 작업 ${n.job}이(가) 완료되었습니다`,
-    prapprove: (n) => `구매 요청 ${n.pr}이(가) 승인되었습니다`,
+    pr: (n) => `구매 요청 ${jo(n.pr, '이')} 생성되었습니다`,
+    masschange: (n) => `일괄 변경 작업 ${jo(n.job, '이')} 완료되었습니다`,
+    prapprove: (n) => `구매 요청 ${jo(n.pr, '이')} 승인되었습니다`,
     workload: () => '구매 요청이 구매 그룹 003으로 재배분되었습니다',
-    po: (n) => `표준 PO ${n.po}이(가) 생성되었습니다`,
-    poapprove: (n) => `구매 오더 ${n.po}이(가) 릴리스되었습니다`,
-    confirm: (n) => `자재 전표 ${n.gr}이(가) 전기되었습니다`,
-    invoice: (n) => `전표 번호 ${n.inv}이(가) 생성되었습니다`,
-    reserve: (n) => `예약 ${n.rsv}이(가) 생성되었습니다`,
-    gi: (n) => `자재 전표 ${n.gi}이(가) 전기되었습니다 (201)`,
+    po: (n) => `표준 PO ${jo(n.po, '이')} 생성되었습니다`,
+    poapprove: (n) => `구매 오더 ${jo(n.po, '이')} 릴리스되었습니다`,
+    confirm: (n) => `자재 전표 ${jo(n.gr, '이')} 전기되었습니다`,
+    invoice: (n) => `전표 번호 ${jo(n.inv, '이')} 생성되었습니다`,
+    reserve: (n) => `예약 ${jo(n.rsv, '이')} 생성되었습니다`,
+    gi: (n) => `자재 전표 ${jo(n.gi, '이')} 전기되었습니다 (201)`,
   },
 };
 

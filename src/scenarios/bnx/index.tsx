@@ -1,4 +1,5 @@
 /** BNX – Consumable Purchasing: step list, runtime, presenter guide and briefing. */
+import { jo } from '../../josa';
 import type { StepDef } from '../../steps';
 import { ROLE_KO, ROLE_USER } from '../../steps';
 import { useSharedMap } from '../../sharedState';
@@ -96,7 +97,7 @@ function useGuide(id: string): StepGuide {
   const released = po?.status === 'Released';
   switch (id) {
     case 'launchpad': return {
-      situation: `관리팀(코스트 센터 ${CC1})이 소모품이 떨어졌다고 알려 왔습니다. ${ROLE_KO.Purchaser} ${ROLE_USER.Purchaser.name}이(가) 구매 요청부터 처리합니다.`,
+      situation: `관리팀(코스트 센터 ${CC1})이 소모품이 떨어졌다고 알려 왔습니다. ${ROLE_KO.Purchaser} ${jo(ROLE_USER.Purchaser.name, '이')} 구매 요청부터 처리합니다.`,
       fiori: [{ text: "'구매 요청 관리 - 전문가용' 타일 클릭", why: '자재 번호가 있는 소모품도, 텍스트로만 적는 품목도 같은 앱에서 요청합니다.', target: '구매 요청 관리 - 전문가용', done: false }],
       gui: [{ text: "'ME51N - 생성' 더블클릭", why: '구매 요청 생성 트랜잭션입니다.', target: 'ME51N - 생성', done: false }],
       value: '소모품 구매도 직접 자재와 같은 표준 프로세스를 탑니다.',
@@ -105,27 +106,27 @@ function useGuide(id: string): StepGuide {
       situation: `소모품 NS0001 ${ITEM10.qty}개가 필요합니다. 재고로 두지 않고 관리팀 비용(코스트 센터 ${CC1})으로 처리합니다.`,
       fiori: [
         { text: "품목의 '계정 지정' K와 코스트 센터 설명", why: 'K = 코스트 센터. 입고하는 순간 재고가 아니라 비용으로 전기됩니다.' },
-        { text: "'공급원' 열의 계약 확인", why: `자동 소스 결정이 계약 ${s.numbers.contract}을 찾아 단가 ${ITEM10.price} EUR를 적용했습니다.` },
-        { text: "하단 '생성' 클릭", why: `구매 요청 ${s.numbers.pr}가 저장됩니다.`, target: '생성', done: s.pr !== 'None' },
+        { text: "'공급원' 열의 계약 확인", why: `자동 소스 결정이 계약 ${jo(s.numbers.contract, '을')} 찾아 단가 ${ITEM10.price} EUR를 적용했습니다.` },
+        { text: "하단 '생성' 클릭", why: `구매 요청 ${jo(s.numbers.pr, '이')} 저장됩니다.`, target: '생성', done: s.pr !== 'None' },
       ],
       gui: [{ text: "계정 지정 K·코스트 센터 확인 후 '저장'", why: 'ME51N 품목의 A 열이 계정 지정 범주입니다.', target: '저장', done: s.pr !== 'None' }],
       value: '요청 단계에서 비용 귀속(코스트 센터·G/L)이 정해져 예산 통제가 쉬워집니다.',
     };
-    case 'workload': return GX(`구매 그룹 001 담당자가 휴가 중입니다. ${ROLE_KO['Purchasing Manager']}가 쌓인 요청을 다른 그룹에 배분합니다.`, [
+    case 'workload': return GX(`구매 그룹 001 담당자가 휴가 중입니다. ${jo(ROLE_KO['Purchasing Manager'], '이')} 쌓인 요청을 다른 그룹에 배분합니다.`, [
       L('그룹별 미결 건수 설명', '어느 담당자에게 업무가 몰렸는지 한눈에 봅니다.'),
-      B('재배분', '↪ 재배정', `구매 요청 ${s.numbers.pr}를 구매 그룹 ${PURCH_GROUP}로 옮깁니다.`, !!s.ext.workload),
+      B('재배분', '↪ 재배정', `구매 요청 ${jo(s.numbers.pr, '을')} 구매 그룹 ${jo(PURCH_GROUP, '로')} 옮깁니다.`, !!s.ext.workload),
     ], '담당자 부재·업무 편중으로 인한 구매 지연을 막습니다.');
     case 'limit': return GX('사무실 수리처럼 정확한 내용·금액을 미리 알 수 없는 비용이 생길 수 있습니다.', [
-      L('예상 금액과 전체 한도 설명', `예상 ${fmtAmt(LIMIT_ITEM.expected, c.currency)}는 약정(commitment)으로, 전체 한도 ${fmtAmt(LIMIT_ITEM.overall, c.currency)}는 송장 상한으로 쓰입니다.`),
-      B('Limit 품목 추가 및 저장', '💾 저장', `PO ${s.numbers.po}에 품목 ${LIMIT_ITEM.item}이(가) 추가됩니다.`, !!s.ext.limit),
+      L('예상 금액과 전체 한도 설명', `예상 ${jo(fmtAmt(LIMIT_ITEM.expected, c.currency), '은')} 약정(commitment)으로, 전체 한도 ${jo(fmtAmt(LIMIT_ITEM.overall, c.currency), '은')} 송장 상한으로 쓰입니다.`),
+      B('Limit 품목 추가 및 저장', '💾 저장', `PO ${s.numbers.po}에 품목 ${jo(LIMIT_ITEM.item, '이')} 추가됩니다.`, !!s.ext.limit),
     ], '불확실한 비용도 PO로 통제하고 예산에 미리 반영합니다.');
-    case 'reduce': return GX(`공급업체가 Limit 품목에 ${fmtAmt(LIMIT_ITEM.billed, c.currency)}를 청구했습니다 – 한도 ${fmtAmt(LIMIT_ITEM.overall, c.currency)}를 넘습니다.`, [
+    case 'reduce': return GX(`공급업체가 Limit 품목에 ${jo(fmtAmt(LIMIT_ITEM.billed, c.currency), '을')} 청구했습니다 – 한도 ${jo(fmtAmt(LIMIT_ITEM.overall, c.currency), '을')} 넘습니다.`, [
       B('추가', '↵ 적용', 'PO의 Limit 품목이 제안되고 한도 초과가 표시됩니다.', !!s.ext.reduceAdded || !!s.ext.reduce),
       L('송장 축소 설명', '정확한 금액만 전기하고 차액은 시스템이 대변 메모로 자동 생성해 공급업체에 통지합니다.'),
-      B('전기', '💾 전기', `송장 ${s.numbers.inv2}와 대변 메모 ${s.numbers.cm}이(가) 동시에 생성됩니다.`, !!s.ext.reduce),
+      B('전기', '💾 전기', `송장 ${jo(s.numbers.inv2, '와')} 대변 메모 ${jo(s.numbers.cm, '이')} 동시에 생성됩니다.`, !!s.ext.reduce),
     ], '과다 청구를 지급 전에 바로잡고 공급업체와의 정산 근거를 남깁니다.');
     case 'invplan': return GX(`매달 같은 금액이 나가는 커피 머신 임대료(${fmtAmt(PLAN.monthly, c.currency)}/월)는 송장 계획으로 처리합니다.`, [
-      B('저장', '💾 저장', `송장 계획이 있는 PO ${s.numbers.planPo}가 생성되고 12개월 일정이 만들어집니다.`, !!s.ext.invplanPo || !!s.ext.invplan),
+      B('저장', '💾 저장', `송장 계획이 있는 PO ${jo(s.numbers.planPo, '이')} 생성되고 12개월 일정이 만들어집니다.`, !!s.ext.invplanPo || !!s.ext.invplan),
       B('정산 실행', '▶ 정산 실행 (MRIS)', '정산일이 된 회차의 송장을 시스템이 자동 생성합니다(ERS).', !!s.ext.invplan),
     ], '정기 지급을 공급업체 송장 없이 자동화해 처리 비용을 줄입니다.');
     case 'po': return {
@@ -141,7 +142,7 @@ function useGuide(id: string): StepGuide {
       situation: `같은 공급업체에서 사무용품도 사기로 했습니다. 자재 번호가 없는 품목이고, 비용을 두 부서(${CC1} 20%, ${CC2} 80%)가 나눠 부담합니다.`,
       fiori: [
         { text: "상단 '편집' 클릭", why: '승인 전이므로 PO를 보완할 수 있습니다.', target: '편집', done: added },
-        { text: "품목 표의 '품목 추가' 클릭", why: `자재 번호 없이 내역·자재 그룹 ${ITEM20.matGroup}만으로 품목을 만들고, G/L 계정 ${ITEM20.gl}은 자재 그룹에서 자동 결정됩니다.`, target: '품목 추가', done: added },
+        { text: "품목 표의 '품목 추가' 클릭", why: `자재 번호 없이 내역·자재 그룹 ${ITEM20.matGroup}만으로 품목을 만들고, G/L 계정 ${jo(ITEM20.gl, '은')} 자재 그룹에서 자동 결정됩니다.`, target: '품목 추가', done: added },
         { text: "다중 계정 지정 20/80 확인 후 '오더' 클릭", why: '한 품목의 비용을 여러 코스트 센터에 비율로 나눕니다. 입고·송장 시 비용도 같은 비율로 전기됩니다.', target: '오더', done: added },
       ],
       gui: [
@@ -160,7 +161,7 @@ function useGuide(id: string): StepGuide {
       value: '조건 변경을 PO마다 하지 않고 한 번에 처리해 시간과 실수를 줄입니다.',
     };
     case 'approve': return {
-      situation: `PO ${s.numbers.po}가 승인 규칙(구매 그룹 003, 500 EUR 초과)에 걸려 ${ROLE_KO['Purchasing Manager']}에게 도착했습니다.`,
+      situation: `PO ${jo(s.numbers.po, '이')} 승인 규칙(구매 그룹 003, 500 EUR 초과)에 걸려 ${ROLE_KO['Purchasing Manager']}에게 도착했습니다.`,
       fiori: [
         { text: `'구매 오더 ${s.numbers.po} 릴리스' 작업 선택`, why: '품목별 계정 지정(코스트 센터)까지 받은 편지함에서 확인합니다.', target: `구매 오더 ${s.numbers.po} 릴리스` },
         { text: "'승인' 클릭", why: '승인해야 공급업체에 발송되고 입고할 수 있습니다.', target: '승인', done: released },
@@ -179,7 +180,7 @@ function useGuide(id: string): StepGuide {
       value: '부서별 약정 비용을 실시간으로 보고 예산 초과를 미리 막습니다.',
     };
     case 'gr': return {
-      situation: `소모품과 사무용품이 도착했습니다. ${ROLE_KO['Warehouse Clerk']}가 PO 기준으로 입고합니다.`,
+      situation: `소모품과 사무용품이 도착했습니다. ${jo(ROLE_KO['Warehouse Clerk'], '이')} PO 기준으로 입고합니다.`,
       fiori: [
         { text: "'계정 지정' 열 확인", why: '재고 유형 대신 코스트 센터가 표시됩니다 – 재고 없이 소비로 처리됩니다.' },
         { text: "하단 '전기' 클릭", why: '입고 시점에 비용이 코스트 센터로 전기됩니다 (차변 비용 / 대변 GR/IR).', target: '전기', done: !!s.gr },
@@ -212,11 +213,11 @@ function useGuide(id: string): StepGuide {
           { text: "'↵ 적용' 클릭", why: 'MIRO가 PO 품목을 제안합니다.', target: '↵ 적용', done: inv || !!s.invoice },
           { text: "'전기' 클릭", why: '송장 전표가 생성됩니다.', target: '전기', done: !!s.invoice },
         ],
-        value: `금액 ${fmtAmt(itemsValue(po?.items ?? []), c.currency)}이(가) 자동 대조되고, 필요하면 지급을 보류해 통제합니다.`,
+        value: `금액 ${jo(fmtAmt(itemsValue(po?.items ?? []), c.currency), '이')} 자동 대조되고, 필요하면 지급을 보류해 통제합니다.`,
       };
     }
     case 'release': return {
-      situation: `지급이 보류된 송장 ${s.invoice?.doc ?? ''}이(가) 코스트 센터 책임자에게 릴리스 요청으로 도착했습니다.`,
+      situation: `지급이 보류된 송장 ${jo(s.invoice?.doc ?? '', '이')} 코스트 센터 책임자에게 릴리스 요청으로 도착했습니다.`,
       fiori: [
         { text: '작업의 보류 사유와 금액 확인', why: '수동 보류(Manual)로 지급이 막혀 있습니다.', target: `차단된 송장 ${s.invoice?.doc ?? ''} 릴리스` },
         { text: "'릴리스' 클릭", why: '확인을 마친 송장을 지급 대상으로 만듭니다.', target: '릴리스', done: s.released },

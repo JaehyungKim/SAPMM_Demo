@@ -1,4 +1,5 @@
 /** 41F – Procurement of Pipeline Materials: steps, sample data and document chain. */
+import { jo } from '../../josa';
 import { makeChain, step, type ChainOpts } from '../shared/chain';
 import { rnd } from '../shared/persist';
 
@@ -27,9 +28,9 @@ export const OPTS: ChainOpts = {
     job: String(rnd(10000, 99999)), inv: String(5105600000 + rnd(100, 900)), invFi: String(5100000000 + rnd(100, 900)),
   }),
   msgs: {
-    inforecord: (n) => `구매 정보 레코드 ${n.info}이(가) 저장되었습니다 (파이프라인)`,
-    consume: (n) => `자재 전표 ${n.md}이(가) 전기되었습니다 (201P)`,
-    settle: (n) => `작업 ${n.job}이(가) 예약되었습니다 – 정산 문서 ${n.inv}`,
+    inforecord: (n) => `구매 정보 레코드 ${jo(n.info, '이')} 저장되었습니다 (파이프라인)`,
+    consume: (n) => `자재 전표 ${jo(n.md, '이')} 전기되었습니다 (201P)`,
+    settle: (n) => `작업 ${jo(n.job, '이')} 예약되었습니다 – 정산 문서 ${n.inv}`,
   },
 };
 

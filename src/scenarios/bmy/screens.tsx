@@ -1,4 +1,5 @@
 /** BMY – Subcontracting screens (Fiori + SAP GUI from one spec per step). */
+import { jo, pc } from '../../josa';
 import { addDays, fmtAmt, fmtDate, todayIso } from '../../format';
 import { Help } from '../../components/Help';
 import { useOrg } from '../types';
@@ -37,7 +38,7 @@ export const [mrpF, mrpG] = pair(() => {
       { key: 'c', label: '품목 범주', w: 70, render: () => 'L 외주' }, { key: 'q', label: '수량', w: 70, align: 'right', render: (r) => `${r.qty} PC` },
       { key: 'd', label: '납품일', w: 90, render: () => fmtDate(addDays(todayIso(), 14), c.dateFormat) },
     ] }],
-    done: d('mrp'), doneMsg: `외주 구매 요청 ${n.pr}이(가) 생성되었습니다 – 구성품 RM13·RM14 소요량도 BOM에서 함께 계산되었습니다.`,
+    done: d('mrp'), doneMsg: `외주 구매 요청 ${jo(n.pr, '이')} 생성되었습니다 – 구성품 RM13·RM14 소요량도 BOM에서 함께 계산되었습니다.`,
     actions: [{ label: '실행', gui: '▶ 실행', disabled: d('mrp'), onClick: () => s.mark('mrp'), toast: `구매 요청 ${n.pr} 생성` }],
   };
 });
@@ -53,7 +54,7 @@ export const [poF, poG] = pair(() => {
       { title: '품목', rows: [poRow], rowKey: (r) => r.item, cols: poCols(c.currency) },
       { title: '구성품 (자재 제공 – BOM)', rows: COMPS, rowKey: (r) => r.item, cols: compCols },
     ],
-    footer: true, done: d('po'), doneMsg: `외주 구매 오더 ${n.po}가 생성되었습니다. 금액이 500 EUR를 넘어 승인 워크플로가 시작되었습니다.`,
+    footer: true, done: d('po'), doneMsg: `외주 구매 오더 ${jo(n.po, '이')} 생성되었습니다. 금액이 500 EUR를 넘어 승인 워크플로가 시작되었습니다.`,
     actions: [{ label: '구매 오더 생성', gui: '📄 구매 오더 생성', disabled: d('po'), onClick: () => s.mark('po'), toast: `PO ${n.po} 생성` }],
   };
 });
@@ -81,7 +82,7 @@ export const [approveF, approveG] = pair(() => {
     status: d('approve') ? ['Positive', '승인됨'] : ['Critical', '승인 대기'],
     fields: [{ label: '작업', value: `구매 오더 ${n.po} 릴리스` }, { label: '공급업체', value: SUPT }, { label: '순 금액', value: fmtAmt(VALUE, c.currency) }, { label: '승인 규칙', value: '구매 그룹 001 · 500 EUR 초과' }],
     tables: [{ title: '품목', rows: [poRow], rowKey: (r) => r.item, cols: poCols(c.currency) }],
-    done: d('approve'), doneMsg: `구매 오더 ${n.po}이(가) 승인되어 외주처에 발송되었습니다.`,
+    done: d('approve'), doneMsg: `구매 오더 ${jo(n.po, '이')} 승인되어 외주처에 발송되었습니다.`,
     actions: [{ label: '승인', gui: '✔ 릴리스(승인)', disabled: d('approve'), onClick: () => s.mark('approve'), toast: '승인 완료' }],
   };
 });
@@ -95,7 +96,7 @@ export const [deliveryF, deliveryG] = pair(() => {
       ...compCols, { key: 'av', label: '가용 재고', w: 80, align: 'right', render: () => '5,000 PC' },
       { key: 'dl', label: '납품', w: 90, render: () => (d('delivery') ? n.dlv : '') },
     ] }],
-    done: d('delivery'), doneMsg: `아웃바운드 납품 ${n.dlv}이(가) 생성되었습니다 – 구성품 RM13·RM14를 외주처로 보냅니다.`,
+    done: d('delivery'), doneMsg: `아웃바운드 납품 ${jo(n.dlv, '이')} 생성되었습니다 – 구성품 RM13·RM14를 외주처로 보냅니다.`,
     actions: [{ label: '납품 생성', gui: '🚚 납품 생성', disabled: d('delivery'), onClick: () => s.mark('delivery'), toast: `납품 ${n.dlv} 생성` }],
   };
 });
@@ -126,7 +127,7 @@ export const [grF, grG] = pair(() => {
       { key: 't', label: '내역', w: 160, render: (r) => r.text }, { key: 'q', label: '수량', w: 70, align: 'right', render: (r) => `${r.qty} PC` },
       { key: 'v', label: '금액', w: 90, align: 'right', render: (r) => fmtAmt(r.val, c.currency) },
     ] }],
-    footer: true, done: d('gr'), doneMsg: `자재 전표 ${n.gr}이(가) 전기되었습니다 – SG23 ${QTY} PC 입고, 외주처의 RM13·RM14가 자동 소비(543)되었습니다.`,
+    footer: true, done: d('gr'), doneMsg: `자재 전표 ${jo(n.gr, '이')} 전기되었습니다 – SG23 ${QTY} PC 입고, 외주처의 RM13·RM14가 자동 소비(543)되었습니다.`,
     actions: [{ label: '전기', gui: '전기', disabled: d('gr'), onClick: () => s.mark('gr'), toast: `자재 전표 ${n.gr}` }],
     extra: d('gr') ? <JournalTable lines={[
       { acc: c.glInventory, text: `재고 ${MAT}`, dc: '차변', amt: COMP_VALUE + VALUE },
@@ -158,7 +159,7 @@ export const [invoiceF, invoiceG] = pair(() => {
     kpis: [{ label: '총 금액', value: fmtAmt(VALUE, c.currency) }, { label: '잔액', value: fmtAmt(added ? 0 : VALUE, c.currency) }],
     fields: [{ label: '송장 발행처', value: SUPT, help: 'supplier' }, { label: '참조', value: `RE-${n.po.slice(-4)}`, help: 'reference' }, { label: '구매 오더 참조', value: n.po }, { label: '세금 코드', value: 'V0', help: 'taxCode' }],
     tables: [{ title: '송장 품목', rows: added ? [poRow] : [], rowKey: (r) => r.item, empty: "구매 오더를 '추가'하면 입고된 품목이 제안됩니다", cols: poCols(c.currency) }],
-    done: d('invoice'), doneMsg: `공급업체 송장 ${n.inv}(회계 전표 ${n.invFi})이(가) 전기되었습니다 – 외주 가공비만 청구되고 구성품 비용은 포함되지 않습니다.`,
+    done: d('invoice'), doneMsg: `공급업체 송장 ${n.inv}(회계 전표 ${n.invFi})${pc(n.inv, '이')} 전기되었습니다 – 외주 가공비만 청구되고 구성품 비용은 포함되지 않습니다.`,
     actions: [
       { label: '추가', gui: '↵ 적용', disabled: added, onClick: () => s.setVal('invAdded', true) },
       { label: '전기', gui: '💾 전기', disabled: !added || d('invoice'), onClick: () => s.mark('invoice'), toast: `송장 ${n.inv} 전기` },

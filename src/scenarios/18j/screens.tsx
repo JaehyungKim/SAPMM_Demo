@@ -1,4 +1,5 @@
 /** 18J – Requisitioning screens (Fiori + SAP GUI from one spec per step). */
+import { jo, pc } from '../../josa';
 import { addDays, fmtAmt, fmtDate, todayIso } from '../../format';
 import { Help } from '../../components/Help';
 import { ROLE_USER } from '../../steps';
@@ -48,7 +49,7 @@ export const [prF, prG] = pair(() => {
       { label: '계정 지정', value: 'K 코스트 센터 – 40 / 60 배분', help: 'distribution' }, { label: '공급업체 (카탈로그)', value: SUPT },
     ],
     tables: [{ title: '장바구니', rows: [ITEM], rowKey: (r) => r.item, cols: itemCols(c.currency) }],
-    footer: true, done: d('pr'), doneMsg: `구매 요청 ${n.pr}이(가) 주문되었습니다 – 금액이 승인 한도를 넘어 부서 관리자에게 승인 요청이 갔습니다.`,
+    footer: true, done: d('pr'), doneMsg: `구매 요청 ${jo(n.pr, '이')} 주문되었습니다 – 금액이 승인 한도를 넘어 부서 관리자에게 승인 요청이 갔습니다.`,
     actions: [{ label: '주문', gui: '💾 저장', disabled: d('pr'), onClick: () => s.mark('pr'), toast: `구매 요청 ${n.pr}` }],
   };
 });
@@ -62,7 +63,7 @@ export const [masschangeF, masschangeG] = pair(() => {
       { key: 'pr', label: '구매 요청', w: 90, render: () => n.pr }, { key: 'm', label: '자재', w: 70, render: (r) => r.material },
       { key: 'dl', label: '납품일', w: 90, render: (r) => r.deliv },
     ] }],
-    done: d('masschange'), doneMsg: `일괄 변경 작업 ${n.job}이(가) 완료되었습니다 – 납품일이 변경되었습니다.`,
+    done: d('masschange'), doneMsg: `일괄 변경 작업 ${jo(n.job, '이')} 완료되었습니다 – 납품일이 변경되었습니다.`,
     actions: [{ label: '일괄 변경 적용', gui: '▶ 실행 (F8)', disabled: d('masschange'), onClick: () => s.mark('masschange'), toast: `작업 ${n.job}` }],
   };
 });
@@ -89,7 +90,7 @@ export const [prapproveF, prapproveG] = pair(() => {
     status: d('prapprove') ? ['Positive', '승인됨'] : ['Critical', '승인 대기'],
     fields: [{ label: '요청자', value: ROLE_USER.Employee.name }, { label: '금액', value: fmtAmt(VALUE, c.currency) }, { label: '코스트 센터', value: SPLIT.map((x) => x.cc).join(', ') }],
     tables: [{ title: '품목', rows: [ITEM], rowKey: (r) => r.item, cols: itemCols(c.currency) }],
-    done: d('prapprove'), doneMsg: `구매 요청 ${n.pr}이(가) 승인되었습니다 – 구매 부서의 작업 목록에 나타납니다.`,
+    done: d('prapprove'), doneMsg: `구매 요청 ${jo(n.pr, '이')} 승인되었습니다 – 구매 부서의 작업 목록에 나타납니다.`,
     actions: [{ label: '승인', gui: '✔ 릴리스', disabled: d('prapprove'), onClick: () => s.mark('prapprove'), toast: '승인 완료' }],
   };
 });
@@ -107,7 +108,7 @@ export const [workloadF, workloadG] = pair(() => {
       { key: 'm', label: `구매 요청 ${n.pr}`, w: 120, render: (r) => (r.mine ? '● 배정됨' : '') },
     ] }],
     warn: d('workload') ? undefined : '구매 그룹 001에 미결 요청이 몰려 있습니다.',
-    done: d('workload'), doneMsg: `구매 요청 ${n.pr}이(가) 구매 그룹 003으로 재배분되었습니다.`,
+    done: d('workload'), doneMsg: `구매 요청 ${jo(n.pr, '이')} 구매 그룹 003으로 재배분되었습니다.`,
     actions: [{ label: '재배분', gui: '↪ 재배정', disabled: d('workload'), onClick: () => s.mark('workload'), toast: '재배분 완료',
       confirm: { title: '구매 요청 재배분', label: '재배분 확정', fields: [{ label: '구매 요청', value: n.pr }, { label: '현재', value: '001' }, { label: '새 구매 그룹', value: GROUP }] } }],
   };
@@ -121,7 +122,7 @@ export const [poF, poG] = pair(() => {
     kpis: [{ label: 'PO 금액', value: fmtAmt(VALUE, c.currency) }],
     fields: [{ label: '공급업체', value: SUPT }, { label: '구매 그룹', value: GROUP }, { label: '요청자', value: ROLE_USER.Employee.name }],
     tables: [{ title: '품목', rows: [ITEM], rowKey: (r) => r.item, cols: itemCols(c.currency) }],
-    footer: true, done: d('po'), doneMsg: `구매 오더 ${n.po}이(가) 생성되었습니다.`,
+    footer: true, done: d('po'), doneMsg: `구매 오더 ${jo(n.po, '이')} 생성되었습니다.`,
     actions: [{ label: '구매 오더 생성', gui: '📄 구매 오더 생성', disabled: d('po'), onClick: () => s.mark('po'), toast: `PO ${n.po}` }],
   };
 });
@@ -133,7 +134,7 @@ export const [poapproveF, poapproveG] = pair(() => {
     status: d('poapprove') ? ['Positive', '승인됨'] : ['Critical', '승인 대기'],
     fields: [{ label: '공급업체', value: SUPT }, { label: '금액', value: fmtAmt(VALUE, c.currency) }],
     tables: [{ title: '품목', rows: [ITEM], rowKey: (r) => r.item, cols: itemCols(c.currency) }],
-    done: d('poapprove'), doneMsg: `구매 오더 ${n.po}이(가) 승인되어 공급업체에 발송되었습니다.`,
+    done: d('poapprove'), doneMsg: `구매 오더 ${jo(n.po, '이')} 승인되어 공급업체에 발송되었습니다.`,
     actions: [{ label: '승인', gui: '✔ 릴리스(승인)', disabled: d('poapprove'), onClick: () => s.mark('poapprove'), toast: '승인 완료' }],
   };
 });
@@ -164,7 +165,7 @@ export const [invoiceF, invoiceG] = pair(() => {
     kpis: [{ label: '총 금액', value: fmtAmt(VALUE, c.currency) }, { label: '잔액', value: fmtAmt(added ? 0 : VALUE, c.currency) }],
     fields: [{ label: '송장 발행처', value: SUPT }, { label: '참조', value: `INV-${n.po.slice(-4)}`, help: 'reference' }, { label: '구매 오더 참조', value: n.po }],
     tables: [{ title: '송장 품목', rows: added ? [ITEM] : [], rowKey: (r) => r.item, empty: "구매 오더를 '추가'하면 입고된 품목이 제안됩니다", cols: itemCols(c.currency) }],
-    done: d('invoice'), doneMsg: `공급업체 송장 ${n.inv}(회계 전표 ${n.invFi})이(가) 전기되었습니다.`,
+    done: d('invoice'), doneMsg: `공급업체 송장 ${n.inv}(회계 전표 ${n.invFi})${pc(n.inv, '이')} 전기되었습니다.`,
     actions: [
       { label: '추가', gui: '↵ 적용', disabled: added, onClick: () => s.setVal('invAdded', true) },
       { label: '전기', gui: '💾 전기', disabled: !added || d('invoice'), onClick: () => s.mark('invoice'), toast: `송장 ${n.inv}` },
@@ -183,7 +184,7 @@ export const [reserveF, reserveG] = pair(() => {
       { key: 'q', label: '수량', w: 60, align: 'right', render: (r) => `${r.qty} ${r.unit}` }, { key: 'a', label: '가용 재고', w: 80, align: 'right', render: () => '250 PC' },
       { key: 'r', label: '예약', w: 80, render: () => (d('reserve') ? n.rsv : '') },
     ] }],
-    footer: true, done: d('reserve'), doneMsg: `창고에 재고가 있어 구매 요청 대신 예약 ${n.rsv}이(가) 자동 생성되었습니다.`,
+    footer: true, done: d('reserve'), doneMsg: `창고에 재고가 있어 구매 요청 대신 예약 ${jo(n.rsv, '이')} 자동 생성되었습니다.`,
     actions: [{ label: '주문', gui: '💾 저장', disabled: d('reserve'), onClick: () => s.mark('reserve'), toast: `예약 ${n.rsv} (${c.plant})` }],
   };
 });
@@ -197,7 +198,7 @@ export const [giF, giG] = pair(() => {
       { key: 'm', label: '자재', w: 70, render: (r) => r.material }, { key: 'q', label: '수량', w: 60, align: 'right', render: (r) => `${r.qty} ${r.unit}` },
       { key: 'ok', label: '품목 OK', w: 60, render: () => '✓' },
     ] }],
-    footer: true, done: d('gi'), doneMsg: <>자재 전표 {n.gi}이(가) 전기되었습니다 – 재고가 줄고 코스트 센터 {SPLIT[0].cc}에 비용이 전기되었습니다.<Help k="reservation" /></>,
+    footer: true, done: d('gi'), doneMsg: <>자재 전표 {n.gi}{pc(n.gi, '이')} 전기되었습니다 – 재고가 줄고 코스트 센터 {SPLIT[0].cc}에 비용이 전기되었습니다.<Help k="reservation" /></>,
     actions: [{ label: '전기', gui: '전기', disabled: d('gi'), onClick: () => s.mark('gi'), toast: `자재 전표 ${n.gi}` }],
   };
 });

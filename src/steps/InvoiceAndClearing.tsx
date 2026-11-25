@@ -2,6 +2,7 @@
  * Phase 11 – Check Supplier Invoice List (F1060A / MIR4)   BPD 4.1.20
  * Phase 12 – Clear GR / IR (MR11, WebGUI in Fiori)           BPD 4.1.23
  */
+import { pc } from '../josa';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon, MessageStrip } from '@ui5/webcomponents-react';
@@ -216,7 +217,7 @@ function ClearingBody({ webgui }: { webgui?: boolean }) {
     </div>
   ) : (
     <div className="g-pad">
-      {s.cleared && <div className="g-ok-box">계정 유지보수 전표 {s.numbers.clearingDocNumber} / {fiscalYear()}이(가) 전기되었습니다.</div>}
+      {s.cleared && <div className="g-ok-box">계정 유지보수 전표 {s.numbers.clearingDocNumber} / {fiscalYear()}{pc(fiscalYear(), '이')} 전기되었습니다.</div>}
       <GTable title={`GR/IR 청산 계정 유지보수 – 회사 코드 ${c.companyCode}`} minRows={5} rows={rows} rowKey={(r) => r.po}
         selected={sel} onSelect={(k) => setSel((x) => (x.includes(k) ? x.filter((y) => y !== k) : [...x, k]))}
         columns={[

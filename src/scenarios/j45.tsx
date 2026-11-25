@@ -1,4 +1,5 @@
 /** J45 – Procurement of Direct Materials, adapted to the scenario contract (screens unchanged). */
+import { pc } from '../josa';
 import { useDemo, netValue } from '../store';
 import { STEPS, TCODE_MAP, type Requirement } from '../steps';
 import { SCREENS } from '../steps/index';
@@ -44,7 +45,7 @@ function useBriefing(): Briefing {
       <>
         <b>{c.companyName}</b>의 <b>{c.plantName} ({c.plant})</b>에서 판매용 상품 <b>{c.materialNumber}</b>의 재고가
         안전 재고 아래로 떨어졌습니다. 야간 MRP 실행 결과 구매 요청 <b>{s.numbers.prNumber}</b>
-        (<b>{fmtQty(c.quantity)} {c.unit}</b>, 납기 <b>{fmtDate(c.deliveryDate, df)}</b>)이(가) 자동으로 만들어졌습니다.
+        (<b>{fmtQty(c.quantity)} {c.unit}</b>, 납기 <b>{fmtDate(c.deliveryDate, df)}</b>){pc(s.numbers.prNumber, '이')} 자동으로 만들어졌습니다.
         <br />
         오늘 우리는 이 요청을 공급업체 <b>{c.supplierName}</b>에 발주(약 <b>{fmtAmt(netValue(c), c.currency)}</b>)하고,
         물품을 받고, 송장을 처리해 지급을 준비하기까지 <b>네 명의 담당자</b>가 하나의 시스템에서 일하는 모습을 따라갑니다.

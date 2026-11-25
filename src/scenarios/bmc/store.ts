@@ -3,6 +3,7 @@
  * Every movement step changes the stock of TG11 in plant 1010; overview, material documents and
  * analytics are computed from the steps that have been posted.
  */
+import { jo } from '../../josa';
 import { makeChain, step, type ChainOpts } from '../shared/chain';
 import { rnd } from '../shared/persist';
 
@@ -66,7 +67,7 @@ export const OPTS: ChainOpts = {
     return Object.fromEntries(MOVES.map((m, i) => [m.id, String(base + i)]));
   },
   msgs: {
-    ...Object.fromEntries(MOVES.map((m) => [m.id, (n: Record<string, string>) => `자재 전표 ${n[m.id]}이(가) 전기되었습니다 (${m.mvt})`])),
+    ...Object.fromEntries(MOVES.map((m) => [m.id, (n: Record<string, string>) => `자재 전표 ${jo(n[m.id], '이')} 전기되었습니다 (${m.mvt})`])),
     slow: () => '저회전 자재 조회 완료',
   },
 };

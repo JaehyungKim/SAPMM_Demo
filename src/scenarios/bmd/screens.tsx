@@ -1,4 +1,5 @@
 /** BMD – Purchase Contract: Fiori and SAP GUI screens for every step (BMD_DE test script). */
+import { jo, pc } from '../../josa';
 import { useState } from 'react';
 import { Dialog, MessageStrip } from '@ui5/webcomponents-react';
 import type { StepProps } from '../../steps/types';
@@ -74,7 +75,7 @@ export function PrF({ step }: StepProps) {
       <PageHeader breadcrumb={['구매 요청 관리 - 전문가용']} title={done ? `구매 요청 ${s.numbers.prRv}` : '새 구매 요청'} subtitle="Outline Agrmt. Reqn. (RV)"
         status={done ? <Status state="Positive" text={s.prRv === 'Contracted' ? '계약 생성됨' : '저장됨'} /> : undefined} />
       <div className="f-page-body">
-        {done && <MessageStrip design="Positive" hideCloseButton className="f-strip">구매 요청 {s.numbers.prRv}이(가) 저장되었습니다. 이 요청을 참조로 구매 계약을 만들 수 있습니다.</MessageStrip>}
+        {done && <MessageStrip design="Positive" hideCloseButton className="f-strip">구매 요청 {s.numbers.prRv}{pc(s.numbers.prRv, '이')} 저장되었습니다. 이 요청을 참조로 구매 계약을 만들 수 있습니다.</MessageStrip>}
         <Section title="일반 정보">
           <FormGroup cols={3} fields={[
             { label: '문서 유형', value: 'Outline Agrmt. Reqn. (RV)', help: 'outlineReq', required: true },
@@ -94,7 +95,7 @@ export function PrF({ step }: StepProps) {
           ]} />
         </Section>
       </div>
-      {!done && <FooterBar><FBtn emph onClick={() => { s.createRvPr(); showToast(`구매 요청 ${s.numbers.prRv}이(가) 생성되었습니다`); }}>생성</FBtn><FBtn>초안 저장</FBtn></FooterBar>}
+      {!done && <FooterBar><FBtn emph onClick={() => { s.createRvPr(); showToast(`구매 요청 ${jo(s.numbers.prRv, '이')} 생성되었습니다`); }}>생성</FBtn><FBtn>초안 저장</FBtn></FooterBar>}
     </FioriShell>
   );
 }
@@ -118,7 +119,7 @@ export function PrG({ step }: StepProps) {
           { key: 'g', label: '구매 그룹', w: 60, render: () => '001' },
           { key: 'b', label: '요구 추적 번호', w: 110, render: () => TRACKING },
         ]} />
-        {done && <div className="g-ok-box">구매 요청 {s.numbers.prRv}이(가) 저장되었습니다</div>}
+        {done && <div className="g-ok-box">구매 요청 {s.numbers.prRv}{pc(s.numbers.prRv, '이')} 저장되었습니다</div>}
       </div>
     </GuiWindow>
   );
@@ -132,7 +133,7 @@ function ContractPreview({ open, onClose }: { open: boolean; onClose: () => void
   const value = items.reduce((a, i) => a + i.target * i.price, 0);
   return (
     <Dialog open={open} headerText="구매 계약 미리보기" onClose={onClose} style={{ width: 720 }}
-      footer={<div className="f-dialog-footer"><FBtn emph onClick={() => { s.createContract(); onClose(); showToast(`구매 계약 ${s.numbers.contract}이(가) 생성되었습니다`); }}>생성</FBtn><FBtn onClick={onClose}>취소</FBtn></div>}>
+      footer={<div className="f-dialog-footer"><FBtn emph onClick={() => { s.createContract(); onClose(); showToast(`구매 계약 ${jo(s.numbers.contract, '이')} 생성되었습니다`); }}>생성</FBtn><FBtn onClick={onClose}>취소</FBtn></div>}>
       <FormGroup cols={2} fields={[
         { label: '계약 유형', value: 'Quantity Contract (MK)', help: 'contractType' },
         { label: '공급업체', value: SUP, help: 'supplier' },
@@ -175,7 +176,7 @@ export function ContractF({ step }: StepProps) {
       ]} />
       <div className="f-page-body">
         {s.contract && <MessageStrip design="Positive" hideCloseButton className="f-strip">
-          구매 계약 {s.numbers.contract}이(가) 생성되었습니다 – 상태: {s.contract.status === 'Pending' ? '승인 대기' : '릴리스됨'}.
+          구매 계약 {s.numbers.contract}{pc(s.numbers.contract, '이')} 생성되었습니다 – 상태: {s.contract.status === 'Pending' ? '승인 대기' : '릴리스됨'}.
         </MessageStrip>}
         <FTable title="구매 요청" count={rows.length} rowKey={(r) => r.k} rows={rows} selected={rows.filter((r) => r.mine).map((r) => r.k)} onSelect={() => undefined}
           toolbar={<><FBtn trans>RFQ 생성</FBtn><FBtn emph disabled={s.prRv !== 'Created'} onClick={() => setOpen(true)}>계약 생성</FBtn></>}
@@ -215,7 +216,7 @@ export function ContractG({ step }: StepProps) {
           { key: 'p', label: '순 가격', w: 80, align: 'right', render: () => fmtNum(CONTRACT_PRICE) },
           { key: 'w', label: '플랜트', w: 50, render: () => c.plant },
         ]} />
-        {ct && <div className="g-ok-box">수량 계약 {s.numbers.contract}이(가) 생성되었습니다{ct.status === 'Pending' ? ' (릴리스 대기)' : ''}</div>}
+        {ct && <div className="g-ok-box">수량 계약 {s.numbers.contract}{pc(s.numbers.contract, '이')} 생성되었습니다{ct.status === 'Pending' ? ' (릴리스 대기)' : ''}</div>}
       </div>
     </GuiWindow>
   );
@@ -280,7 +281,7 @@ function ContractObject({ step, mode }: StepProps & { mode: 'print' | 'version' 
   const [pdf, setPdf] = useState(false);
   const [cmp, setCmp] = useState(false);
   const df = c.dateFormat;
-  const save = () => { s.changeContract(Number(target) || ct.targetValue, reason); setEdit(false); setTab('버전 이력'); showToast(`구매 계약 ${s.numbers.contract}이(가) 저장되었습니다 – 새 버전 생성`); };
+  const save = () => { s.changeContract(Number(target) || ct.targetValue, reason); setEdit(false); setTab('버전 이력'); showToast(`구매 계약 ${jo(s.numbers.contract, '이')} 저장되었습니다 – 새 버전 생성`); };
   return (
     <FioriShell title="구매 계약 관리" role={step.role}>
       <PageHeader breadcrumb={['구매 계약 관리']} title={`구매 계약 ${s.numbers.contract}`} subtitle={`Quantity Contract (MK) · ${SUP}`}
@@ -377,7 +378,7 @@ function ContractGui({ step, mode }: StepProps & { mode: 'print' | 'version' }) 
             { key: 'r', label: '사유', w: 260, render: (v) => v.reason },
           ]} />}
         </GTabs>
-        {edit && s.versions.length > 0 && <div className="g-ok-box">수량 계약 {s.numbers.contract} 버전 {ct.version}이(가) 저장되었습니다</div>}
+        {edit && s.versions.length > 0 && <div className="g-ok-box">수량 계약 {s.numbers.contract} 버전 {ct.version}{pc(ct.version, '이')} 저장되었습니다</div>}
       </div>
       <PdfDialog open={pdf} onClose={() => setPdf(false)} title={`구매 계약 ${s.numbers.contract}`}><ContractDoc /></PdfDialog>
     </GuiWindow>
@@ -463,7 +464,7 @@ function PoPreview({ open, onClose }: { open: boolean; onClose: () => void }) {
   const items = NB_ITEMS.map((n) => ({ ...n, text: matText(n.material), unit: 'PC', price: CONTRACT_PRICE })) as DocItem[];
   return (
     <Dialog open={open} headerText="구매 오더 미리보기" onClose={onClose} style={{ width: 640 }}
-      footer={<div className="f-dialog-footer"><FBtn emph onClick={() => { s.createPO(); onClose(); showToast(`구매 오더 ${s.numbers.po}이(가) 생성되었습니다`); }}>오더</FBtn><FBtn onClick={onClose}>취소</FBtn></div>}>
+      footer={<div className="f-dialog-footer"><FBtn emph onClick={() => { s.createPO(); onClose(); showToast(`구매 오더 ${jo(s.numbers.po, '이')} 생성되었습니다`); }}>오더</FBtn><FBtn onClick={onClose}>취소</FBtn></div>}>
       <div className="f-preview-grid">
         <span>구매 오더 유형:</span><b>표준 PO (NB)</b>
         <span>공급업체:</span><b>{SUP}</b>
@@ -484,7 +485,7 @@ export function PoF({ step }: StepProps) {
       <PageHeader title="구매 요청 처리" subtitle="Process Purchase Requisitions (F1048)" />
       <FilterBar variant="표준" fields={[{ label: '구매 요청', value: <FVal v={s.numbers.prNb} /> }, { label: '플랜트', value: <FVal v={c.plant} /> }]} />
       <div className="f-page-body">
-        {s.po && <MessageStrip design="Positive" hideCloseButton className="f-strip">구매 요청 {s.numbers.prNb}이(가) 구매 오더 {s.numbers.po}(으)로 전환되었습니다 – 계약 {s.numbers.contract}의 릴리스 수량이 갱신되었습니다.</MessageStrip>}
+        {s.po && <MessageStrip design="Positive" hideCloseButton className="f-strip">구매 요청 {s.numbers.prNb}{pc(s.numbers.prNb, '이')} 구매 오더 {s.numbers.po}{pc(s.numbers.po, '로')} 전환되었습니다 – 계약 {s.numbers.contract}의 릴리스 수량이 갱신되었습니다.</MessageStrip>}
         <FTable title="구매 요청" count={NB_ITEMS.length} rowKey={(r) => r.item} rows={NB_ITEMS} selected={NB_ITEMS.map((r) => r.item)} onSelect={() => undefined}
           toolbar={<FBtn emph disabled={!!s.po} onClick={() => setOpen(true)}>구매 오더 생성</FBtn>} columns={[
             { key: 'pr', label: '구매 요청', render: (r) => <><FLink>{s.numbers.prNb}</FLink><div className="f-muted">품목 {r.item} · NB</div></> },
@@ -517,7 +518,7 @@ export function PoG({ step }: StepProps) {
           { key: 'ai', label: '품목', w: 40, render: (r) => r.item },
           { key: 'po', label: '구매 오더', w: 90, render: () => (s.po ? s.numbers.po : '') },
         ]} />
-        {s.po && <div className="g-ok-box">표준 구매 오더 {s.numbers.po}이(가) 생성되었습니다 (계약 {s.numbers.contract} 참조)</div>}
+        {s.po && <div className="g-ok-box">표준 구매 오더 {s.numbers.po}{pc(s.numbers.po, '이')} 생성되었습니다 (계약 {s.numbers.contract} 참조)</div>}
       </div>
     </GuiWindow>
   );

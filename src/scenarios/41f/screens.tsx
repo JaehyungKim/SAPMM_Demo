@@ -1,4 +1,5 @@
 /** 41F – Pipeline Materials screens (Fiori + SAP GUI from one spec per step). */
+import { jo } from '../../josa';
 import { fmtAmt, fmtDate, todayIso } from '../../format';
 import { useOrg } from '../types';
 import { autoLaunchpad, pair } from '../shared/kit';
@@ -23,7 +24,7 @@ export const [inforecordF, inforecordG] = pair(() => {
       { label: '표준 수량', value: `1 ${UNIT}` }, { label: '세금 코드', value: 'V1', help: 'taxCode' },
       { label: '순 가격', value: `${fmtAmt(PRICE, c.currency)} / ${UNIT}`, help: 'infoRecord' },
     ],
-    footer: true, done: d('inforecord'), doneMsg: `구매 정보 레코드 ${n.info}이(가) 저장되었습니다 – 파이프라인 출고 시 이 가격으로 공급업체 채무가 계산됩니다.`,
+    footer: true, done: d('inforecord'), doneMsg: `구매 정보 레코드 ${jo(n.info, '이')} 저장되었습니다 – 파이프라인 출고 시 이 가격으로 공급업체 채무가 계산됩니다.`,
     actions: [{ label: '저장', gui: '💾 저장', disabled: d('inforecord'), onClick: () => s.mark('inforecord'), toast: `정보 레코드 ${n.info}` }],
   };
 });
@@ -42,7 +43,7 @@ export const [consumeF, consumeG] = pair(() => {
       { key: 'q', label: '수량', w: 80, align: 'right', render: (r) => `${r.qty} ${r.unit}` }, { key: 'v', label: '금액', w: 90, align: 'right', render: () => fmtAmt(VALUE, c.currency) },
       { key: 'ok', label: '품목 OK', w: 60, render: () => '✓' },
     ] }],
-    footer: true, done: d('consume'), doneMsg: `자재 전표 ${n.md}이(가) 전기되었습니다 – 재고 없이 바로 비용이 되고, 공급업체 ${SUP.no}에 대한 파이프라인 채무가 쌓였습니다.`,
+    footer: true, done: d('consume'), doneMsg: `자재 전표 ${jo(n.md, '이')} 전기되었습니다 – 재고 없이 바로 비용이 되고, 공급업체 ${SUP.no}에 대한 파이프라인 채무가 쌓였습니다.`,
     actions: [{ label: '전기', gui: '전기', disabled: d('consume'), onClick: () => s.mark('consume'), toast: `자재 전표 ${n.md}` }],
     extra: d('consume') ? <JournalTable lines={[
       { acc: GL, text: '소모성 비용 (파이프라인)', dc: '차변', amt: VALUE, cc: CC },
@@ -63,7 +64,7 @@ export const [settleF, settleG] = pair(() => {
       { label: '미정산 출고만', value: '☑' }, { label: '세금 기준일', value: fmtDate(todayIso(), c.dateFormat) },
     ],
     info: checked && !d('settle') ? '점검 완료: 작업을 예약할 수 있습니다 (You can go ahead and schedule the job).' : undefined,
-    footer: true, done: d('settle'), doneMsg: `작업 ${n.job}이(가) 예약·완료되었습니다 – 정산 문서 ${n.inv}, 회계 전표 ${n.invFi} (${fmtAmt(VALUE, c.currency)}).`,
+    footer: true, done: d('settle'), doneMsg: `작업 ${jo(n.job, '이')} 예약·완료되었습니다 – 정산 문서 ${n.inv}, 회계 전표 ${n.invFi} (${fmtAmt(VALUE, c.currency)}).`,
     actions: [
       { label: '점검', gui: '✔ 점검', disabled: checked, onClick: () => s.setVal('checked', true) },
       { label: '정산 예약', gui: '▶ 예약', disabled: !checked || d('settle'), onClick: () => s.mark('settle'), toast: `작업 ${n.job}` },

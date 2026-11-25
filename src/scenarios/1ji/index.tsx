@@ -19,10 +19,10 @@ const WHY: Record<string, [string, string, string]> = {
 function useGuide(id: string) {
   const s = use1ji();
   const a = APPS.find((x) => x.id === id);
-  if (!a) return launchGuide('1ji', STEPS, '구매 관리자가 실시간 구매 현황을 점검하려 합니다.', '별도 BI 없이 S/4HANA 안에서 실시간 분석을 합니다.');
+  if (!a) return launchGuide('1ji', STEPS, '구매 담당자가 아침에 실시간 구매 현황을 점검합니다. 다른 시나리오에서 만든 문서(★ 표시)도 바로 집계됩니다.', '별도 BI 없이 S/4HANA 안에서 실시간 분석을 합니다.');
   const [sit, why, value] = WHY[id];
   return GX(sit, [
-    L('KPI·표 설명', '거래 데이터가 그대로 집계되므로 전기 즉시 수치가 바뀝니다 (배치·DW 없음).'),
+    L('KPI·표 설명', '거래 데이터가 그대로 집계되므로 전기 즉시 수치가 바뀝니다 (배치·DW 없음). ★ 표시 행은 이 데모의 다른 시나리오에서 만든 문서입니다.'),
     B(a.action, a.gui, why, !!s.done[id]),
   ], value);
 }

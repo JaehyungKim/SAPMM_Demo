@@ -1,4 +1,5 @@
 /** SL4 – Supplier Evaluation and Performance Monitoring: definition, guide and briefing. */
+import { jo } from '../../josa';
 import { ROLE_USER } from '../../steps';
 import type { Briefing } from '../types';
 import { B, GX, L, defineChain, launchGuide } from '../shared/define';
@@ -23,13 +24,13 @@ function useGuide(id: string) {
     ], '예외 상황을 공정하게 반영합니다.');
     case 'questionnaire': return GX('숫자로 측정하기 어려운 협업·대응 품질은 설문으로 평가합니다.', [
       B('저장', '💾 저장', '질문·유형·필수 여부를 담은 설문지를 저장합니다.', !!s.vals.qSaved || d('questionnaire')),
-      B('릴리스', '📤 릴리스', `설문지 ${n.quest}를 평가에 쓸 수 있게 합니다.`, d('questionnaire')),
+      B('릴리스', '📤 릴리스', `설문지 ${jo(n.quest, '을')} 평가에 쓸 수 있게 합니다.`, d('questionnaire')),
     ], '정성 평가도 표준화된 설문으로 일관되게 수집합니다.');
     case 'request': return GX(`현업 평가자 ${ROLE_USER.Employee.name}에게 분기 평가를 요청합니다.`, [
       L('평가자·기간 설명', '평가자에게 이메일과 작업이 전달됩니다.'),
-      B('평가 요청 제출', '📤 요청 제출', `평가 요청 ${n.req}가 제출됩니다.`, d('request')),
+      B('평가 요청 제출', '📤 요청 제출', `평가 요청 ${jo(n.req, '이')} 제출됩니다.`, d('request')),
     ], '평가 요청과 응답이 시스템에서 추적됩니다.');
-    case 'respond': return GX(`${ROLE_USER.Employee.name}이(가) 받은 평가 요청에 응답합니다.`, [
+    case 'respond': return GX(`${jo(ROLE_USER.Employee.name, '이')} 받은 평가 요청에 응답합니다.`, [
       B('제출', '📤 제출', `설문 점수 ${QUEST_SCORE}점이 반영됩니다.`, d('respond')),
     ], '실제 협업한 현업의 목소리가 평가에 들어갑니다.');
     case 'scorecard': return GX('제출된 응답으로 만들어진 스코어카드를 봅니다.', [

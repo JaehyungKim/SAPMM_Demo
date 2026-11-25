@@ -1,4 +1,5 @@
 /** BMY – Subcontracting: steps, sample data and document chain. */
+import { jo } from '../../josa';
 import { makeChain, step, type ChainOpts } from '../shared/chain';
 import { rnd } from '../shared/persist';
 
@@ -36,13 +37,13 @@ export const OPTS: ChainOpts = {
     inv: String(5105600000 + rnd(100, 900)), invFi: String(5100000000 + rnd(100, 900)),
   }),
   msgs: {
-    mrp: (n) => `MRP 실행 완료 – 외주 구매 요청 ${n.pr}이(가) 생성되었습니다`,
-    po: (n) => `표준 PO ${n.po}이(가) 생성되었습니다`,
-    approve: (n) => `구매 오더 ${n.po}이(가) 릴리스되었습니다`,
-    delivery: (n) => `납품 ${n.dlv}이(가) 저장되었습니다`,
+    mrp: (n) => `MRP 실행 완료 – 외주 구매 요청 ${jo(n.pr, '이')} 생성되었습니다`,
+    po: (n) => `표준 PO ${jo(n.po, '이')} 생성되었습니다`,
+    approve: (n) => `구매 오더 ${jo(n.po, '이')} 릴리스되었습니다`,
+    delivery: (n) => `납품 ${jo(n.dlv, '이')} 저장되었습니다`,
     pgi: (n) => `납품 ${n.dlv} 출고가 전기되었습니다 (541)`,
-    gr: (n) => `자재 전표 ${n.gr}이(가) 전기되었습니다`,
-    invoice: (n) => `전표 번호 ${n.inv}이(가) 생성되었습니다`,
+    gr: (n) => `자재 전표 ${jo(n.gr, '이')} 전기되었습니다`,
+    invoice: (n) => `전표 번호 ${jo(n.inv, '이')} 생성되었습니다`,
   },
 };
 

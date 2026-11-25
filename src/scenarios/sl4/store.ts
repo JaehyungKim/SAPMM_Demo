@@ -1,4 +1,5 @@
 /** SL4 – Supplier Evaluation and Performance Monitoring: steps, sample data and chain. */
+import { jo } from '../../josa';
 import { makeChain, step, type ChainOpts } from '../shared/chain';
 import { rnd } from '../shared/persist';
 
@@ -42,10 +43,10 @@ export const OPTS: ChainOpts = {
   msgs: {
     weighting: () => '가중치 및 점수 규칙이 저장되었습니다',
     adjust: () => '운영 평가 점수가 조정되었습니다',
-    questionnaire: (n) => `설문지 ${n.quest}이(가) 릴리스되었습니다`,
-    request: (n) => `그룹 기반 평가 요청 ${n.req}이(가) 제출되었습니다`,
-    respond: (n) => `평가 응답 ${n.resp}이(가) 제출되었습니다`,
-    output: (n) => `평가 점수 출력 ${n.out}이(가) 발송되었습니다`,
+    questionnaire: (n) => `설문지 ${jo(n.quest, '이')} 릴리스되었습니다`,
+    request: (n) => `그룹 기반 평가 요청 ${jo(n.req, '이')} 제출되었습니다`,
+    respond: (n) => `평가 응답 ${jo(n.resp, '이')} 제출되었습니다`,
+    output: (n) => `평가 점수 출력 ${jo(n.out, '이')} 발송되었습니다`,
   },
 };
 

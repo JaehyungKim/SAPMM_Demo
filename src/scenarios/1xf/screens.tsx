@@ -1,4 +1,5 @@
 /** 1XF – Request for Price screens (Fiori + SAP GUI from one spec per step). */
+import { jo } from '../../josa';
 import { addDays, fmtAmt, fmtDate, todayIso } from '../../format';
 import { Help } from '../../components/Help';
 import { useOrg } from '../types';
@@ -33,7 +34,7 @@ export const [rfqF, rfqG] = pair(() => {
         { key: 'n', label: '공급업체', w: 90, render: (r) => r.no }, { key: 'nm', label: '이름', w: 200, render: (r) => r.name },
       ] },
     ],
-    footer: true, done: d('rfq'), doneMsg: `RFQ ${n.rfq}이(가) 게시되었습니다 – 자동 승인 워크플로를 거쳐 두 공급업체에 이메일로 발송되었습니다.`,
+    footer: true, done: d('rfq'), doneMsg: `RFQ ${jo(n.rfq, '이')} 게시되었습니다 – 자동 승인 워크플로를 거쳐 두 공급업체에 이메일로 발송되었습니다.`,
     actions: [
       { label: '저장', gui: '💾 저장', disabled: saved, onClick: () => s.setVal('saved', true), toast: `RFQ ${n.rfq} 저장` },
       { label: '게시', gui: '📤 게시', disabled: !saved || d('rfq'), onClick: () => s.mark('rfq'), toast: '게시 완료' },
@@ -86,7 +87,7 @@ export const [awardF, awardG] = pair(() => {
       { key: 'b', label: '평가', w: 110, render: (r) => (r === BEST ? <>★ 최저가 품목<Help k="award" /></> : '') },
       { key: 'a', label: '낙찰', w: 70, render: (r) => (d('award') && r === BEST ? '✔ 낙찰' : '') },
     ] }],
-    done: d('award'), doneMsg: `견적 ${n.q1}이(가) 낙찰되었습니다 (자동 승인 워크플로). 다른 견적은 거절 처리됩니다.`,
+    done: d('award'), doneMsg: `견적 ${jo(n.q1, '이')} 낙찰되었습니다 (자동 승인 워크플로). 다른 견적은 거절 처리됩니다.`,
     actions: [{ label: '낙찰', gui: '🏆 낙찰', disabled: d('award'), onClick: () => s.mark('award'), toast: '낙찰 완료' }],
   };
 });
@@ -101,7 +102,7 @@ export const [followonF, followonG] = pair(() => {
       { key: 'm', label: '자재', w: 70, render: (r) => r.material }, { key: 'q', label: '수량', w: 70, align: 'right', render: (r) => r.qty },
       { key: 'p', label: '계약 단가', w: 90, align: 'right', render: () => fmtAmt(BEST.price, c.currency) },
     ] }],
-    footer: true, done: d('followon'), doneMsg: `구매 계약 ${n.contract}이(가) 견적 ${n.q1}을 참조해 생성되었습니다 – 이후 발주는 계약 단가로 처리됩니다.`,
+    footer: true, done: d('followon'), doneMsg: `구매 계약 ${jo(n.contract, '이')} 견적 ${jo(n.q1, '을')} 참조해 생성되었습니다 – 이후 발주는 계약 단가로 처리됩니다.`,
     actions: [{ label: '구매 계약 생성', gui: '📄 계약 생성', disabled: d('followon'), onClick: () => s.mark('followon'), toast: `계약 ${n.contract}` }],
   };
 });
@@ -112,7 +113,7 @@ export const [situationF, situationG] = pair(() => {
     app: '내 상황', appId: 'F4154', title: `RFQ ${n.rfq} – 상황`, gtitle: '상황 처리: 견적 부족',
     status: d('situation') ? ['Positive', '해결됨'] : ['Critical', '열림'],
     tables: [{ title: '상황', rows: [{ k: '1' }], rowKey: (r) => r.k, cols: [
-      { key: 't', label: '알림', w: 380, render: () => `RFQ ${n.rfq}이(가) 제출 마감일에 가깝습니다 – 받은 견적 수가 적습니다` },
+      { key: 't', label: '알림', w: 380, render: () => `RFQ ${jo(n.rfq, '이')} 제출 마감일에 가깝습니다 – 받은 견적 수가 적습니다` },
       { key: 'r', label: '입찰 비율', w: 80, render: () => '50 %' },
     ] }],
     warn: d('situation') ? undefined : '조건: 입찰 비율 50% 미만 · 마감까지 30일 미만 → 구매 그룹 001 담당자에게 알림',

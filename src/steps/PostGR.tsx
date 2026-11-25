@@ -1,4 +1,5 @@
 /** Phase 7 – Post Goods Receipt for Purchasing Document (F0843 / MIGO, movement type 101). BPD 4.1.9 */
+import { pc } from '../josa';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, Icon, MessageStrip } from '@ui5/webcomponents-react';
@@ -102,7 +103,7 @@ export function PostGRFiori({ step }: StepProps) {
           <FBtn emph onClick={() => { setDone(null); nav('/step/gr-detail'); }}>자재 전표 표시</FBtn>
           <FBtn onClick={() => setDone(null)}>닫기</FBtn>
         </div>}>
-        <div className="f-success"><Icon name="message-success" /> 자재 전표 {done}이(가) 전기되었습니다.</div>
+        <div className="f-success"><Icon name="message-success" /> 자재 전표 {done}{pc(done, '이')} 전기되었습니다.</div>
         <p className="f-dialog-text">재고 증가: {fmtQty(f.qty)} {c.unit} · {f.stock} · 저장 위치 {f.sloc}<br />상태: <Status state="Positive" text={f.open === 0 ? '입고 완료' : '부분 입고'} /></p>
       </Dialog>
     </FioriShell>

@@ -4,6 +4,7 @@
  * → standard PR converted to a release order (PO against the contract) → GR → invoice
  * → [contract change with version history]. Sample data from BMD_DE test script (2025 FPS2).
  */
+import { jo } from '../../josa';
 import { create } from 'zustand';
 import { demoStorage } from '../../persistStorage';
 import { persist } from 'zustand/middleware';
@@ -135,7 +136,7 @@ export const useBmd = create<BmdState>()(
       markVisited: (id) => set((s) => (s.visited.includes(id) ? s : { visited: [...s.visited, id] })),
       reset: () => set(fresh()),
 
-      createRvPr: () => { set({ prRv: 'Created' }); msg(`구매 요청 ${get().numbers.prRv}이(가) 생성되었습니다`); },
+      createRvPr: () => { set({ prRv: 'Created' }); msg(`구매 요청 ${jo(get().numbers.prRv, '이')} 생성되었습니다`); },
 
       createContract: () => {
         const items: ContractItem[] = RV_ITEMS.map((r) => ({ item: r.item, material: r.material, text: MATS[r.material as keyof typeof MATS], target: r.target, price: CONTRACT_PRICE, released: 0 }));
@@ -146,14 +147,14 @@ export const useBmd = create<BmdState>()(
           prRv: 'Contracted',
           contract: { status: needs ? 'Pending' : 'Released', createdAt: todayIso(), validFrom: todayIso(), validTo: yearEnd(), targetValue: value, items, version: 1, note: '' },
         });
-        msg(`수량 계약 ${get().numbers.contract}이(가) 생성되었습니다`);
+        msg(`수량 계약 ${jo(get().numbers.contract, '이')} 생성되었습니다`);
       },
 
       decideContract: (approve, note) => {
         const ct = get().contract;
         if (!ct) return;
         set({ contract: { ...ct, status: approve ? 'Released' : 'Rejected', note } });
-        msg(`구매 계약 ${get().numbers.contract}이(가) ${approve ? '릴리스' : '반려'}되었습니다`);
+        msg(`구매 계약 ${jo(get().numbers.contract, '이')} ${approve ? '릴리스' : '반려'}되었습니다`);
       },
 
       markPrinted: () => set({ printed: true }),
@@ -175,13 +176,13 @@ export const useBmd = create<BmdState>()(
       postGR: (dn, qty) => {
         const n = get().numbers;
         set({ gr: { docNo: n.gr, fiDocNo: n.grFi, date: todayIso(), dn, qty } });
-        msg(`자재 전표 ${n.gr}이(가) 전기되었습니다`);
+        msg(`자재 전표 ${jo(n.gr, '이')} 전기되었습니다`);
       },
 
       postInvoice: (ref, amount) => {
         const n = get().numbers;
         set({ invoice: { doc: n.inv, fi: n.invFi, ref, amount, date: todayIso(), blocked: false } });
-        msg(`전표 번호 ${n.inv}이(가) 생성되었습니다`);
+        msg(`전표 번호 ${jo(n.inv, '이')} 생성되었습니다`);
       },
 
       changeContract: (targetValue, reason) => {
@@ -192,31 +193,31 @@ export const useBmd = create<BmdState>()(
           contract: { ...ct, targetValue, version: v },
           versions: [...get().versions, { v, date: new Date().toISOString(), reason, field: '목표 금액 (EKKO-KTWRT)', oldValue: String(ct.targetValue), newValue: String(targetValue), user: 'PURCHASER' }],
         });
-        msg(`구매 계약 ${get().numbers.contract} 버전 ${v}이(가) 생성되었습니다`);
+        msg(`구매 계약 ${get().numbers.contract} 버전 ${jo(v, '이')} 생성되었습니다`);
       },
 
       createReference: () => {
         set({ ext: { ...get().ext, reference: todayIso() } });
-        msg(`계약 ${get().numbers.refContract}이(가) 템플릿을 참조하여 생성되었습니다`);
+        msg(`계약 ${jo(get().numbers.refContract, '이')} 템플릿을 참조하여 생성되었습니다`);
       },
 
       massExtend: () => {
         const ct = get().contract;
         if (!ct) return;
         set({ contract: { ...ct, validTo: nextYearEnd() }, ext: { ...get().ext, mass: todayIso() } });
-        msg(`일괄 변경 작업 ${get().numbers.job}이(가) 완료되었습니다`);
+        msg(`일괄 변경 작업 ${jo(get().numbers.job, '이')} 완료되었습니다`);
       },
 
       approvePO: () => {
         set({ ext: { ...get().ext, poapprove: todayIso() } });
-        msg(`구매 오더 ${get().numbers.po}이(가) 승인되었습니다`);
+        msg(`구매 오더 ${jo(get().numbers.po, '이')} 승인되었습니다`);
       },
 
       reverseGR: () => {
         const gr = get().gr;
         if (!gr || get().ext.reverse) return;
         set({ gr: { ...gr, qty: { ...gr.qty, [REVERSAL.item]: (gr.qty[REVERSAL.item] ?? 0) - REVERSAL.qty } }, ext: { ...get().ext, reverse: todayIso() } });
-        msg(`자재 전표 ${get().numbers.revDoc}이(가) 전기되었습니다 (102 역분개)`);
+        msg(`자재 전표 ${jo(get().numbers.revDoc, '이')} 전기되었습니다 (102 역분개)`);
       },
 
       meets: (r) => {

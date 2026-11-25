@@ -1,4 +1,5 @@
 /** 1XF – Request for Price: steps, sample data and document chain. */
+import { jo } from '../../josa';
 import { makeChain, step, type ChainOpts } from '../shared/chain';
 import { rnd } from '../shared/persist';
 
@@ -28,10 +29,10 @@ export const OPTS: ChainOpts = {
     rfq: String(7000000100 + rnd(0, 99)), q1: String(8000000100 + rnd(0, 49)), q2: String(8000000150 + rnd(0, 49)), contract: String(4600000300 + rnd(0, 99)),
   }),
   msgs: {
-    rfq: (n) => `RFQ ${n.rfq}이(가) 게시되었습니다`,
-    quotes: (n) => `공급업체 견적 ${n.q1}, ${n.q2}이(가) 제출되었습니다`,
-    award: (n) => `견적 ${n.q1}이(가) 낙찰되었습니다`,
-    followon: (n) => `구매 계약 ${n.contract}이(가) 생성되었습니다`,
+    rfq: (n) => `RFQ ${jo(n.rfq, '이')} 게시되었습니다`,
+    quotes: (n) => `공급업체 견적 ${n.q1}, ${jo(n.q2, '이')} 제출되었습니다`,
+    award: (n) => `견적 ${jo(n.q1, '이')} 낙찰되었습니다`,
+    followon: (n) => `구매 계약 ${jo(n.contract, '이')} 생성되었습니다`,
     situation: () => '상황이 해결됨으로 처리되었습니다',
   },
 };

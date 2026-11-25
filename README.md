@@ -16,7 +16,7 @@ SAP S/4HANA Cloud 조달 Scope Item 13개(J45 · BMD · BNX · 18J · 22Z · BMR
 | **41F** | 파이프라인 자재 조달 (Procurement of Pipeline Materials) | 파이프라인 정보 레코드(ME11) → 소비 기록 201P(MIGO) → 정산 작업(F1683) → 결과 확인 | 41F_S4HANA2025-FPS2_BPD |
 | **1XF** | 가격 요청 (Request for Price) | RFQ 생성·게시 → 공급업체 견적 2건 입력 → 견적 확인 → 비교·낙찰 → 구매 계약 생성 → 견적 부족 상황 알림 | 1XF_S4HANA2025-FPS2_BPD |
 | **SL4** | 공급업체 평가 (Supplier Evaluation and Performance Monitoring) | 가중치·점수 규칙 → 운영 평가 → 점수 조정 → 설문지 → 평가 요청 → 평가자 응답 → 스코어카드 → 종합 점수 → 발송 | SL4_S4HANA2025-FPS2_BPD |
-| **1JI** | 실시간 구매 분석 (Real-Time Reporting, Monitoring, and Spend Visibility) | 구매 개요 페이지 → 계약·RFQ·PO·확인·일정 계약 모니터링 → 가격 차이 → 공급업체 분석 → 지연 PO → 송장 자동화율 | 1JI_S4HANA2025-FPS2_BPD |
+| **1JI** | 실시간 구매 분석 (Real-Time Reporting, Monitoring, and Spend Visibility) | 구매 개요 페이지 → 계약·RFQ·PO·확인·일정 계약 모니터링 → 가격 차이 → 공급업체 분석 → 지연 PO → 송장 자동화율 (J45 PO · BMD 계약 · 1XF RFQ · BMR 일정 계약 · 41F 정산을 ★ 행으로 함께 표시) | 1JI_S4HANA2025-FPS2_BPD |
 | **BMC** | 핵심 재고 관리 (Core Inventory Management) | 초기 재고 → 참조 없는 입고(501) → 폐기 CO-PA·코스트 센터(551) → 보류(344)·해제(343)·품질 검사(350) → 1단계 이전(311) → 2단계 이전(313/315) → 재고 현황·자재 전표 → 저회전·불용 재고·이동·기간 분석 | BMC_S4HANA2025-FPS2_BPD |
 
 상단 바의 **시나리오 이름(⌄)** 을 누르면 시나리오를 고를 수 있습니다. 맨 왼쪽 **☰** 버튼은 프로세스 단계 패널을 열고 닫습니다(패널 오른쪽 위 **X** 로도 닫기). 시나리오마다 문서 체인과 진행 상태가 따로 저장됩니다.

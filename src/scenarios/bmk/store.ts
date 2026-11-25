@@ -1,4 +1,5 @@
 /** BMK – Return to Supplier (BMK_DE): steps, sample data and document chain. */
+import { jo } from '../../josa';
 import { makeChain, step, type ChainOpts } from '../shared/chain';
 import { rnd } from '../shared/persist';
 
@@ -36,12 +37,12 @@ export const OPTS: ChainOpts = {
     replpo: String(4500001400 + rnd(0, 99)), ibd: String(180000000 + rnd(100, 999)), replgr: String(5000000000 + rnd(1000, 9000)), ivdoc: String(5105600000 + rnd(901, 999)),
   }),
   msgs: {
-    transfer: (n) => `자재 전표 ${n.tr}이(가) 전기되었습니다 (이동 유형 311)`,
-    retpo: (n) => `반품 구매 오더(Enh.Ret.to Supplier) ${n.retpo}이(가) 생성되었습니다`,
-    delivery: (n) => `납품 ${n.dlv}이(가) 백그라운드에서 생성되었습니다`,
-    pgi: (n) => `반품(구매 오더) ${n.dlv}이(가) 저장되었습니다 – 출고 전기 완료`,
-    credit: (n) => `대변 메모 ${n.credit}이(가) 전기되었습니다`,
-    replace: (n) => `대체 구매 오더 ${n.replpo}이(가) 생성되었습니다`,
+    transfer: (n) => `자재 전표 ${jo(n.tr, '이')} 전기되었습니다 (이동 유형 311)`,
+    retpo: (n) => `반품 구매 오더(Enh.Ret.to Supplier) ${jo(n.retpo, '이')} 생성되었습니다`,
+    delivery: (n) => `납품 ${jo(n.dlv, '이')} 백그라운드에서 생성되었습니다`,
+    pgi: (n) => `반품(구매 오더) ${jo(n.dlv, '이')} 저장되었습니다 – 출고 전기 완료`,
+    credit: (n) => `대변 메모 ${jo(n.credit, '이')} 전기되었습니다`,
+    replace: (n) => `대체 구매 오더 ${jo(n.replpo, '이')} 생성되었습니다`,
     replgr: (n) => `인바운드 납품 ${n.ibd}에 대한 입고가 전기되었습니다`,
     followup: () => '물류 후속 조치가 저장되었습니다',
   },

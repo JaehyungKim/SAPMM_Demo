@@ -1,4 +1,5 @@
 /** 22Z – Procurement of Services: steps, sample data and document chain. */
+import { jo } from '../../josa';
 import { makeChain, step, type ChainOpts } from '../shared/chain';
 import { rnd } from '../shared/persist';
 
@@ -32,14 +33,14 @@ export const OPTS: ChainOpts = {
     ses: String(1000000100 + rnd(0, 99)), gr: String(5000000000 + rnd(1000, 4999)), inv: String(5105600000 + rnd(100, 900)), invFi: String(5100000000 + rnd(100, 900)),
   }),
   msgs: {
-    contract: (n) => `계약 ${n.contract}이(가) 생성되었습니다`,
-    pr: (n) => `구매 요청 ${n.pr}이(가) 생성되었습니다`,
-    autopo: (n) => `작업 ${n.job} 완료 – 구매 오더 ${n.po}이(가) 생성되었습니다`,
-    po: (n) => `표준 PO ${n.po}이(가) 생성되었습니다`,
-    approve: (n) => `구매 오더 ${n.po}이(가) 릴리스되었습니다`,
-    ses: (n) => `서비스 입력 시트 ${n.ses}이(가) 승인 요청되었습니다`,
-    sesapprove: (n) => `서비스 입력 시트 ${n.ses}이(가) 승인되었습니다 – 자재 전표 ${n.gr}`,
-    invoice: (n) => `전표 번호 ${n.inv}이(가) 생성되었습니다 (지급 보류)`,
+    contract: (n) => `계약 ${jo(n.contract, '이')} 생성되었습니다`,
+    pr: (n) => `구매 요청 ${jo(n.pr, '이')} 생성되었습니다`,
+    autopo: (n) => `작업 ${n.job} 완료 – 구매 오더 ${jo(n.po, '이')} 생성되었습니다`,
+    po: (n) => `표준 PO ${jo(n.po, '이')} 생성되었습니다`,
+    approve: (n) => `구매 오더 ${jo(n.po, '이')} 릴리스되었습니다`,
+    ses: (n) => `서비스 입력 시트 ${jo(n.ses, '이')} 승인 요청되었습니다`,
+    sesapprove: (n) => `서비스 입력 시트 ${jo(n.ses, '이')} 승인되었습니다 – 자재 전표 ${n.gr}`,
+    invoice: (n) => `전표 번호 ${jo(n.inv, '이')} 생성되었습니다 (지급 보류)`,
     release: (n) => `송장 ${n.inv}의 지급 보류가 해제되었습니다`,
   },
 };

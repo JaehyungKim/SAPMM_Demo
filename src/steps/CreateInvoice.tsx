@@ -1,4 +1,5 @@
 /** Phase 10 – Create Supplier Invoice with PO/GR relation (F0859 / MIRO). BPD 4.1.16.1 Option A */
+import { pc } from '../josa';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, Icon, MessageStrip } from '@ui5/webcomponents-react';
@@ -83,7 +84,7 @@ export function CreateInvoiceFiori({ step }: StepProps) {
       <div className="f-page-body">
         {posted && (
           <MessageStrip design="Positive" hideCloseButton className="f-strip">
-            공급업체 송장 {s.numbers.invoiceDocNumber} / {fiscalYear()}이(가) 전기되었습니다 (분개 {s.numbers.accountingDocNumber}). <FLink onClick={() => nav('/step/display-invoice')}>송장 리스트에서 확인</FLink>
+            공급업체 송장 {s.numbers.invoiceDocNumber} / {fiscalYear()}{pc(fiscalYear(), '이')} 전기되었습니다 (분개 {s.numbers.accountingDocNumber}). <FLink onClick={() => nav('/step/display-invoice')}>송장 리스트에서 확인</FLink>
           </MessageStrip>
         )}
         <Section title="일반 정보">
@@ -142,7 +143,7 @@ export function CreateInvoiceFiori({ step }: StepProps) {
       <SimDialog open={sim} onClose={() => setSim(false)} f={f} />
       <Dialog open={done} headerText="성공" onClose={() => setDone(false)} style={{ width: 460 }}
         footer={<div className="f-dialog-footer"><FBtn emph onClick={() => { setDone(false); nav('/step/display-invoice'); }}>송장 표시</FBtn><FBtn onClick={() => setDone(false)}>닫기</FBtn></div>}>
-        <div className="f-success"><Icon name="message-success" /> 공급업체 송장 {s.numbers.invoiceDocNumber}이(가) 전기되었습니다.</div>
+        <div className="f-success"><Icon name="message-success" /> 공급업체 송장 {s.numbers.invoiceDocNumber}{pc(s.numbers.invoiceDocNumber, '이')} 전기되었습니다.</div>
         <p className="f-dialog-text">분개: {s.numbers.accountingDocNumber} (RE) · 회계 연도 {fiscalYear()}</p>
       </Dialog>
     </FioriShell>

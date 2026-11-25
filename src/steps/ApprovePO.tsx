@@ -1,4 +1,5 @@
 /** Phase 3 – Approve Purchase Order via flexible workflow (My Inbox F0862 / SBWP). BPD 4.1.3 */
+import { jo } from '../josa';
 import { useState } from 'react';
 import { Dialog, Icon, MessageStrip } from '@ui5/webcomponents-react';
 import { useDemo, netValue } from '../store';
@@ -13,8 +14,8 @@ function DecisionDialog({ kind, onClose }: { kind: 'approve' | 'reject' | null; 
   const [note, setNote] = useState('');
   if (!kind) return null;
   const submit = () => {
-    if (kind === 'approve') { s.approvePO(note); showToast(`구매 오더 ${s.numbers.poNumber}이(가) 승인되었습니다`); }
-    else { s.rejectPO(note); showToast(`구매 오더 ${s.numbers.poNumber}이(가) 반려되었습니다`); }
+    if (kind === 'approve') { s.approvePO(note); showToast(`구매 오더 ${jo(s.numbers.poNumber, '이')} 승인되었습니다`); }
+    else { s.rejectPO(note); showToast(`구매 오더 ${jo(s.numbers.poNumber, '이')} 반려되었습니다`); }
     setNote('');
     onClose();
   };

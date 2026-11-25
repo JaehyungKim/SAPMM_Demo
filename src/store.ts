@@ -6,6 +6,7 @@
  * (PR → PO → GR → Invoice → GR/IR clearing) produced while clicking through the demo.
  * State is persisted to localStorage so a browser refresh during a demo is harmless.
  */
+import { jo } from './josa';
 import { demoStorage } from './persistStorage';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -121,6 +122,9 @@ export interface DemoState {
   /** Whether the document chain satisfies a step's requirement. */
   meets: (req: Requirement) => boolean;
 }
+
+/** Days the supplier asks to postpone delivery in step 5 'change-po' (proposed in the change draft). */
+export const CHANGE_DELAY_DAYS = 7;
 
 export const defaultConfig = (): DemoConfig => ({
   companyName: 'ACME Corporation',
@@ -249,7 +253,16 @@ export const useDemo = create<DemoState>()(
       markVisited: (id) => set((s) => (s.visited.includes(id) ? s : { visited: [...s.visited, id] })),
       setConfig: (c) => set((s) => ({ config: { ...s.config, ...c } })),
       finishSetup: () => set({ configured: true }),
-      resetDemo: () => set({ ...freshDocs(), config: { ...get().config } }),
+      resetDemo: () => {
+        // Undo the PO changes of the run (step 'change-po') so every run starts from the same values.
+        const cfg = { ...get().config };
+        const first = (f: string) => get().changeLog.find((e) => e.field.startsWith(f))?.oldValue;
+        const q = first('오더 수량'), p = first('순 오더 가격'), d = first('납품일');
+        if (q !== undefined) cfg.quantity = Number(q);
+        if (p !== undefined) cfg.netPrice = Number(p);
+        if (d !== undefined) cfg.deliveryDate = d;
+        set({ ...freshDocs(), config: cfg });
+      },
       setViewMode: (viewMode) => set({ viewMode }),
       toggleCompare: () => set((s) => ({ compare: !s.compare })),
       toggleHelp: () => set((s) => ({ showHelp: !s.showHelp })),
@@ -274,10 +287,10 @@ export const useDemo = create<DemoState>()(
       },
 
       approvePO: (note) =>
-        set({ poStatus: 'Approved', approvalNote: note, guiMessage: { type: 'S', text: `구매 오더 ${get().numbers.poNumber}이(가) 승인되었습니다` } }),
+        set({ poStatus: 'Approved', approvalNote: note, guiMessage: { type: 'S', text: `구매 오더 ${jo(get().numbers.poNumber, '이')} 승인되었습니다` } }),
 
       rejectPO: (reason) =>
-        set({ poStatus: 'Rejected', rejectReason: reason, guiMessage: { type: 'W', text: `구매 오더 ${get().numbers.poNumber}이(가) 반려되었습니다` } }),
+        set({ poStatus: 'Rejected', rejectReason: reason, guiMessage: { type: 'W', text: `구매 오더 ${jo(get().numbers.poNumber, '이')} 반려되었습니다` } }),
 
       changePO: (c) => {
         const s = get();
@@ -293,13 +306,15 @@ export const useDemo = create<DemoState>()(
           set({ guiMessage: { type: 'I', text: '변경된 데이터가 없습니다' } });
           return;
         }
-        // "Always Restart" condition (BPD 2.6.6): a changed PO re-enters the approval workflow.
-        const restart = s.optionalEnabled['approve-po'] && s.grDocs.length === 0;
+        // Restart condition (BPD 2.6.6): a change that affects the PO value (quantity / price)
+        // re-enters the approval workflow; a delivery-date change keeps the release.
+        const valueChanged = entries.some((e) => !e.field.startsWith('납품일'));
+        const restart = s.optionalEnabled['approve-po'] && s.grDocs.length === 0 && valueChanged;
         set({
           config: { ...s.config, ...c },
           changeLog: [...s.changeLog, ...entries],
           poStatus: restart ? 'Pending Approval' : s.poStatus,
-          guiMessage: { type: 'S', text: `표준 구매 오더 ${s.numbers.poNumber}이(가) 변경되었습니다` },
+          guiMessage: { type: 'S', text: `표준 구매 오더 ${jo(s.numbers.poNumber, '이')} 변경되었습니다` },
         });
       },
 
@@ -318,7 +333,7 @@ export const useDemo = create<DemoState>()(
         set({
           grDocs: [...s.grDocs, doc],
           poStatus: total >= s.config.quantity ? 'Goods Received' : s.poStatus,
-          guiMessage: { type: 'S', text: `자재 전표 ${doc.docNo}이(가) 전기되었습니다` },
+          guiMessage: { type: 'S', text: `자재 전표 ${jo(doc.docNo, '이')} 전기되었습니다` },
         });
       },
 
@@ -327,10 +342,10 @@ export const useDemo = create<DemoState>()(
           invoice: inv,
           invoiceStatus: 'Posted',
           poStatus: 'Invoiced',
-          guiMessage: { type: 'S', text: `전표 번호 ${get().numbers.invoiceDocNumber}이(가) 생성되었습니다` },
+          guiMessage: { type: 'S', text: `전표 번호 ${jo(get().numbers.invoiceDocNumber, '이')} 생성되었습니다` },
         }),
 
-      clearGRIR: () => set({ cleared: true, guiMessage: { type: 'S', text: `계정 유지보수 전표 ${get().numbers.clearingDocNumber}이(가) 전기되었습니다` } }),
+      clearGRIR: () => set({ cleared: true, guiMessage: { type: 'S', text: `계정 유지보수 전표 ${jo(get().numbers.clearingDocNumber, '이')} 전기되었습니다` } }),
 
       autoComplete: (req) => {
         const levels: Requirement[] = ['none', 'pr-assigned', 'po', 'po-released', 'gr', 'invoice'];

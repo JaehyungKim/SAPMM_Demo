@@ -2,6 +2,7 @@
  * BNX – additional optional steps: redistribute workload, limit item, invoicing plan and
  * invoice reduction.
  */
+import { jo, pc } from '../../josa';
 import { addDays, fmtAmt, fmtDate, todayIso } from '../../format';
 import { Help } from '../../components/Help';
 import { useOrg } from '../types';
@@ -25,8 +26,8 @@ export const [workloadF, workloadG] = pair(() => {
       { key: 'm', label: `구매 요청 ${s.numbers.pr}`, w: 140, render: (r) => (r.mine ? '● 배정됨' : '') },
     ] }],
     warn: done ? undefined : '구매 그룹 001 담당자가 휴가 중이라 미결 요청이 쌓여 있습니다.',
-    done, doneMsg: `구매 요청 ${s.numbers.pr}이(가) 구매 그룹 ${PURCH_GROUP}로 재배분되었습니다.`,
-    actions: [{ label: '재배분', gui: '↪ 재배정', disabled: done, onClick: () => s.markExt('workload', `구매 요청이 구매 그룹 ${PURCH_GROUP}(으)로 재배정되었습니다`), toast: '재배분 완료',
+    done, doneMsg: `구매 요청 ${jo(s.numbers.pr, '이')} 구매 그룹 ${jo(PURCH_GROUP, '로')} 재배분되었습니다.`,
+    actions: [{ label: '재배분', gui: '↪ 재배정', disabled: done, onClick: () => s.markExt('workload', `구매 요청이 구매 그룹 ${jo(PURCH_GROUP, '로')} 재배정되었습니다`), toast: '재배분 완료',
       confirm: { title: '업무량 재배분', label: '재배분 확정', fields: [{ label: '구매 요청', value: s.numbers.pr }, { label: '현재 그룹', value: '001' }, { label: '새 그룹', value: PURCH_GROUP }] } }],
   };
 });
@@ -52,8 +53,8 @@ export const [limitF, limitG] = pair(() => {
       { key: 'x', label: '내역', w: 240, render: (r) => r.text }, { key: 'v', label: '금액', w: 90, align: 'right', render: (r) => fmtAmt(r.val, c.currency) },
       { key: 'a', label: '계정 지정', w: 150, render: (r) => r.acct },
     ] }],
-    footer: true, done, doneMsg: `Limit 품목 ${LIMIT_ITEM.item}이(가) 추가되었습니다 – 내용을 미리 알 수 없는 비용을 한도 ${fmtAmt(LIMIT_ITEM.overall, c.currency)} 안에서 허용합니다.`,
-    actions: [{ label: 'Limit 품목 추가 및 저장', gui: '💾 저장', disabled: done || !s.po, onClick: () => s.markExt('limit', `표준 PO ${s.numbers.po}이(가) 변경되었습니다`), toast: 'Limit 품목 추가' }],
+    footer: true, done, doneMsg: `Limit 품목 ${jo(LIMIT_ITEM.item, '이')} 추가되었습니다 – 내용을 미리 알 수 없는 비용을 한도 ${fmtAmt(LIMIT_ITEM.overall, c.currency)} 안에서 허용합니다.`,
+    actions: [{ label: 'Limit 품목 추가 및 저장', gui: '💾 저장', disabled: done || !s.po, onClick: () => s.markExt('limit', `표준 PO ${jo(s.numbers.po, '이')} 변경되었습니다`), toast: 'Limit 품목 추가' }],
   };
 });
 
@@ -74,10 +75,10 @@ export const [invplanF, invplanG] = pair(() => {
       { key: 'n', label: '회차', w: 40, render: (r) => r.k }, { key: 'd', label: '정산일', w: 90, render: (r) => r.date },
       { key: 'v', label: '금액', w: 80, align: 'right', render: () => fmtAmt(PLAN.monthly, c.currency) }, { key: 's', label: '상태', w: 120, render: (r) => r.st },
     ] }],
-    footer: true, done, doneMsg: `정산 실행으로 송장 ${s.numbers.planInv}(1회차 ${fmtAmt(PLAN.monthly, c.currency)})이(가) 자동 생성되었습니다 – 공급업체 송장 없이 매달 자동 처리됩니다 (ERS).`,
+    footer: true, done, doneMsg: `정산 실행으로 송장 ${s.numbers.planInv}(1회차 ${fmtAmt(PLAN.monthly, c.currency)})${pc(s.numbers.planInv, '이')} 자동 생성되었습니다 – 공급업체 송장 없이 매달 자동 처리됩니다 (ERS).`,
     actions: [
-      { label: '저장', gui: '💾 저장', disabled: saved, onClick: () => s.markExt('invplanPo', `표준 PO ${s.numbers.planPo}이(가) 생성되었습니다`), toast: `PO ${s.numbers.planPo}` },
-      { label: '정산 실행', gui: '▶ 정산 실행 (MRIS)', disabled: !saved || done, onClick: () => s.markExt('invplan', `송장 계획 정산: 송장 ${s.numbers.planInv}이(가) 생성되었습니다`), toast: `송장 ${s.numbers.planInv}` },
+      { label: '저장', gui: '💾 저장', disabled: saved, onClick: () => s.markExt('invplanPo', `표준 PO ${jo(s.numbers.planPo, '이')} 생성되었습니다`), toast: `PO ${s.numbers.planPo}` },
+      { label: '정산 실행', gui: '▶ 정산 실행 (MRIS)', disabled: !saved || done, onClick: () => s.markExt('invplan', `송장 계획 정산: 송장 ${jo(s.numbers.planInv, '이')} 생성되었습니다`), toast: `송장 ${s.numbers.planInv}` },
     ],
   };
 });
@@ -98,10 +99,10 @@ export const [reduceF, reduceG] = pair(() => {
       { key: 'o', label: '정확한 금액', w: 100, align: 'right', render: (r) => fmtAmt(r.ok, c.currency) }, { key: 'r', label: '축소 금액', w: 90, align: 'right', render: () => fmtAmt(over, c.currency) },
     ] }],
     warn: added && !done ? `청구 금액이 전체 한도를 ${fmtAmt(over, c.currency)} 초과합니다 – 송장 축소로 한도 금액만 전기하고 초과분은 대변 메모로 공급업체에 통지합니다.` : undefined,
-    done, doneMsg: `송장 ${s.numbers.inv2}(${fmtAmt(LIMIT_ITEM.overall, c.currency)})과 자동 대변 메모 ${s.numbers.cm}(${fmtAmt(over, c.currency)})이(가) 전기되었습니다.`,
+    done, doneMsg: `송장 ${s.numbers.inv2}(${fmtAmt(LIMIT_ITEM.overall, c.currency)})${pc(s.numbers.inv2, '와')} 자동 대변 메모 ${s.numbers.cm}(${fmtAmt(over, c.currency)})${pc(s.numbers.cm, '이')} 전기되었습니다.`,
     actions: [
       { label: '추가', gui: '↵ 적용', disabled: added, onClick: () => s.markExt('reduceAdded', `한도 초과 ${over} ${c.currency} – 송장 축소가 제안되었습니다`) },
-      { label: '전기', gui: '💾 전기', disabled: !added || done, onClick: () => s.markExt('reduce', `전표 ${s.numbers.inv2} 및 대변 메모 ${s.numbers.cm}이(가) 생성되었습니다`), toast: `송장 ${s.numbers.inv2}` },
+      { label: '전기', gui: '💾 전기', disabled: !added || done, onClick: () => s.markExt('reduce', `전표 ${s.numbers.inv2} 및 대변 메모 ${jo(s.numbers.cm, '이')} 생성되었습니다`), toast: `송장 ${s.numbers.inv2}` },
     ],
     extra: added ? <JournalTable lines={[
       { acc: LIMIT_ITEM.gl, text: '기타 서비스 비용', dc: '차변', amt: LIMIT_ITEM.overall, cc: LIMIT_ITEM.cc },

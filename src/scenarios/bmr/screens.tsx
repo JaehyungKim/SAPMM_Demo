@@ -1,4 +1,5 @@
 /** BMR – Scheduling Agreements screens (Fiori + SAP GUI from one spec per step). */
+import { jo, pc } from '../../josa';
 import { addDays, fmtAmt, fmtDate, fmtNum, todayIso } from '../../format';
 import { Help } from '../../components/Help';
 import { useOrg } from '../types';
@@ -39,7 +40,7 @@ export const [createF, createG] = pair(() => {
       { key: 'm', label: '자재', w: 70, render: (r) => r.material }, { key: 't', label: '내역', w: 220, render: (r) => r.text },
       { key: 'tq', label: '목표 수량', w: 90, align: 'right', render: () => fmtNum(TARGET) }, { key: 'p', label: '순 가격', w: 80, align: 'right', render: (r) => fmtAmt(r.price, c.currency) },
     ] }],
-    footer: true, done: d('create'), doneMsg: `납품 일정 계약 ${n.sa}이(가) 생성되었습니다 (목표 ${fmtNum(TARGET)} PC, ${fmtAmt(PRICE, c.currency)}/PC).`,
+    footer: true, done: d('create'), doneMsg: `납품 일정 계약 ${jo(n.sa, '이')} 생성되었습니다 (목표 ${fmtNum(TARGET)} PC, ${fmtAmt(PRICE, c.currency)}/PC).`,
     actions: [{ label: '생성', gui: '💾 저장', disabled: d('create'), onClick: () => s.mark('create'), toast: `계약 ${n.sa}` }],
   };
 });
@@ -53,7 +54,7 @@ export const [massF, massG] = pair(() => {
       { key: 'sa', label: '납품 일정 계약', w: 110, render: () => n.sa }, { key: 'm', label: '자재', w: 70, render: (r) => r.material },
       { key: 't', label: '초과 납품 허용', w: 100, render: () => (d('mass') ? '10 %' : '0 %') },
     ] }],
-    done: d('mass'), doneMsg: `일괄 변경 작업 ${n.job}이(가) 완료되었습니다.`,
+    done: d('mass'), doneMsg: `일괄 변경 작업 ${jo(n.job, '이')} 완료되었습니다.`,
     actions: [{ label: '일괄 변경 적용', gui: '▶ 실행 (F8)', disabled: d('mass'), onClick: () => s.mark('mass'), toast: `작업 ${n.job}` }],
   };
 });
@@ -80,7 +81,7 @@ export const [quotaF, quotaG] = pair(() => {
       { key: 's', label: '공급업체', w: 180, render: (r) => `${r.sup.name} (${r.sup.no})` }, { key: 'k', label: '공급원', w: 150, render: (r) => r.kind },
       { key: 'p', label: '단가', w: 70, align: 'right', render: (r) => r.price.toFixed(2) }, { key: 'q', label: '쿼터 %', w: 60, align: 'right', render: (r) => `${r.pct} %` },
     ] }],
-    done: d('quota'), doneMsg: `쿼터 배분 ${n.quota}이(가) 저장되었습니다 – MRP가 소요량을 60/40으로 나눠 공급원을 결정합니다.`,
+    done: d('quota'), doneMsg: `쿼터 배분 ${jo(n.quota, '이')} 저장되었습니다 – MRP가 소요량을 60/40으로 나눠 공급원을 결정합니다.`,
     actions: [{ label: '저장', gui: '💾 저장', disabled: d('quota'), onClick: () => s.mark('quota'), toast: '쿼터 저장' }],
   };
 });
@@ -102,7 +103,7 @@ export const [releaseF, releaseG] = pair(() => {
     app: '납품 일정 릴리스 생성', appId: 'ME84', title: `릴리스 생성 – ${n.sa}`, gtitle: '납품 일정 릴리스 생성',
     fields: [{ label: '납품 일정 계약', value: n.sa }, { label: '릴리스 유형', value: 'FRC 예측 일정 + JIT 확정 일정', help: 'releaseType' }, { label: '테스트 실행', value: '☐' }],
     tables: [{ title: '릴리스 대상 일정 라인', rows: linesOf(c.dateFormat, d), rowKey: (r) => r.no, cols: lineCols }],
-    done: d('release'), doneMsg: `릴리스 ${n.rel}이(가) 생성되었습니다 – 이번 주 라인은 JIT(확정), 이후는 FRC(예측)로 공급업체에 전달됩니다.`,
+    done: d('release'), doneMsg: `릴리스 ${jo(n.rel, '이')} 생성되었습니다 – 이번 주 라인은 JIT(확정), 이후는 FRC(예측)로 공급업체에 전달됩니다.`,
     actions: [{ label: '릴리스 생성', gui: '▶ 실행 (F8)', disabled: d('release'), onClick: () => s.mark('release'), toast: `릴리스 ${n.rel}` }],
   };
 });
@@ -144,7 +145,7 @@ export const [grF, grG] = pair(() => {
       { key: 'm', label: '자재', w: 70, render: (r) => r.material }, { key: 'q', label: '수량', w: 80, align: 'right', render: (r) => `${fmtNum(r.qty)} PC` },
       { key: 's', label: '저장 위치', w: 70, render: () => c.storageLocation }, { key: 'v', label: '금액', w: 90, align: 'right', render: () => fmtAmt(GR_VALUE, c.currency) },
     ] }],
-    footer: true, done: d('gr'), doneMsg: `자재 전표 ${n.gr}이(가) 전기되었습니다 – 일정 라인 1의 입고 수량이 갱신되었습니다.`,
+    footer: true, done: d('gr'), doneMsg: `자재 전표 ${jo(n.gr, '이')} 전기되었습니다 – 일정 라인 1의 입고 수량이 갱신되었습니다.`,
     actions: [{ label: '전기', gui: '전기', disabled: d('gr'), onClick: () => s.mark('gr'), toast: `자재 전표 ${n.gr}` }],
     extra: d('gr') ? <JournalTable lines={[{ acc: c.glInventory, text: `재고 ${MAT}`, dc: '차변', amt: GR_VALUE }, { acc: c.glGrir, text: 'GR/IR 청산', dc: '대변', amt: GR_VALUE }]} /> : undefined,
   };
@@ -161,7 +162,7 @@ export const [invoiceF, invoiceG] = pair(() => {
       { key: 'm', label: '자재', w: 70, render: (r) => r.material }, { key: 'q', label: '수량', w: 80, align: 'right', render: (r) => `${fmtNum(r.qty)} PC` },
       { key: 'p', label: '단가', w: 80, align: 'right', render: (r) => fmtAmt(r.price, c.currency) }, { key: 'v', label: '금액', w: 90, align: 'right', render: () => fmtAmt(GR_VALUE, c.currency) },
     ] }],
-    done: d('invoice'), doneMsg: `공급업체 송장 ${n.inv}(회계 전표 ${n.invFi})이(가) 전기되었습니다.`,
+    done: d('invoice'), doneMsg: `공급업체 송장 ${n.inv}(회계 전표 ${n.invFi})${pc(n.inv, '이')} 전기되었습니다.`,
     actions: [
       { label: '추가', gui: '↵ 적용', disabled: added, onClick: () => s.setVal('invAdded', true) },
       { label: '전기', gui: '💾 전기', disabled: !added || d('invoice'), onClick: () => s.mark('invoice'), toast: `송장 ${n.inv}` },

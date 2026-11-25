@@ -5,6 +5,7 @@
  * → [GR slip] → invoice (optionally blocked) → [release blocked invoice].
  * Sample data from BNX_DE test script (2025 FPS2).
  */
+import { jo } from '../../josa';
 import { create } from 'zustand';
 import { demoStorage } from '../../persistStorage';
 import { persist } from 'zustand/middleware';
@@ -110,7 +111,7 @@ export const useBnx = create<BnxState>()(
       markVisited: (id) => set((s) => (s.visited.includes(id) ? s : { visited: [...s.visited, id] })),
       reset: () => set(fresh()),
 
-      createPR: () => { set({ pr: 'Created' }); msg(`구매 요청 ${get().numbers.pr}이(가) 생성되었습니다`); },
+      createPR: () => { set({ pr: 'Created' }); msg(`구매 요청 ${jo(get().numbers.pr, '이')} 생성되었습니다`); },
 
       createPO: () => {
         // Flexible workflow: purchasing group 003 and net value > 500 EUR → release by purchasing manager.
@@ -123,40 +124,40 @@ export const useBnx = create<BnxState>()(
         const po = get().po;
         if (!po || po.items.length > 1) return;
         set({ po: { ...po, items: [...po.items, ITEM20] } });
-        msg(`표준 구매 오더 ${get().numbers.po}이(가) 변경되었습니다`);
+        msg(`표준 구매 오더 ${jo(get().numbers.po, '이')} 변경되었습니다`);
       },
 
       massChange: () => {
         const po = get().po;
         if (!po) return;
         set({ po: { ...po, payTerms: '0003' }, massChanged: true });
-        msg(`일괄 변경 작업 ${get().numbers.job}이(가) 완료되었습니다`);
+        msg(`일괄 변경 작업 ${jo(get().numbers.job, '이')} 완료되었습니다`);
       },
 
       decidePO: (approve, note) => {
         const po = get().po;
         if (!po) return;
         set({ po: { ...po, status: approve ? 'Released' : 'Rejected', note } });
-        msg(`구매 오더 ${get().numbers.po}이(가) ${approve ? '승인' : '반려'}되었습니다`);
+        msg(`구매 오더 ${jo(get().numbers.po, '이')} ${approve ? '승인' : '반려'}되었습니다`);
       },
 
       postGR: (dn, qty) => {
         const n = get().numbers;
         set({ gr: { docNo: n.gr, fiDocNo: n.grFi, date: todayIso(), dn, qty } });
-        msg(`자재 전표 ${n.gr}이(가) 전기되었습니다`);
+        msg(`자재 전표 ${jo(n.gr, '이')} 전기되었습니다`);
       },
 
       postInvoice: (ref, amount, blocked) => {
         const n = get().numbers;
         set({ invoice: { doc: n.inv, fi: n.invFi, ref, amount, date: todayIso(), blocked } });
-        msg(`전표 번호 ${n.inv}이(가) 생성되었습니다${blocked ? ' (지급 보류)' : ''}`);
+        msg(`전표 번호 ${jo(n.inv, '이')} 생성되었습니다${blocked ? ' (지급 보류)' : ''}`);
       },
 
       releaseInvoice: () => {
         const inv = get().invoice;
         if (!inv) return;
         set({ invoice: { ...inv, blocked: false }, released: true });
-        msg(`송장 ${inv.doc}이(가) 지급을 위해 릴리스되었습니다`);
+        msg(`송장 ${jo(inv.doc, '이')} 지급을 위해 릴리스되었습니다`);
       },
 
       markExt: (id, text) => { set({ ext: { ...get().ext, [id]: todayIso() } }); msg(text); },

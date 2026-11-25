@@ -2,28 +2,33 @@
  * 1JI – Real-Time Reporting screens. Every app is an analytical list page with KPIs and a
  * table; the step's interaction (filter / view / drilldown) switches the table to its result.
  */
+import { jo } from '../../josa';
 import { addDays, fmtAmt, fmtDate, todayIso } from '../../format';
 import { useOrg } from '../types';
 import { autoLaunchpad, pair, type KCol, type KSpec } from '../shared/kit';
 import { APPS, STEPS, use1ji } from './store';
+import { MARK, useLive, type Live } from './live';
 
 type Row = Record<string, string | number> & { k: string };
 interface View { kpis: [string, string][]; title: string; cols: [string, string, boolean?][]; rows: Row[] }
+type Org = ReturnType<typeof useOrg>;
+/** `live`: shown before the interaction when the table contains this demo's own documents. */
+interface Views { before: View; after: View; info: string; live?: string }
 
 const use = () => { const s = use1ji(); return { s, d: (id: string) => !!s.done[id], c: useOrg() }; };
 const cols = (v: View): KCol<Row>[] => v.cols.map(([key, label, right]) => ({ key, label, w: right ? 90 : 160, align: right ? 'right' : undefined, render: (r) => r[key] }));
 
-function analytic(id: (typeof APPS)[number]['id'], views: (c: ReturnType<typeof useOrg>) => { before: View; after: View; info: string }) {
+function analytic(id: (typeof APPS)[number]['id'], views: (c: Org, l: Live) => Views) {
   const a = APPS.find((x) => x.id === id)!;
   return pair((): KSpec => {
     const { s, d, c } = use();
-    const v = views(c);
+    const v = views(c, useLive());
     const cur = d(id) ? v.after : v.before;
     return {
       app: a.app, appId: a.appId, title: a.app, gtitle: a.en,
       kpis: cur.kpis.map(([label, value]) => ({ label, value })),
       tables: [{ title: cur.title, rows: cur.rows, rowKey: (r) => r.k, cols: cols(cur) }],
-      info: d(id) ? v.info : undefined,
+      info: d(id) ? v.info : v.live,
       actions: [{ label: a.action, gui: a.gui, disabled: d(id), onClick: () => s.mark(id) }],
     };
   });
@@ -48,38 +53,49 @@ export const [ovpF, ovpG] = analytic('ovp', (c) => ({
   info: '전역 필터가 모든 카드에 적용되었습니다. 카드 머리글을 누르면 필터가 유지된 채 해당 앱(예: 계약 품목 모니터링)으로 이동합니다.',
 }));
 
-export const [contractsF, contractsG] = analytic('contracts', (c) => ({
+export const [contractsF, contractsG] = analytic('contracts', (c, l) => {
+  const ct = l.contract ? l.contract.no + MARK : '4600000412';
+  return {
   before: { kpis: [['활성 계약 품목', '24'], ['만료 예정 (30일)', '3']], title: '계약 품목', cols: [['ct', '계약 / 품목'], ['m', '자재'], ['tv', '목표 금액', true], ['rel', '릴리스 금액', true], ['to', '유효 종료']],
     rows: [
-      { k: '1', ct: '4600000412 / 10', m: 'TG10', tv: fmtAmt(5000, c.currency), rel: fmtAmt(500, c.currency), to: D(37, c.dateFormat) },
-      { k: '2', ct: '4600000412 / 20', m: 'TG11', tv: fmtAmt(1000, c.currency), rel: fmtAmt(300, c.currency), to: D(37, c.dateFormat) },
+      { k: '1', ct: `${ct} / 10`, m: 'TG10', tv: fmtAmt(5000, c.currency), rel: fmtAmt(500, c.currency), to: D(37, c.dateFormat) },
+      { k: '2', ct: `${ct} / 20`, m: 'TG11', tv: fmtAmt(1000, c.currency), rel: fmtAmt(300, c.currency), to: D(37, c.dateFormat) },
       { k: '3', ct: '4600000377 / 10', m: 'RM129', tv: fmtAmt(120000, c.currency), rel: fmtAmt(84000, c.currency), to: D(210, c.dateFormat) },
     ] },
-  after: { kpis: [['TG11 소진율', '30 %'], ['월 평균 릴리스', fmtAmt(100, c.currency)]], title: '계약 소진 추세 – 4600000412 / 20 (TG11)', cols: [['mo', '월'], ['rel', '릴리스 금액', true], ['cum', '누적 소진율', true]],
+  after: { kpis: [['TG11 소진율', '30 %'], ['월 평균 릴리스', fmtAmt(100, c.currency)]], title: `계약 소진 추세 – ${ct} / 20 (TG11)`, cols: [['mo', '월'], ['rel', '릴리스 금액', true], ['cum', '누적 소진율', true]],
     rows: [{ k: '1', mo: 'M-2', rel: fmtAmt(100, c.currency), cum: '10 %' }, { k: '2', mo: 'M-1', rel: fmtAmt(100, c.currency), cum: '20 %' }, { k: '3', mo: '이번 달', rel: fmtAmt(100, c.currency), cum: '30 %' }] },
   info: '소진율 추세로 계약 만료 전 목표 수량 달성 여부를 예측하고 재협상 시점을 판단합니다.',
-}));
+  live: l.contract ? `★ ${jo(l.contract.no, '은')} BMD 시나리오에서 만든 수량 계약입니다${l.contract.released ? '' : ' (승인 대기)'}. 생성 즉시 모니터링 대상에 들어왔습니다.` : undefined,
+  };
+});
 
-export const [rfqF, rfqG] = analytic('rfq', (c) => ({
+export const [rfqF, rfqG] = analytic('rfq', (c, l) => {
+  const rq = l.rfq ? `${l.rfq.no}${MARK} / 10` : '7000000142 / 10';
+  const rs = l.rfq ? (l.rfq.awarded ? '낙찰 완료' : `${l.rfq.quotes} / 2 제출`) : '2 / 2 제출';
+  return {
   before: { kpis: [['진행 중 RFQ 품목', '6'], ['낙찰 견적 금액', fmtAmt(3000, c.currency)]], title: 'RFQ 품목', cols: [['r', 'RFQ / 품목'], ['m', '자재'], ['dl', '견적 마감'], ['st', '견적 상태']],
     rows: [
-      { k: '1', r: '7000000142 / 10', m: 'TG0011', dl: D(0, c.dateFormat), st: '2 / 2 제출' }, { k: '2', r: '7000000150 / 10', m: 'RM13', dl: D(3, c.dateFormat), st: '1 / 3 제출' },
+      { k: '1', r: rq, m: 'TG0011', dl: D(0, c.dateFormat), st: rs }, { k: '2', r: '7000000150 / 10', m: 'RM13', dl: D(3, c.dateFormat), st: '1 / 3 제출' },
       { k: '3', r: '7000000151 / 10', m: 'RM14', dl: D(12, c.dateFormat), st: '0 / 2 제출' },
     ] },
   after: { kpis: [['마감 7일 이내', '2']], title: 'RFQ 품목 – 마감 임박', cols: [['r', 'RFQ / 품목'], ['m', '자재'], ['dl', '견적 마감'], ['st', '견적 상태']],
-    rows: [{ k: '1', r: '7000000142 / 10', m: 'TG0011', dl: D(0, c.dateFormat), st: '2 / 2 제출' }, { k: '2', r: '7000000150 / 10', m: 'RM13', dl: D(3, c.dateFormat), st: '1 / 3 제출' }] },
+    rows: [{ k: '1', r: rq, m: 'TG0011', dl: D(0, c.dateFormat), st: rs }, { k: '2', r: '7000000150 / 10', m: 'RM13', dl: D(3, c.dateFormat), st: '1 / 3 제출' }] },
   info: '도넛 차트(견적 마감 상태)를 시각적 필터로 사용했습니다. 견적이 부족한 RFQ에 바로 대응합니다.',
-}));
+  live: l.rfq ? `★ RFQ ${jo(l.rfq.no, '은')} 1XF 시나리오에서 게시한 가격 요청입니다. 견적 상태가 그대로 반영됩니다.` : undefined,
+  };
+});
 
-export const [poitemsF, poitemsG] = analytic('poitems', (c) => ({
-  before: { kpis: [['미결 PO 품목', '41'], ['PO 금액', fmtAmt(186400, c.currency)]], title: 'PO 품목', cols: [['po', 'PO / 품목'], ['s', '공급업체'], ['nd', '다음 납품'], ['st', '납품 상태']],
+export const [poitemsF, poitemsG] = analytic('poitems', (c, l) => ({
+  before: { kpis: [['미결 PO 품목', String(41 + (l.po ? 1 : 0))], ['PO 금액', fmtAmt(186400 + (l.po?.value ?? 0), c.currency)]], title: 'PO 품목', cols: [['po', 'PO / 품목'], ['s', '공급업체'], ['nd', '다음 납품'], ['st', '납품 상태']],
     rows: [
+      ...(l.po ? [{ k: 'demo', po: `${l.po.no}${MARK} / 10`, s: l.po.supplier, nd: fmtDate(l.po.date, c.dateFormat), st: l.po.status }] : []),
       { k: '1', po: '4500000559 / 10', s: '10300003', nd: D(14, c.dateFormat), st: '정상' }, { k: '2', po: '4500001540 / 10', s: '10300007', nd: D(-3, c.dateFormat), st: '지연' },
       { k: '3', po: '4500001609 / 10', s: '10300001', nd: D(5, c.dateFormat), st: '정상' }, { k: '4', po: '4500001721 / 10', s: '10300002', nd: D(-1, c.dateFormat), st: '지연' },
     ] },
   after: { kpis: [['지연 PO 품목', '2'], ['지연 금액', fmtAmt(1590, c.currency)]], title: 'PO 품목 – 납기 지연', cols: [['po', 'PO / 품목'], ['s', '공급업체'], ['nd', '다음 납품'], ['st', '납품 상태']],
     rows: [{ k: '2', po: '4500001540 / 10', s: '10300007', nd: D(-3, c.dateFormat), st: '지연' }, { k: '4', po: '4500001721 / 10', s: '10300002', nd: D(-1, c.dateFormat), st: '지연' }] },
-  info: '도넛 차트(다음 납품 상태)에서 "지연"을 눌러 표가 바로 걸러졌습니다. 행을 누르면 PO로 이동해 공급업체에 독촉합니다.',
+  info: `도넛 차트(다음 납품 상태)에서 "지연"을 눌러 표가 바로 걸러졌습니다.${l.po ? ` 데모 PO ${jo(l.po.no, '은')} 납기 전이라 빠졌습니다.` : ''} 행을 누르면 PO로 이동해 공급업체에 독촉합니다.`,
+  live: l.po ? `★ PO ${jo(l.po.no, '은')} J45 시나리오에서 만든 구매 오더입니다${l.po.changed ? ' (변경된 납품일 반영)' : ''}. 전기 즉시 이 목록에 나타납니다.` : undefined,
 }));
 
 export const [confirmF, confirmG] = analytic('confirm', (c) => ({
@@ -90,12 +106,13 @@ export const [confirmF, confirmG] = analytic('confirm', (c) => ({
   info: '공급업체가 회신한 확인 납기와 요청 납기 차이를 미리 파악해 생산 계획에 반영합니다.',
 }));
 
-export const [saF, saG] = analytic('sa', (c) => ({
+export const [saF, saG] = analytic('sa', (c, l) => ({
   before: { kpis: [['활성 납품 일정 계약 품목', '5']], title: '납품 일정 계약 품목', cols: [['sa', '계약 / 품목'], ['m', '자재'], ['nd', '다음 납품'], ['rs', '릴리스 상태']],
-    rows: [{ k: '1', sa: '5500000142 / 10', m: 'RM129', nd: D(0, c.dateFormat), rs: 'JIT 확정' }, { k: '2', sa: '5500000108 / 10', m: 'RM130', nd: D(7, c.dateFormat), rs: 'FRC 예측' }] },
+    rows: [{ k: '1', sa: l.sa ? `${l.sa.no}${MARK} / 10` : '5500000142 / 10', m: 'RM129', nd: D(0, c.dateFormat), rs: l.sa && !l.sa.released ? '릴리스 전' : 'JIT 확정' }, { k: '2', sa: '5500000108 / 10', m: 'RM130', nd: D(7, c.dateFormat), rs: 'FRC 예측' }] },
   after: { kpis: [['총 릴리스 금액', fmtAmt(70200, c.currency)]], title: '공급업체별 릴리스 금액', cols: [['s', '공급업체'], ['v', '릴리스 금액', true]],
     rows: [{ k: '1', s: '10300001 Inlandslieferant DE 1', v: fmtAmt(52650, c.currency) }, { k: '2', s: '10300002 Inlandslieferant DE 2', v: fmtAmt(17550, c.currency) }] },
   info: '쿼터 배분대로 공급업체별 릴리스 금액이 나뉘었는지 확인합니다.',
+  live: l.sa ? `★ ${jo(l.sa.no, '은')} BMR 시나리오에서 만든 납품 일정 계약입니다.` : undefined,
 }));
 
 export const [ppvF, ppvG] = analytic('ppv', (c) => ({
@@ -122,10 +139,10 @@ export const [overdueF, overdueG] = analytic('overdue', (c) => ({
   info: '지연이 집중된 공급업체를 찾아 공급업체 평가·협의로 연결합니다.',
 }));
 
-export const [autorateF, autorateG] = analytic('autorate', () => ({
+export const [autorateF, autorateG] = analytic('autorate', (_c, l) => ({
   before: { kpis: [['송장 자동화율', '68 %']], title: '월별 자동화율', cols: [['m', '월'], ['r', '자동화율', true]],
     rows: [{ k: '1', m: 'M-2', r: '61 %' }, { k: '2', m: 'M-1', r: '65 %' }, { k: '3', m: '이번 달', r: '68 %' }] },
   after: { kpis: [['원천 수', '4']], title: '원천별 자동화율', cols: [['o', '원천'], ['n', '송장 수', true], ['r', '자동화율', true]],
-    rows: [{ k: '1', o: '자동 정산 (ERS·파이프라인)', n: '120', r: '100 %' }, { k: '2', o: 'Business Network', n: '210', r: '92 %' }, { k: '3', o: 'OCR 스캔', n: '180', r: '55 %' }, { k: '4', o: '수동 입력', n: '90', r: '0 %' }] },
-  info: '어느 경로의 송장이 수작업을 만드는지 보고 자동화 투자 우선순위를 정합니다.',
+    rows: [{ k: '1', o: `자동 정산 (ERS·파이프라인)${l.pipeline ? MARK : ''}`, n: String(120 + (l.pipeline ? 1 : 0)), r: '100 %' }, { k: '2', o: 'Business Network', n: '210', r: '92 %' }, { k: '3', o: 'OCR 스캔', n: '180', r: '55 %' }, { k: '4', o: '수동 입력', n: '90', r: '0 %' }] },
+  info: `어느 경로의 송장이 수작업을 만드는지 보고 자동화 투자 우선순위를 정합니다.${l.pipeline ? ' ★ 41F에서 실행한 파이프라인 정산이 자동 정산 건수에 포함되었습니다.' : ''}`,
 }));

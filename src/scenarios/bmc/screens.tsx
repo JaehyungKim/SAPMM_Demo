@@ -1,4 +1,5 @@
 /** BMC – Core Inventory Management screens (Fiori + SAP GUI from one spec per step). */
+import { jo, pc } from '../../josa';
 import { addDays, fmtAmt, fmtDate, todayIso } from '../../format';
 import { Help } from '../../components/Help';
 import { useOrg } from '../types';
@@ -29,7 +30,7 @@ function movement(id: string, o: { app: string; appId: string; title: string; gt
       fields: [{ label: '자재 / 플랜트', value: `${MAT} / ${c.plant} ${c.plantName}`, help: 'material' }, ...o.fields],
       tables: [{ title: d(id) ? '재고 (전기 후)' : '재고 (현재)', rows, rowKey: (r) => r.sl, cols: stockCols }],
       info: o.info, footer: o.footer ?? true,
-      done: d(id), doneMsg: `자재 전표 ${n[id]}이(가) 생성되었습니다 – ${m.text} ${m.qty} PC.`,
+      done: d(id), doneMsg: `자재 전표 ${jo(n[id], '이')} 생성되었습니다 – ${m.text} ${m.qty} PC.`,
       actions: [{ label: o.button, gui: o.gui, disabled: d(id), onClick: () => s.mark(id), toast: `자재 전표 ${n[id]}` }],
       extra: d(id) && o.journal ? <JournalTable lines={o.journal.map(([acc, text, dc]) => ({ acc, text, dc: dc as '차변' | '대변', amt, cc: acc === '61000000' ? '10101202' : undefined }))} /> : undefined,
     };
@@ -122,7 +123,7 @@ const analytic = (id: string, o: { app: string; appId: string; title: string; bu
   const { s, d } = use();
   return {
     app: o.app, appId: o.appId, title: o.title, gtitle: o.app, fields: o.fields,
-    tables: [{ title: '결과', rows: d(id) ? o.rows : [], rowKey: (r) => r.k, empty: `'${o.button}'을(를) 누르면 결과가 표시됩니다`, cols: o.cols }],
+    tables: [{ title: '결과', rows: d(id) ? o.rows : [], rowKey: (r) => r.k, empty: `'${o.button}'${pc(o.button, '을')} 누르면 결과가 표시됩니다`, cols: o.cols }],
     info: d(id) ? o.info : undefined,
     actions: [{ label: o.button, gui: o.gui, disabled: d(id), onClick: () => s.mark(id) }],
   };

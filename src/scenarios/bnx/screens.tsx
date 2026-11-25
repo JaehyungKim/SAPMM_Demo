@@ -1,4 +1,5 @@
 /** BNX – Consumable Purchasing: Fiori and SAP GUI screens for every step (BNX_DE test script). */
+import { jo, pc } from '../../josa';
 import { useState } from 'react';
 import { Dialog, MessageStrip } from '@ui5/webcomponents-react';
 import type { StepProps } from '../../steps/types';
@@ -99,7 +100,7 @@ export function PrF({ step }: StepProps) {
       <PageHeader breadcrumb={['구매 요청 관리 - 전문가용']} title={done ? `구매 요청 ${s.numbers.pr}` : '새 구매 요청'} subtitle="Pur. Requisition (NB)"
         status={done ? <Status state="Positive" text={s.pr === 'Ordered' ? 'PO 생성됨' : '저장됨'} /> : undefined} />
       <div className="f-page-body">
-        {done && <MessageStrip design="Positive" hideCloseButton className="f-strip">구매 요청 {s.numbers.pr}이(가) 생성되었습니다 – 공급원으로 계약 {s.numbers.contract}이(가) 자동 결정되었습니다.</MessageStrip>}
+        {done && <MessageStrip design="Positive" hideCloseButton className="f-strip">구매 요청 {s.numbers.pr}{pc(s.numbers.pr, '이')} 생성되었습니다 – 공급원으로 계약 {s.numbers.contract}{pc(s.numbers.contract, '이')} 자동 결정되었습니다.</MessageStrip>}
         <Section title="일반 정보"><FormGroup cols={3} fields={[
           { label: '문서 유형', value: 'Pur. Requisition (NB)' }, { label: '자동 소스 결정', value: '✓ 사용', help: 'source' }, { label: '요청자', value: 'PURCHASER' },
         ]} /></Section>
@@ -112,7 +113,7 @@ export function PrF({ step }: StepProps) {
           <p className="f-muted">구매 조직 {c.purchasingOrg} · 구매 그룹 {PURCH_GROUP} · 플랜트 {c.plant}. 계정 지정 K는 재고가 아니라 코스트 센터 비용으로 처리됩니다.</p>
         </Section>
       </div>
-      {!done && <FooterBar><FBtn emph onClick={() => { s.createPR(); showToast(`구매 요청 ${s.numbers.pr}이(가) 생성되었습니다`); }}>생성</FBtn><FBtn>초안 저장</FBtn></FooterBar>}
+      {!done && <FooterBar><FBtn emph onClick={() => { s.createPR(); showToast(`구매 요청 ${jo(s.numbers.pr, '이')} 생성되었습니다`); }}>생성</FBtn><FBtn>초안 저장</FBtn></FooterBar>}
     </FioriShell>
   );
 }
@@ -136,7 +137,7 @@ export function PrG({ step }: StepProps) {
           { key: 'gl', label: 'G/L 계정', w: 80, render: (i) => i.gl },
           { key: 'o', label: '계약', w: 90, render: () => s.numbers.contract },
         ]} />
-        {done && <div className="g-ok-box">구매 요청 {s.numbers.pr}이(가) 생성되었습니다</div>}
+        {done && <div className="g-ok-box">구매 요청 {s.numbers.pr}{pc(s.numbers.pr, '이')} 생성되었습니다</div>}
       </div>
     </GuiWindow>
   );
@@ -147,13 +148,13 @@ export function PoF({ step }: StepProps) {
   const s = useBnx();
   const c = useOrg();
   const [open, setOpen] = useState(false);
-  const order = () => { s.createPO(); setOpen(false); showToast(`구매 오더 ${s.numbers.po}이(가) 생성되었습니다`); };
+  const order = () => { s.createPO(); setOpen(false); showToast(`구매 오더 ${jo(s.numbers.po, '이')} 생성되었습니다`); };
   return (
     <FioriShell title="구매 요청 처리" role={step.role}>
       <PageHeader title="구매 요청 처리" subtitle="Process Purchase Requisitions (V2) (F1048A)" />
       <FilterBar fields={[{ label: '구매 요청', value: <FVal v={s.numbers.pr} /> }]} />
       <div className="f-page-body">
-        {s.po && <MessageStrip design="Positive" hideCloseButton className="f-strip">구매 요청 {s.numbers.pr}이(가) 구매 오더 {s.numbers.po}(으)로 전환되었습니다{s.po.status === 'Pending' ? ' – 구매 관리자 승인 대기' : ''}.</MessageStrip>}
+        {s.po && <MessageStrip design="Positive" hideCloseButton className="f-strip">구매 요청 {s.numbers.pr}{pc(s.numbers.pr, '이')} 구매 오더 {s.numbers.po}{pc(s.numbers.po, '로')} 전환되었습니다{s.po.status === 'Pending' ? ' – 구매 관리자 승인 대기' : ''}.</MessageStrip>}
         <FTable title="구매 요청" count={1} rowKey={(i) => i.item} rows={[ITEM10]} selected={['10']} onSelect={() => undefined}
           toolbar={<><FBtn trans>RFQ 생성</FBtn><FBtn emph disabled={!!s.po} onClick={() => setOpen(true)}>구매 오더 생성</FBtn></>} columns={[
             { key: 'pr', label: '구매 요청', render: () => <FLink>{s.numbers.pr}</FLink> },
@@ -189,7 +190,7 @@ export function PoG({ step }: StepProps) {
           { key: 'c', label: '계약', w: 90, render: () => s.numbers.contract },
           { key: 'po', label: '구매 오더', w: 90, render: () => (s.po ? s.numbers.po : '') },
         ]} />
-        {s.po && <div className="g-ok-box">표준 구매 오더 {s.numbers.po}이(가) 생성되었습니다</div>}
+        {s.po && <div className="g-ok-box">표준 구매 오더 {s.numbers.po}{pc(s.numbers.po, '이')} 생성되었습니다</div>}
       </div>
     </GuiWindow>
   );
@@ -215,7 +216,7 @@ export function AddItemF({ step }: StepProps) {
   const [edit, setEdit] = useState(false);
   const [draft, setDraft] = useState(false);
   const rows = draft && !added ? [...po.items, ITEM20] : po.items;
-  const save = () => { s.addTextItem(); setEdit(false); setDraft(false); showToast(`구매 오더 ${s.numbers.po}이(가) 저장되었습니다`); };
+  const save = () => { s.addTextItem(); setEdit(false); setDraft(false); showToast(`구매 오더 ${jo(s.numbers.po, '이')} 저장되었습니다`); };
   return (
     <FioriShell title="구매 오더 관리" role={step.role}>
       <PageHeader breadcrumb={['구매 오더 관리']} title={`구매 오더 ${s.numbers.po}`} subtitle={`${SUP} · 구매 그룹 ${PURCH_GROUP}`}
@@ -263,7 +264,7 @@ export function AddItemG({ step }: StepProps) {
             { key: 'p', label: '%', w: 50, align: 'right', render: (x) => x.pct },
           ]} />
         </GGroup>}
-        {added && <div className="g-ok-box">표준 PO {s.numbers.po}이(가) 변경되었습니다</div>}
+        {added && <div className="g-ok-box">표준 PO {s.numbers.po}{pc(s.numbers.po, '이')} 변경되었습니다</div>}
       </div>
     </GuiWindow>
   );
@@ -284,7 +285,7 @@ export function MassF({ step }: StepProps) {
       <PageHeader title="구매 오더 일괄 변경" subtitle="Mass Changes to Purchase Orders (F2593)" />
       <FilterBar fields={[{ label: '자재 그룹', value: <FVal v="YBMM01, YBMM00" /> }, { label: '구매 조직', value: <FVal v={c.purchasingOrg} /> }, { label: '구매 그룹', value: <FVal v={PURCH_GROUP} /> }]} />
       <div className="f-page-body">
-        {s.massChanged && <MessageStrip design="Positive" hideCloseButton className="f-strip">일괄 변경 작업 {s.numbers.job}이(가) 성공적으로 완료되었습니다 – 지급 조건 0001 → 0003.</MessageStrip>}
+        {s.massChanged && <MessageStrip design="Positive" hideCloseButton className="f-strip">일괄 변경 작업 {s.numbers.job}{pc(s.numbers.job, '이')} 성공적으로 완료되었습니다 – 지급 조건 0001 → 0003.</MessageStrip>}
         <FTable title="구매 오더 품목" count={rows.length} rowKey={(r) => r.po} rows={rows} selected={[s.numbers.po]} onSelect={() => undefined}
           toolbar={<FBtn emph disabled={s.massChanged} onClick={() => setOpen(true)}>일괄 편집</FBtn>} columns={[
             { key: 'po', label: '구매 오더', render: (r) => <><FLink>{r.po}</FLink>{r.mine && <span className="mine-tag">데모</span>}</> },
@@ -447,7 +448,7 @@ export function ReleaseF({ step }: StepProps) {
   const c = useOrg();
   const inv = s.invoice!;
   return <InboxFiori step={step} approveLabel="릴리스"
-    done={s.released ? `송장 ${inv.doc}이(가) 릴리스되어 지급 대상이 되었습니다.` : !inv.blocked ? `송장 ${inv.doc}은(는) 보류되지 않았습니다 – 릴리스할 작업이 없습니다.` : undefined}
+    done={s.released ? `송장 ${jo(inv.doc, '이')} 릴리스되어 지급 대상이 되었습니다.` : !inv.blocked ? `송장 ${jo(inv.doc, '은')} 보류되지 않았습니다 – 릴리스할 작업이 없습니다.` : undefined}
     onDecide={(k) => { if (k === 'approve') { s.releaseInvoice(); showToast('송장이 릴리스되었습니다'); } }}
     task={inv.blocked ? {
       title: `차단된 송장 ${inv.doc} 릴리스`, subtitle: `${SUP} · 참조 ${inv.ref} · 코스트 센터 책임자 승인`, icon: 'customer-financial-fact-sheet',
@@ -480,7 +481,7 @@ export function ReleaseG({ step }: StepProps) {
           { key: 's', label: '상태', w: 90, render: (i) => (i.blocked ? '보류' : '릴리스됨') },
           { key: 'dt', label: '전기 일자', w: 90, render: (i) => fmtDate(i.date, c.dateFormat) },
         ]} />
-        {s.released && <div className="g-ok-box">송장 {inv.doc}이(가) 릴리스되었습니다</div>}
+        {s.released && <div className="g-ok-box">송장 {inv.doc}{pc(inv.doc, '이')} 릴리스되었습니다</div>}
       </div>
     </GuiWindow>
   );

@@ -1,4 +1,5 @@
 /** 22Z – Procurement of Services: scenario definition, presenter guide and briefing. */
+import { jo } from '../../josa';
 import { fmtAmt } from '../../format';
 import { ROLE_KO } from '../../steps';
 import { useOrg, type Briefing } from '../types';
@@ -13,24 +14,24 @@ function useGuide(id: string) {
   switch (id) {
     case 'contract': return GX(`유지보수 서비스를 정기적으로 ${SUP.name}에서 받기로 했습니다. 시간당 단가를 계약으로 고정합니다.`, [
       L('계약 유형 WK(가치 계약)·목표 금액 설명', '목표 금액까지 여러 번 발주할 수 있고 사용액이 자동 집계됩니다.'),
-      B('생성', '💾 저장', `서비스 계약 ${n.contract}가 생성됩니다.`, d('contract')),
+      B('생성', '💾 저장', `서비스 계약 ${jo(n.contract, '이')} 생성됩니다.`, d('contract')),
     ], '계약 단가가 이후 요청·PO에 자동 적용됩니다.');
     case 'pr': return GX(`시설팀이 유지보수 ${SVC.qty}시간과, 금액만 정해 둔 예비 부품·기타 서비스를 요청합니다.`, [
       L('서비스 품목의 다중 계정 지정 설명', `비용을 ${CC[0].cc} ${CC[0].pct}% / ${CC[1].cc} ${CC[1].pct}%로 나눕니다.`),
       L('Limit 품목의 예상 금액·전체 한도 설명', `정확한 내용을 모르는 서비스는 예상 ${fmtAmt(LIMIT.expected, cur)}, 최대 ${fmtAmt(LIMIT.overall, cur)}까지 허용합니다.`),
-      B('생성', '💾 저장', `구매 요청 ${n.pr}가 저장됩니다.`, d('pr')),
+      B('생성', '💾 저장', `구매 요청 ${jo(n.pr, '이')} 저장됩니다.`, d('pr')),
     ], '불확실한 서비스도 한도를 정해 통제된 방식으로 요청합니다.');
     case 'autopo': return GX('공급원이 확정된 구매 요청은 백그라운드 작업이 PO로 바꿀 수 있습니다.', [
-      B('예약', '▶ 실행 (F8)', `작업 ${n.job}가 구매 오더 ${n.po}를 자동 생성합니다.`, d('autopo') || d('po')),
+      B('예약', '▶ 실행 (F8)', `작업 ${jo(n.job, '이')} 구매 오더 ${jo(n.po, '을')} 자동 생성합니다.`, d('autopo') || d('po')),
     ], '반복적인 PO 생성을 사람 손 없이 처리합니다.');
     case 'po': return GX(`구매 요청 ${n.pr}에 공급원이 지정되어 있습니다.`, [
-      B('구매 오더 생성', '📄 구매 오더 생성', `서비스 PO ${n.po}가 생성됩니다 (${fmtAmt(PO_VALUE, cur)}).`, d('po')),
+      B('구매 오더 생성', '📄 구매 오더 생성', `서비스 PO ${jo(n.po, '이')} 생성됩니다 (${fmtAmt(PO_VALUE, cur)}).`, d('po')),
     ], '요청 정보가 그대로 PO로 이어집니다.');
-    case 'approve': return GX(`PO ${n.po}가 ${ROLE_KO['Purchasing Manager']}에게 승인 요청되었습니다.`, [
+    case 'approve': return GX(`PO ${jo(n.po, '이')} ${ROLE_KO['Purchasing Manager']}에게 승인 요청되었습니다.`, [
       B('승인', '✔ 릴리스(승인)', '승인 후 공급업체에 PO가 발송됩니다.', d('approve')),
     ], '서비스 발주도 금액 기준으로 통제합니다.');
     case 'ses': return GX('공급업체가 유지보수 작업을 마쳤습니다. 실제 수행된 서비스를 입력합니다.', [
-      L('Limit 품목 실적 설명', `예비 부품 등 실제 사용액 ${fmtAmt(LIMIT.actual, cur)}을(를) 입력합니다. 한도를 넘으면 오류가 납니다.`),
+      L('Limit 품목 실적 설명', `예비 부품 등 실제 사용액 ${jo(fmtAmt(LIMIT.actual, cur), '을')} 입력합니다. 한도를 넘으면 오류가 납니다.`),
       B('승인 요청', '💾 저장 · 승인 요청', `서비스 입력 시트 ${n.ses} (${fmtAmt(SES_VALUE, cur)})가 승인 요청됩니다.`, d('ses')),
     ], '서비스 입력 시트가 서비스의 "입고" 역할을 합니다.');
     case 'sesapprove': return GX(`서비스 입력 시트 금액이 1,000 EUR를 넘어 ${ROLE_KO['Purchasing Manager']} 승인이 필요합니다.`, [
@@ -42,7 +43,7 @@ function useGuide(id: string) {
     case 'invoice': return GX('공급업체 송장이 도착했습니다.', [
       B('추가', '↵ 적용', '승인된 서비스 입력 시트 금액으로 품목이 채워집니다.', !!s.vals.invAdded || d('invoice')),
       L('지급 보류 R 설명', '서비스 품질 최종 확인 전까지 지급을 막아 둡니다.'),
-      B('전기', '💾 전기', `송장 ${n.inv}가 지급 보류 상태로 전기됩니다.`, d('invoice')),
+      B('전기', '💾 전기', `송장 ${jo(n.inv, '이')} 지급 보류 상태로 전기됩니다.`, d('invoice')),
     ], '3-way 매칭(PO·SES·송장)으로 서비스 지급을 통제합니다.');
     case 'release': return GX('품질 확인이 끝났습니다. 송장 지급 보류를 해제합니다.', [
       B('지급 보류 해제', '✔ 릴리스', '다음 지급 실행에 포함됩니다.', d('release')),

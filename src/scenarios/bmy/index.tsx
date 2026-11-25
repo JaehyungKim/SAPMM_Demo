@@ -1,4 +1,5 @@
 /** BMY – Subcontracting: scenario definition, presenter guide and briefing. */
+import { jo } from '../../josa';
 import { fmtAmt } from '../../format';
 import { ROLE_KO } from '../../steps';
 import { useOrg, type Briefing } from '../types';
@@ -11,23 +12,23 @@ function useGuide(id: string) {
   const d = (k: string) => !!s.done[k];
   const cur = useOrg().currency;
   switch (id) {
-    case 'mrp': return GX(`반제품 ${MAT}의 재고가 부족합니다. ${MAT}은 외주처에 원자재를 보내 가공해 오는 품목입니다.`, [
+    case 'mrp': return GX(`반제품 ${MAT}의 재고가 부족합니다. ${jo(MAT, '은')} 외주처에 원자재를 보내 가공해 오는 품목입니다.`, [
       L('조달 유형·특별 조달 30(외주) 설명', '자재 마스터의 설정 덕분에 MRP가 일반 구매 요청이 아닌 외주 구매 요청(품목 범주 L)을 만듭니다.'),
-      B('실행', '▶ 실행', `구매 요청 ${n.pr}가 생성되고 BOM 구성품 RM13·RM14 소요량도 계산됩니다.`, d('mrp')),
+      B('실행', '▶ 실행', `구매 요청 ${jo(n.pr, '이')} 생성되고 BOM 구성품 RM13·RM14 소요량도 계산됩니다.`, d('mrp')),
     ], '외주 품목도 MRP가 자동으로 계획해 누락을 막습니다.');
     case 'po': return GX(`외주 구매 요청에 공급원(외주처 ${SUP.no}, 정보 레코드)이 지정되어 있습니다.`, [
       L("품목 범주 'L'과 구성품 표 설명", 'PO에는 가공비만 가격으로 들어가고, 외주처에 보낼 구성품이 BOM에서 자동으로 붙습니다.'),
-      B('구매 오더 생성', '📄 구매 오더 생성', `외주 PO ${n.po}가 생성됩니다 (가공비 ${fmtAmt(VALUE, cur)}).`, d('po')),
+      B('구매 오더 생성', '📄 구매 오더 생성', `외주 PO ${jo(n.po, '이')} 생성됩니다 (가공비 ${fmtAmt(VALUE, cur)}).`, d('po')),
     ], '가공비와 제공 자재가 한 문서에 묶여 외주 원가를 정확히 관리합니다.');
     case 'monitor': return GX('외주 PO의 진행 상황을 확인합니다.', [
       L('구성품 출고·입고 미결 열 설명', '외주처가 가공을 시작할 수 있는지(구성품 도착 여부)를 한눈에 봅니다.'),
     ], '외주 공정의 병목을 빨리 찾습니다.');
-    case 'approve': return GX(`PO ${n.po}가 승인 규칙(500 EUR 초과)에 걸려 ${ROLE_KO['Purchasing Manager']}에게 도착했습니다.`, [
+    case 'approve': return GX(`PO ${jo(n.po, '이')} 승인 규칙(500 EUR 초과)에 걸려 ${ROLE_KO['Purchasing Manager']}에게 도착했습니다.`, [
       B('승인', '✔ 릴리스(승인)', '승인되면 PO가 외주처에 발송되고 구성품 출고가 가능해집니다.', d('approve')),
     ], '외주 발주도 금액 기준으로 통제됩니다.');
     case 'delivery': return GX('외주 콕핏에서 외주처에 보낼 구성품을 확인합니다.', [
       L('가용 재고 확인', '구성품 재고가 충분하면 바로 납품을 만들 수 있습니다.'),
-      B('납품 생성', '🚚 납품 생성', `구성품 납품 ${n.dlv}가 생성됩니다.`, d('delivery')),
+      B('납품 생성', '🚚 납품 생성', `구성품 납품 ${jo(n.dlv, '이')} 생성됩니다.`, d('delivery')),
     ], '어느 외주처에 무엇을 보내야 하는지 한 화면에서 관리합니다.');
     case 'pgi': return GX(`납품 ${n.dlv}의 구성품을 외주처로 출고합니다.`, [
       L('이동 유형 541 설명', '재고가 사라지는 것이 아니라 외주처 재고(회사 소유)로 이동합니다.'),
@@ -43,7 +44,7 @@ function useGuide(id: string) {
     ], '외주처 재고 실사·정산 근거가 됩니다.');
     case 'invoice': return GX('외주처가 가공비 송장을 보냈습니다.', [
       B('추가', '↵ 적용', '입고 수량 × 가공비 단가로 품목이 제안됩니다.', !!s.vals.invAdded || d('invoice')),
-      B('전기', '💾 전기', `송장 ${n.inv}가 전기됩니다.`, d('invoice')),
+      B('전기', '💾 전기', `송장 ${jo(n.inv, '이')} 전기됩니다.`, d('invoice')),
     ], '가공비만 청구·지급되어 구성품 비용이 중복되지 않습니다.');
     default: return launchGuide('bmy', STEPS, `반제품 ${MAT} 재고가 부족합니다. 외주처 ${SUP.name}에 원자재를 보내 가공을 맡깁니다.`, '외주 가공은 구매·생산·창고·회계가 함께 하는 프로세스입니다.');
   }

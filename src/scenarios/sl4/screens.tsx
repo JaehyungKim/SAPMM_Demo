@@ -1,4 +1,5 @@
 /** SL4 – Supplier Evaluation screens (Fiori + SAP GUI from one spec per step). */
+import { jo } from '../../josa';
 import { addDays, fmtDate, todayIso } from '../../format';
 import { Help } from '../../components/Help';
 import { ROLE_USER } from '../../steps';
@@ -75,7 +76,7 @@ export const [questionnaireF, questionnaireG] = pair(() => {
       { key: 't', label: '질문', w: 280, render: (r) => r.text }, { key: 'ty', label: '유형', w: 120, render: (r) => r.type },
       { key: 'm', label: '필수', w: 50, render: () => '☑' },
     ] }],
-    footer: true, done: d('questionnaire'), doneMsg: `설문지 ${n.quest}이(가) 릴리스되었습니다 – 평가 템플릿에 사용할 수 있습니다.`,
+    footer: true, done: d('questionnaire'), doneMsg: `설문지 ${jo(n.quest, '이')} 릴리스되었습니다 – 평가 템플릿에 사용할 수 있습니다.`,
     actions: [
       { label: '저장', gui: '💾 저장', disabled: saved, onClick: () => s.setVal('qSaved', true), toast: '설문지 저장' },
       { label: '릴리스', gui: '📤 릴리스', disabled: !saved || d('questionnaire'), onClick: () => s.mark('questionnaire'), toast: '릴리스' },
@@ -94,7 +95,7 @@ export const [requestF, requestG] = pair(() => {
       { label: '평가 기간', value: `${fmtDate(addDays(todayIso(), -90), c.dateFormat)} ~ ${fmtDate(todayIso(), c.dateFormat)}` },
       { label: '평가 요청 이름', value: `분기 평가 ${SUP.no}` },
     ],
-    footer: true, done: d('request'), doneMsg: `평가 요청 ${n.req}이(가) 제출되었습니다 – 평가자에게 이메일과 작업이 전달되었습니다.`,
+    footer: true, done: d('request'), doneMsg: `평가 요청 ${jo(n.req, '이')} 제출되었습니다 – 평가자에게 이메일과 작업이 전달되었습니다.`,
     actions: [{ label: '평가 요청 제출', gui: '📤 요청 제출', disabled: d('request'), onClick: () => s.mark('request'), toast: `요청 ${n.req}` }],
   };
 });
@@ -151,7 +152,7 @@ export const [outputF, outputG] = pair(() => {
   return {
     app: '공급업체 평가 점수 출력', appId: 'F5061', title: '활성 점수 생성 및 발송', gtitle: '공급업체 평가 점수 출력',
     fields: [{ label: '공급업체', value: SUPT }, { label: '평가 기간', value: `${fmtDate(addDays(todayIso(), -365), c.dateFormat)} ~ ${fmtDate(todayIso(), c.dateFormat)}` }, { label: '통화', value: c.currency }, { label: '출력 채널', value: '이메일 · 인쇄' }],
-    done: d('output'), doneMsg: `출력 ${n.out}이(가) 공급업체 이메일로 발송되었습니다 – 공급업체와 개선 과제를 논의할 근거가 됩니다.`,
+    done: d('output'), doneMsg: `출력 ${jo(n.out, '이')} 공급업체 이메일로 발송되었습니다 – 공급업체와 개선 과제를 논의할 근거가 됩니다.`,
     actions: [{ label: '활성 점수 생성·발송', gui: '📧 발송', disabled: d('output'), onClick: () => s.mark('output'), toast: '점수 발송' }],
   };
 });

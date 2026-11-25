@@ -3,6 +3,7 @@
  * command field, title bar, application toolbar, dynpro fields, ALV-style grid, tab strips
  * and status bar. The command field accepts real transaction codes (see TCODE_MAP).
  */
+import { jo } from '../../josa';
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDemo } from '../../store';
@@ -48,7 +49,7 @@ export function GuiWindow({
     if (!t) return;
     const id = tcodes[t];
     if (id) { setMsg(null); go(id); }
-    else setMsg({ type: 'E', text: `트랜잭션 ${t}이(가) 존재하지 않습니다` });
+    else setMsg({ type: 'E', text: `트랜잭션 ${jo(t, '이')} 존재하지 않습니다` });
   };
 
   const sys = `S4H (1) 100`;

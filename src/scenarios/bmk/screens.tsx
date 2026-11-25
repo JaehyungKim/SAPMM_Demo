@@ -1,4 +1,5 @@
 /** BMK – Return to Supplier screens (Fiori + SAP GUI from one spec per step). */
+import { jo, pc } from '../../josa';
 import { fmtAmt, fmtDate, todayIso } from '../../format';
 import { Help } from '../../components/Help';
 import { useOrg } from '../types';
@@ -46,7 +47,7 @@ export const [transferF, transferG] = pair(() => {
   return {
     app: '재고 이전 - 플랜트 내', appId: 'F1061', title: `${MAT} 재고 이전`, gtitle: '이전 전기: 이동 유형 311',
     fields: [{ label: '자재', value: MAT, help: 'material' }, { label: '플랜트', value: c.plant }, { label: '보낸 곳', value: '101A Std. storage 1', help: 'sloc' }, { label: '받는 곳', value: '101R Storage Location Returns' }, { label: '수량', value: `${RET_QTY} PC` }],
-    done: d('transfer'), doneMsg: `자재 전표 ${n.tr}이(가) 생성되었습니다 – 반품할 ${RET_QTY} PC가 반품 저장 위치 101R로 이동했습니다.`,
+    done: d('transfer'), doneMsg: `자재 전표 ${jo(n.tr, '이')} 생성되었습니다 – 반품할 ${RET_QTY} PC가 반품 저장 위치 101R로 이동했습니다.`,
     footer: true,
     actions: [{ label: '전기', gui: '💾 전기', disabled: d('transfer'), onClick: () => s.mark('transfer'), toast: `자재 전표 ${n.tr} 생성`,
       confirm: { title: '재고 이전', label: '전기', fields: [{ label: '보낸 곳', value: '101A 가용 재고' }, { label: '받는 곳', value: '101R 가용 재고' }, { label: '수량', value: `${RET_QTY} PC` }, { label: '이동 유형', value: '311' }] } }],
@@ -65,7 +66,7 @@ export const [retpoF, retpoG] = pair(() => {
       { label: '플랜트 / 저장 위치', value: `${c.plant} / 101R`, help: 'sloc' }, { label: '반품 품목', value: '✓ 모든 품목', help: 'returnsItem' },
     ],
     tables: [{ title: '품목 개요', rows: ITEMS, rowKey: (r) => r.item, cols: [...itemCols(c.currency), { key: 'f', label: '후속 처리', w: 110, render: (r) => r.follow }] }],
-    footer: true, done: d('retpo'), doneMsg: `반품 구매 오더 ${n.retpo}이(가) 생성되었습니다. 출하 담당자의 '납기 도래 구매 오더'에 바로 나타납니다.`,
+    footer: true, done: d('retpo'), doneMsg: `반품 구매 오더 ${jo(n.retpo, '이')} 생성되었습니다. 출하 담당자의 '납기 도래 구매 오더'에 바로 나타납니다.`,
     actions: [{ label: '저장', gui: '💾 저장', disabled: d('retpo'), onClick: () => s.mark('retpo'), toast: `반품 PO ${n.retpo} 생성` }],
   };
 });
@@ -80,7 +81,7 @@ export const [deliveryF, deliveryG] = pair(() => {
       { key: 'm', label: '자재', w: 60, render: (r) => r.material }, { key: 'q', label: '수량', w: 60, align: 'right', render: (r) => `${r.qty} PC` },
       { key: 'r', label: '수취인', w: 160, render: () => SUP.no }, { key: 'dl', label: '납품', w: 90, render: () => (d('delivery') ? n.dlv : '') },
     ] }],
-    done: d('delivery'), doneMsg: `아웃바운드 납품 ${n.dlv}이(가) 생성되었습니다 (납품 생성 로그 → 문서).`,
+    done: d('delivery'), doneMsg: `아웃바운드 납품 ${jo(n.dlv, '이')} 생성되었습니다 (납품 생성 로그 → 문서).`,
     actions: [{ label: '백그라운드에서 납품 생성', gui: '⚙ 백그라운드', disabled: d('delivery'), onClick: () => s.mark('delivery'), toast: `납품 ${n.dlv} 생성` }],
   };
 });
@@ -132,7 +133,7 @@ export const [creditF, creditG] = pair(() => {
       { label: '구매 오더 참조', value: n.retpo }, { label: '세금 코드', value: 'V0', help: 'taxCode' },
     ],
     tables: [{ title: '송장 품목', rows: added ? [it] : [], rowKey: (r) => r.item, empty: "구매 오더를 '추가'하면 반품 품목이 제안됩니다", cols: itemCols(c.currency) }],
-    done: d('credit'), doneMsg: <>대변 메모 {n.credit}(회계 전표 {n.creditFi})이(가) 전기되었습니다 – 공급업체 채무가 {fmtAmt(amt, c.currency)} 줄었습니다.</>,
+    done: d('credit'), doneMsg: <>대변 메모 {n.credit}(회계 전표 {n.creditFi}){pc(n.credit, '이')} 전기되었습니다 – 공급업체 채무가 {fmtAmt(amt, c.currency)} 줄었습니다.</>,
     actions: [
       { label: '추가', gui: '↵ 적용', disabled: added, onClick: () => s.setVal('creditAdded', true) },
       { label: '전기', gui: '💾 전기', disabled: !added || d('credit'), onClick: () => s.mark('credit'), toast: `대변 메모 ${n.credit} 전기` },
@@ -152,7 +153,7 @@ export const [replaceF, replaceG] = pair(() => {
       { key: 'q', label: '반품 수량', w: 70, align: 'right', render: (r) => r.qty }, { key: 'rq', label: '대체 수량', w: 70, align: 'right', render: (r) => r.qty },
       { key: 'rp', label: '대체 PO', w: 90, render: () => (d('replace') ? n.replpo : '') }, { key: 'ib', label: '인바운드 납품', w: 90, render: () => (d('replace') ? n.ibd : '') },
     ] }],
-    done: d('replace'), doneMsg: `대체 구매 오더 ${n.replpo}이(가) 생성되었고 인바운드 납품 ${n.ibd}이(가) 자동 생성되었습니다 (반품 개요).`,
+    done: d('replace'), doneMsg: `대체 구매 오더 ${jo(n.replpo, '이')} 생성되었고 인바운드 납품 ${jo(n.ibd, '이')} 자동 생성되었습니다 (반품 개요).`,
     actions: [{ label: '저장', gui: '💾 저장', disabled: d('replace'), onClick: () => s.mark('replace'), toast: `대체 PO ${n.replpo} 생성` }],
   };
 });

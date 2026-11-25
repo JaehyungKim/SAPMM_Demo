@@ -4,6 +4,7 @@
  * material document with journal entry, and PDF output previews.
  * Every screen receives its business data as props, so each scenario wires its own store.
  */
+import { pc } from '../../josa';
 import { Fragment, ReactNode, useState } from 'react';
 import { Dialog, Icon, MessageStrip } from '@ui5/webcomponents-react';
 import type { StepProps } from '../../steps/types';
@@ -293,7 +294,7 @@ export function GrFiori({ step, po, supplier, items, posted, consumption, onPost
         { label: '재고 유형', value: consumption ? '소비 (계정 지정)' : '가용 재고' },
       ]} />
       <div className="f-page-body">
-        {posted && <MessageStrip design="Positive" hideCloseButton className="f-strip">자재 전표 {posted.docNo} / {fiscalYear()}이(가) 전기되었습니다. {onShowDoc && <FLink onClick={onShowDoc}>자재 전표 표시</FLink>}</MessageStrip>}
+        {posted && <MessageStrip design="Positive" hideCloseButton className="f-strip">자재 전표 {posted.docNo} / {fiscalYear()}{pc(fiscalYear(), '이')} 전기되었습니다. {onShowDoc && <FLink onClick={onShowDoc}>자재 전표 표시</FLink>}</MessageStrip>}
         <Section title="일반 정보">
           <FormGroup cols={3} fields={[
             { label: '납품서', value: posted ? posted.dn : <FInput value={f.dn} onChange={f.setDn} w={180} />, help: 'deliveryNote' },
@@ -353,7 +354,7 @@ export function GrGui({ step, po, supplier, items, posted, consumption, onPost }
           {tab === '위치' && <div className="g-row"><GField label="재고 유형" value="가용 재고" w={110} lw={80} help="stockType" /><GField label="저장 위치" value={c.storageLocation} w={60} lw={80} help="sloc" /></div>}
           {(tab === '자재' || tab === '수량' || tab === '구매 오더 데이터') && <div className="g-dim">({tab}) 구매 오더 {po}에서 복사된 데이터</div>}
         </GTabs>
-        {posted && <div className="g-ok-box">자재 전표 {posted.docNo}이(가) 전기되었습니다</div>}
+        {posted && <div className="g-ok-box">자재 전표 {posted.docNo}{pc(posted.docNo, '이')} 전기되었습니다</div>}
       </div>
     </GuiWindow>
   );
@@ -478,7 +479,7 @@ export function InvoiceFiori({ step, po, supplier, items, posted, blockOption, b
       ]} />
       <div className="f-page-body">
         {posted && <MessageStrip design={posted.blocked ? 'Critical' : 'Positive'} hideCloseButton className="f-strip">
-          공급업체 송장 {posted.doc} / {fiscalYear()}이(가) 전기되었습니다 (분개 {posted.fi}). {posted.blocked && '품목이 수동 보류되어 지급이 차단되었습니다.'} {onShowNext}
+          공급업체 송장 {posted.doc} / {fiscalYear()}{pc(fiscalYear(), '이')} 전기되었습니다 (분개 {posted.fi}). {posted.blocked && '품목이 수동 보류되어 지급이 차단되었습니다.'} {onShowNext}
         </MessageStrip>}
         <Section title="기본 데이터">
           <FormGroup cols={3} fields={[
@@ -557,7 +558,7 @@ export function InvoiceGui({ step, po, supplier, items, posted, blockOption, blo
           { key: 'tx', label: '세금', w: 40, render: () => 'V0' },
         ]} />
         {blockOption && <GCheck label="품목 수동 보류 (지급 차단)" checked={posted ? posted.blocked : f.block} onChange={posted ? undefined : f.setBlock} />}
-        {posted && <div className="g-ok-box">전표 번호 {posted.doc}이(가) 생성되었습니다{posted.blocked ? ' (지급 보류)' : ''}</div>}
+        {posted && <div className="g-ok-box">전표 번호 {posted.doc}{pc(posted.doc, '이')} 생성되었습니다{posted.blocked ? ' (지급 보류)' : ''}</div>}
       </div>
     </GuiWindow>
   );

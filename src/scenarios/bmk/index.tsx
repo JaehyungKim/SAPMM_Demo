@@ -1,4 +1,5 @@
 /** BMK – Return to Supplier: scenario definition, presenter guide and briefing. */
+import { jo } from '../../josa';
 import { fmtAmt } from '../../format';
 import { ROLE_KO } from '../../steps';
 import { useOrg, type Briefing } from '../types';
@@ -21,11 +22,11 @@ function useGuide(id: string) {
     case 'retpo': return GX(`반품 사유는 두 가지입니다 – 품목 10은 잘못 납품된 자재(대변 메모), 품목 20은 품질 불합격(대체 자재).`, [
       L("오더 유형 NB2와 '반품 품목' 표시 설명", '고급 반품 관리(Advanced Returns)용 PO 유형입니다. 입고 대신 출고, 송장 대신 대변 메모가 발생합니다.'),
       L('품목별 반품 사유·후속 처리 설명', '같은 반품 PO 안에서 품목마다 환불 또는 대체를 고를 수 있습니다.'),
-      B('저장', '💾 저장', `반품 PO ${n.retpo}가 생성됩니다 (금액 ${fmtAmt(RET_QTY * PRICE, cur)}).`, d('retpo')),
+      B('저장', '💾 저장', `반품 PO ${jo(n.retpo, '이')} 생성됩니다 (금액 ${fmtAmt(RET_QTY * PRICE, cur)}).`, d('retpo')),
     ], '반품도 PO로 관리되어 출고·환불·대체 전 과정이 추적됩니다.');
-    case 'delivery': return GX(`${ROLE_KO['Shipping Specialist']}가 반품 PO를 출하 대상 목록에서 확인합니다.`, [
+    case 'delivery': return GX(`${jo(ROLE_KO['Shipping Specialist'], '이')} 반품 PO를 출하 대상 목록에서 확인합니다.`, [
       L('출하 지점 101R과 구매 문서 설명', '반품 PO는 영업 오더처럼 아웃바운드 납품의 기준 문서가 됩니다.'),
-      B('백그라운드에서 납품 생성', '⚙ 백그라운드', `납품 ${n.dlv}가 생성됩니다.`, d('delivery')),
+      B('백그라운드에서 납품 생성', '⚙ 백그라운드', `납품 ${jo(n.dlv, '이')} 생성됩니다.`, d('delivery')),
     ], '창고는 평소의 출하 프로세스 그대로 반품을 처리합니다.');
     case 'pgi': return GX(`납품 ${n.dlv}의 물품을 피킹하고 공급업체로 출고합니다.`, [
       L('피킹 수량 = 납품 수량 확인', '피킹이 끝나야 출고를 전기할 수 있습니다.'),
@@ -35,15 +36,15 @@ function useGuide(id: string) {
       L('출고 완료·대변 메모 수량 열 설명', '반품도 일반 PO와 같은 모니터에서 진행 단계를 볼 수 있습니다.'),
     ], '반품 미결 건을 놓치지 않고 공급업체와 협의할 수 있습니다.');
     case 'credit': return GX(`공급업체가 품목 10(${ITEMS[0].qty} PC)에 대한 대변 메모를 보냈습니다.`, [
-      B('추가', '↵ 적용', `반품 PO ${n.retpo}를 참조하면 대변 메모 대상 품목만 제안됩니다.`, !!s.vals.creditAdded || d('credit')),
+      B('추가', '↵ 적용', `반품 PO ${jo(n.retpo, '을')} 참조하면 대변 메모 대상 품목만 제안됩니다.`, !!s.vals.creditAdded || d('credit')),
       L('분개 미리보기 설명', '차변 매입채무 / 대변 GR/IR – 출고 때 생긴 GR/IR 잔액이 청산됩니다.'),
-      B('전기', '💾 전기', `대변 메모 ${n.credit}가 전기됩니다.`, d('credit')),
+      B('전기', '💾 전기', `대변 메모 ${jo(n.credit, '이')} 전기됩니다.`, d('credit')),
     ], '환불 금액이 PO·출고와 자동 대조되어 정확합니다.');
     case 'replace': return GX(`품목 20(${ITEMS[1].qty} PC)은 공급업체가 대체 자재를 보내기로 했습니다.`, [
       L('대체 수량과 재고 유형(보류) 설명', '대체 자재는 품질 검사를 위해 보류 재고로 받습니다.'),
-      B('저장', '💾 저장', `대체 PO ${n.replpo}와 인바운드 납품 ${n.ibd}가 자동 생성됩니다.`, d('replace')),
+      B('저장', '💾 저장', `대체 PO ${jo(n.replpo, '와')} 인바운드 납품 ${jo(n.ibd, '이')} 자동 생성됩니다.`, d('replace')),
     ], '대체 발주를 사람이 따로 만들 필요가 없습니다.');
-    case 'replgr': return GX(`대체 자재가 도착했습니다. 인바운드 납품 ${n.ibd}로 입고합니다.`, [
+    case 'replgr': return GX(`대체 자재가 도착했습니다. 인바운드 납품 ${jo(n.ibd, '로')} 입고합니다.`, [
       B('입고 전기', '📥 입고 전기', '보류 재고로 입고되고, 금액 0의 송장 검증 문서가 자동 생성됩니다.', d('replgr')),
     ], '대체분은 추가 비용 없이 재고로 들어옵니다.');
     case 'followup': return GX('품질 검사를 통과한 대체 자재를 사용 가능한 재고로 돌립니다.', [

@@ -1,4 +1,5 @@
 /** BMD – Purchase Contract: step list, runtime, presenter guide and briefing. */
+import { jo } from '../../josa';
 import type { StepDef } from '../../steps';
 import { ROLE_KO, ROLE_USER } from '../../steps';
 import { useSharedMap } from '../../sharedState';
@@ -99,7 +100,7 @@ function useGuide(id: string): StepGuide {
   const pur = `${ROLE_KO.Purchaser} ${ROLE_USER.Purchaser.name}`;
   switch (id) {
     case 'launchpad': return {
-      situation: `${pur}이(가) 로그인했습니다. 올해 반복 구매하는 상품 TG10·TG11을 건별 견적 대신 연간 계약으로 묶으려고 합니다.`,
+      situation: `${jo(pur, '이')} 로그인했습니다. 올해 반복 구매하는 상품 TG10·TG11을 건별 견적 대신 연간 계약으로 묶으려고 합니다.`,
       fiori: [
         { text: "'구매' 스페이스의 '구매 요청 관리 - 전문가용' 타일 클릭", why: '계약을 만들기 위한 아웃라인 계약 요청(RV)부터 등록합니다.', target: '구매 요청 관리 - 전문가용', done: false },
         { text: "'소싱 및 계약' 스페이스 보여 주기", why: '계약 관리, 계약 품목 모니터링, 소스 리스트 등 계약 업무 앱이 한곳에 모여 있습니다.', target: '소싱 및 계약', done: false },
@@ -108,21 +109,21 @@ function useGuide(id: string): StepGuide {
       value: '구매 담당자는 운영 구매와 소싱·계약 업무를 같은 홈에서 처리합니다.',
     };
     case 'pr': return {
-      situation: `계약 체결 전, 필요한 연간 물량을 '아웃라인 계약 요청(RV)'으로 등록합니다. 나중에 관련 문서를 한 번에 찾을 수 있도록 요구 추적 번호 ${TRACKING}를 붙입니다.`,
+      situation: `계약 체결 전, 필요한 연간 물량을 '아웃라인 계약 요청(RV)'으로 등록합니다. 나중에 관련 문서를 한 번에 찾을 수 있도록 요구 추적 번호 ${jo(TRACKING, '을')} 붙입니다.`,
       fiori: [
         { text: "문서 유형 'Outline Agrmt. Reqn. (RV)' 설명", why: '일반 구매 요청(NB)과 달리, 구매 오더가 아니라 계약을 만들기 위한 요청입니다.' },
         { text: `품목 TG10 50개, TG11 10개와 추적 번호 ${TRACKING} 확인`, why: '추적 번호는 요청 → 계약 → PO로 그대로 넘어가 전체 흐름을 이어 줍니다.' },
-        { text: "하단 '생성' 클릭", why: `구매 요청 ${s.numbers.prRv}가 저장됩니다.`, target: '생성', done: s.prRv !== 'None' },
+        { text: "하단 '생성' 클릭", why: `구매 요청 ${jo(s.numbers.prRv, '이')} 저장됩니다.`, target: '생성', done: s.prRv !== 'None' },
       ],
       gui: [{ text: "문서 유형 'RV' 확인 후 '저장' 클릭", why: 'ME51N에서 아웃라인 계약 요청을 저장합니다.', target: '저장', done: s.prRv !== 'None' }],
       value: '계약이 필요한 물량도 요청 단계부터 시스템에 기록되어 승인·추적이 가능합니다.',
     };
     case 'contract': return {
-      situation: `공급업체 ${sup}과 연말까지 TG10 500개, TG11 100개를 개당 ${CONTRACT_PRICE} EUR에 공급받기로 합의했습니다. 구매 요청을 참조해 수량 계약을 만듭니다.`,
+      situation: `공급업체 ${jo(sup, '와')} 연말까지 TG10 500개, TG11 100개를 개당 ${CONTRACT_PRICE} EUR에 공급받기로 합의했습니다. 구매 요청을 참조해 수량 계약을 만듭니다.`,
       fiori: [
         { text: `구매 요청 ${s.numbers.prRv}의 두 품목이 선택된 상태 확인`, why: '요청의 자재·플랜트·추적 번호가 계약 품목으로 그대로 복사됩니다.' },
         { text: "'계약 생성' 클릭", why: '요청에서 바로 계약 미리보기를 엽니다. 계약을 처음부터 입력할 필요가 없습니다.', target: '계약 생성', done: !!ct },
-        { text: "미리보기에서 계약 유형 MK·목표 수량·가격을 확인하고 '생성' 클릭", why: `목표 금액 ${fmtAmt(value, c.currency)}이(가) ${APPROVAL_LIMIT.toLocaleString()} EUR를 넘어 승인 워크플로가 시작됩니다.`, target: '생성', done: !!ct },
+        { text: "미리보기에서 계약 유형 MK·목표 수량·가격을 확인하고 '생성' 클릭", why: `목표 금액 ${jo(fmtAmt(value, c.currency), '이')} ${APPROVAL_LIMIT.toLocaleString()} EUR를 넘어 승인 워크플로가 시작됩니다.`, target: '생성', done: !!ct },
       ],
       gui: [{ text: "ME31K에서 헤더·품목 확인 후 '저장'", why: '공급업체, 유효 기간, 목표 수량, 순 가격으로 수량 계약을 저장합니다.', target: '저장', done: !!ct }],
       value: '한 번의 계약으로 연간 가격과 물량이 확정되어 건별 협상이 사라집니다.',
@@ -159,7 +160,7 @@ function useGuide(id: string): StepGuide {
       value: '고정 공급원 지정으로 요청이 자동으로 계약 가격에 연결됩니다.',
     };
     case 'po': return {
-      situation: `생산 부서가 TG10 50개, TG11 30개를 요청했습니다(구매 요청 ${s.numbers.prNb}). 공급원으로 계약 ${s.numbers.contract}가 자동 지정되어 있습니다.`,
+      situation: `생산 부서가 TG10 50개, TG11 30개를 요청했습니다(구매 요청 ${s.numbers.prNb}). 공급원으로 계약 ${jo(s.numbers.contract, '이')} 자동 지정되어 있습니다.`,
       fiori: [
         { text: "'지정된 공급원' 열에서 계약 번호 확인", why: '견적이나 가격 입력 없이 계약 가격이 적용됩니다.' },
         { text: "'구매 오더 생성' 클릭", why: '선택한 요청 품목으로 PO 미리보기를 엽니다.', target: '구매 오더 생성', done: !!s.po },
@@ -185,9 +186,9 @@ function useGuide(id: string): StepGuide {
       gui: [{ text: 'ME3M 목록의 릴리스됨·잔여 수량 확인', why: '자재별 아웃라인 계약 현황입니다.' }],
       value: '계약 소진 현황을 실시간으로 보고 재협상·갱신 시점을 놓치지 않습니다.',
     };
-    case 'reference': return GX(`계약 ${s.numbers.contract} 조건을 템플릿으로 저장하고, 두 번째 공급업체 ${REF_SUPPLIER.name}와 같은 조건의 계약을 만듭니다.`, [
+    case 'reference': return GX(`계약 ${s.numbers.contract} 조건을 템플릿으로 저장하고, 두 번째 공급업체 ${jo(REF_SUPPLIER.name, '와')} 같은 조건의 계약을 만듭니다.`, [
       L('템플릿 원본·복사된 품목 설명', '품목·목표 수량·조건이 템플릿에서 복사되고 공급업체와 단가만 바꿉니다.'),
-      B('참조 계약 생성', '💾 저장', `계약 ${s.numbers.refContract}가 생성됩니다 (단가 ${REF_SUPPLIER.price} EUR).`, !!s.ext.reference),
+      B('참조 계약 생성', '💾 저장', `계약 ${jo(s.numbers.refContract, '이')} 생성됩니다 (단가 ${REF_SUPPLIER.price} EUR).`, !!s.ext.reference),
     ], '표준 계약 조건을 재사용해 계약 작성 시간과 오류를 줄입니다.');
     case 'notify': return GX('구매 담당자는 만료가 다가오는 계약과 소진율 알림을 받습니다.', [
       L('만료까지 남은 일수 설명', '유효 종료일이 가까운 계약을 자동으로 알려 갱신 시점을 놓치지 않게 합니다.'),
@@ -195,7 +196,7 @@ function useGuide(id: string): StepGuide {
     ], '계약 만료로 인한 공급 중단·가격 상승을 예방합니다.');
     case 'mass': return GX('연간 계약을 갱신하기로 했습니다. 관련 계약의 유효 종료일을 한 번에 연장합니다.', [
       L('대상 계약과 새 유효 종료일 설명', '템플릿으로 만든 참조 계약도 함께 선택됩니다.'),
-      B('일괄 변경 적용', '▶ 실행 (F8)', `작업 ${s.numbers.job}가 백그라운드에서 실행됩니다.`, !!s.ext.mass),
+      B('일괄 변경 적용', '▶ 실행 (F8)', `작업 ${jo(s.numbers.job, '이')} 백그라운드에서 실행됩니다.`, !!s.ext.mass),
     ], '여러 계약을 열지 않고 조건을 일괄 갱신합니다.');
     case 'poapprove': return GX(`릴리스 오더 ${s.numbers.po}(800 EUR)가 PO 승인 규칙(${PO_APPROVAL_LIMIT} EUR 초과)에 걸렸습니다.`, [
       L('참조 계약·계약 단가 설명', '계약 가격이 적용된 PO라도 금액 기준 승인은 별도로 적용됩니다.'),
@@ -203,10 +204,10 @@ function useGuide(id: string): StepGuide {
     ], '계약 기반 구매도 지출 통제를 유지합니다.');
     case 'reverse': return GX(`입고 후 TG11 ${REVERSAL.qty} PC가 파손된 것을 발견했습니다. 입고를 일부만 취소합니다.`, [
       L('역분개 수량 설명', '전체 전표가 아니라 해당 품목·수량만 이동 유형 102로 되돌립니다.'),
-      B('역분개 전기', '전기', `자재 전표 ${s.numbers.revDoc}가 전기되고 송장 제안 수량이 줄어듭니다.`, !!s.ext.reverse),
+      B('역분개 전기', '전기', `자재 전표 ${jo(s.numbers.revDoc, '이')} 전기되고 송장 제안 수량이 줄어듭니다.`, !!s.ext.reverse),
     ], '재고·GR/IR이 실제 받은 수량과 일치하게 정정됩니다.');
     case 'gr': return {
-      situation: `공급업체 ${sup}의 물품이 도착했습니다. ${ROLE_KO['Warehouse Clerk']}가 PO ${s.numbers.po} 기준으로 입고합니다.`,
+      situation: `공급업체 ${sup}의 물품이 도착했습니다. ${jo(ROLE_KO['Warehouse Clerk'], '이')} PO ${s.numbers.po} 기준으로 입고합니다.`,
       fiori: [
         { text: '납품서 번호와 품목별 입고 수량 확인', why: '수량을 줄이면 부분 입고가 됩니다.' },
         { text: "하단 '전기' 클릭", why: '재고와 GR/IR 회계 전표가 동시에 생성됩니다.', target: '전기', done: !!s.gr },

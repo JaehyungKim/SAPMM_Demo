@@ -4,11 +4,12 @@
  *  Phase 4 Preview Purchase Order (F0842A / ME23N)     BPD 4.1.4
  *  Phase 5 Change Purchase Order  (F0842A / ME22N)     BPD 4.1.5
  */
+import { jo, pc } from '../josa';
 import { ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, MessageStrip } from '@ui5/webcomponents-react';
-import { useDemo, netValue, DemoConfig } from '../store';
-import { fmtAmt, fmtDate, fmtNum, fmtQty, todayIso } from '../format';
+import { useDemo, netValue, DemoConfig, CHANGE_DELAY_DAYS } from '../store';
+import { addDays, fmtAmt, fmtDate, fmtNum, fmtQty, todayIso } from '../format';
 import {
   AnchorBar, FBtn, FInput, FioriShell, FooterBar, FormGroup, FTable, PageHeader, Section, Status, StatusState, showToast, FLink,
 } from '../components/fiori/Fiori';
@@ -108,13 +109,16 @@ export function PdfDialog({ open, onClose, title, children }: { open: boolean; o
 
 /* ------------------------------------------------------------------ Fiori object page */
 type Draft = Pick<DemoConfig, 'quantity' | 'netPrice' | 'deliveryDate' | 'storageLocation'>;
+/** Change-mode draft: the supplier's requested new delivery date is already proposed. */
+const changeDraft = (c: DemoConfig, propose: boolean): Draft =>
+  ({ quantity: c.quantity, netPrice: c.netPrice, deliveryDate: propose ? addDays(c.deliveryDate, CHANGE_DELAY_DAYS) : c.deliveryDate, storageLocation: c.storageLocation });
 
 function FioriPo({ step, mode, initialTab }: StepProps & { mode: Mode; initialTab?: string }) {
   const s = useDemo();
   const nav = useNavigate();
   const c = s.config;
   const df = c.dateFormat;
-  const [draft, setDraft] = useSharedState<Draft>(`chg:${s.numbers.poNumber}:${s.changeLog.length}`, { quantity: c.quantity, netPrice: c.netPrice, deliveryDate: c.deliveryDate, storageLocation: c.storageLocation });
+  const [draft, setDraft] = useSharedState<Draft>(`chg:${s.numbers.poNumber}:${s.changeLog.length}`, changeDraft(c, s.changeLog.length === 0));
   const [itemOpen, setItemOpen] = useState(false);
   const [itemTab, setItemTab] = useState('일반 정보');
   const [pdf, setPdf] = useState(false);
@@ -132,11 +136,15 @@ function FioriPo({ step, mode, initialTab }: StepProps & { mode: Mode; initialTa
   const order = () => {
     if (mode === 'create') {
       s.createPO();
-      showToast(`구매 오더 ${s.numbers.poNumber}이(가) 생성되었습니다`);
+      showToast(`구매 오더 ${jo(s.numbers.poNumber, '이')} 생성되었습니다`);
     } else {
+      if (draft.quantity === c.quantity && draft.netPrice === c.netPrice && draft.deliveryDate === c.deliveryDate) {
+        showToast('변경된 데이터가 없습니다');
+        return;
+      }
       s.changePO({ quantity: draft.quantity, netPrice: draft.netPrice, deliveryDate: draft.deliveryDate });
-      showToast(`구매 오더 ${s.numbers.poNumber}이(가) 저장되었습니다`);
-      nav('/step/preview-po');
+      showToast(`구매 오더 ${jo(s.numbers.poNumber, '이')} 저장되었습니다`);
+      setTab('변경 내역');
     }
   };
 
@@ -169,12 +177,12 @@ function FioriPo({ step, mode, initialTab }: StepProps & { mode: Mode; initialTa
       <div className="f-page-body">
         {mode === 'edit' && workflow && s.grDocs.length === 0 && (
           <MessageStrip design="Information" hideCloseButton className="f-strip">
-            가격·수량·납기 변경 시 유연한 워크플로 재시작 조건(Always Restart)에 따라 승인이 다시 요청됩니다.
+            가격·수량처럼 금액이 바뀌는 변경은 유연한 워크플로 재시작 조건에 따라 승인이 다시 요청됩니다. 납품일만 바꾸면 승인 상태가 유지됩니다.
           </MessageStrip>
         )}
         {mode === 'create' && s.poStatus !== 'None' && (
           <MessageStrip design="Positive" hideCloseButton className="f-strip">
-            구매 오더 {s.numbers.poNumber}이(가) 저장되었습니다. {s.poStatus === 'Pending Approval' ? '구매 관리자의 승인 대기 중입니다.' : '공급업체에 발송되었습니다.'}
+            구매 오더 {s.numbers.poNumber}{pc(s.numbers.poNumber, '이')} 저장되었습니다. {s.poStatus === 'Pending Approval' ? '구매 관리자의 승인 대기 중입니다.' : '공급업체에 발송되었습니다.'}
             {s.poFromPr && ` (구매 요청 ${s.numbers.prNumber} 참조)`}
           </MessageStrip>
         )}
@@ -356,7 +364,7 @@ function GuiPo({ step, mode }: StepProps & { mode: Mode }) {
   const df = c.dateFormat;
   const [hdrTab, setHdrTab] = useState('조직 데이터');
   const [itTab, setItTab] = useState('납품 일정');
-  const [draft, setDraft] = useSharedState<Draft>(`chg:${s.numbers.poNumber}:${s.changeLog.length}`, { quantity: c.quantity, netPrice: c.netPrice, deliveryDate: c.deliveryDate, storageLocation: c.storageLocation });
+  const [draft, setDraft] = useSharedState<Draft>(`chg:${s.numbers.poNumber}:${s.changeLog.length}`, changeDraft(c, s.changeLog.length === 0));
   const [pdf, setPdf] = useState(false);
   const created = s.poStatus !== 'None';
   const editable = mode === 'edit' || (mode === 'create' && !created);
